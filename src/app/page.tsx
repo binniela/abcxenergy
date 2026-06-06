@@ -18,6 +18,7 @@ import { ProductCard } from "@/components/product-card";
 import { SpecStockStrip } from "@/components/spec-stock-strip";
 import { getSeries, SERIES } from "@/lib/products";
 import { SITE, REBATES } from "@/lib/site";
+import { getSeededSeriesCardSummary } from "@/lib/backend/catalog";
 
 const elite = getSeries("elite")!;
 const featured = SERIES;
@@ -186,7 +187,7 @@ export default function HomePage() {
           </div>
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {featured.map((s) => (
-              <ProductCard key={s.slug} series={s} />
+              <ProductCard key={s.slug} series={s} ops={getSeededSeriesCardSummary(s.slug)} />
             ))}
           </div>
         </Container>

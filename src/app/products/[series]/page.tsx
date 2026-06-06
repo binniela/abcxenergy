@@ -23,6 +23,8 @@ import { SpecStockStrip } from "@/components/spec-stock-strip";
 import { AddToQuote } from "@/components/add-to-quote";
 import { ProductCard } from "@/components/product-card";
 import { SITE } from "@/lib/site";
+import { getSeriesBackendSummary } from "@/lib/backend/services";
+import { getSeededSeriesCardSummary } from "@/lib/backend/catalog";
 
 export function generateStaticParams() {
   return SERIES.map((s) => ({ series: s.slug }));
@@ -49,6 +51,7 @@ export default async function SeriesPage({ params }: PageProps<"/products/[serie
   const related = SERIES.filter((x) => x.slug !== s.slug && x.category === s.category).slice(0, 3);
   const fallbackRelated = SERIES.filter((x) => x.slug !== s.slug).slice(0, 3);
   const relatedList = related.length ? related : fallbackRelated;
+  const backendSummary = await getSeriesBackendSummary(s.slug);
 
   // Product structured data (escaped per Next.js JSON-LD guidance).
   const jsonLd = {
@@ -144,6 +147,11 @@ export default async function SeriesPage({ params }: PageProps<"/products/[serie
             </p>
 
             <SpecStockStrip series={s} className="mt-6" />
+            <div className="mt-4 grid grid-cols-3 gap-px overflow-hidden rounded-[--r-sm] border border-line bg-line text-center">
+              <BackendCell label="SKUs" value={`${backendSummary.skus.length}`} />
+              <BackendCell label="Available" value={`${backendSummary.availableUnits}`} />
+              <BackendCell label="Dealer from" value={currency(backendSummary.startingDealerPrice)} />
+            </div>
 
             <ul className="mt-6 grid gap-2.5">
               {s.highlights.map((h) => (
@@ -189,6 +197,47 @@ export default async function SeriesPage({ params }: PageProps<"/products/[serie
           </div>
         </section>
 
+        <section className="mt-16">
+          <h2 className="font-display text-2xl font-semibold tracking-tight text-ink-1">
+            SKU availability
+          </h2>
+          <p className="mt-1 text-sm text-ink-3">
+            Newark warehouse stock, dealer pricing, and mock document actions from the backend catalog.
+          </p>
+          <div className="mt-5 overflow-x-auto rounded-[--r-md] border border-line">
+            <table className="w-full min-w-[760px] text-left text-sm">
+              <thead className="border-b border-line bg-surface-2/60 text-xs uppercase tracking-[0.12em] text-ink-3">
+                <tr>
+                  <th className="px-4 py-3 font-medium">SKU</th>
+                  <th className="px-4 py-3 font-medium">Model</th>
+                  <th className="px-4 py-3 font-medium">BTU</th>
+                  <th className="px-4 py-3 font-medium">Dealer</th>
+                  <th className="px-4 py-3 font-medium">Available</th>
+                  <th className="px-4 py-3 font-medium">Documents</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-line">
+                {backendSummary.skus.map((sku) => (
+                  <tr key={sku.id} className="bg-surface-1">
+                    <td className="px-4 py-3 font-mono text-xs font-semibold text-ink-1">{sku.sku}</td>
+                    <td className="px-4 py-3 text-ink-2">{sku.modelNumber}</td>
+                    <td className="px-4 py-3 tnum font-mono">{sku.btu.toLocaleString()}</td>
+                    <td className="px-4 py-3 tnum font-mono font-semibold">{currency(sku.dealerPrice)}</td>
+                    <td className="px-4 py-3">
+                      <Chip tone={sku.status === "ready" ? "stock" : sku.status === "low" ? "copper" : "lead"}>
+                        {sku.available} {sku.status}
+                      </Chip>
+                    </td>
+                    <td className="px-4 py-3 text-xs text-ink-3">
+                      {backendSummary.documents.filter((doc) => doc.skuId === sku.id).length} linked
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
         {/* Related */}
         <section className="mt-16">
           <div className="flex items-end justify-between">
@@ -201,13 +250,26 @@ export default async function SeriesPage({ params }: PageProps<"/products/[serie
           </div>
           <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {relatedList.map((r) => (
-              <ProductCard key={r.slug} series={r} />
+              <ProductCard key={r.slug} series={r} ops={getSeededSeriesCardSummary(r.slug)} />
             ))}
           </div>
         </section>
       </Container>
     </>
   );
+}
+
+function BackendCell({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="bg-surface-1 px-3 py-3">
+      <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-ink-4">{label}</p>
+      <p className="tnum mt-1 font-mono text-sm font-semibold text-ink-1">{value}</p>
+    </div>
+  );
+}
+
+function currency(value: number) {
+  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(value);
 }
 
 function RequestRow({

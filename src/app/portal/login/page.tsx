@@ -1,4 +1,5 @@
 import Link from "next/link";
+import * as React from "react";
 import {
   Lock,
   Tag,
@@ -8,6 +9,7 @@ import {
   FileText,
   ShieldAlert,
   ArrowRight,
+  LayoutDashboard,
 } from "lucide-react";
 import { Container, Chip, LinkButton } from "@/components/ui";
 import { SITE } from "@/lib/site";
@@ -37,28 +39,26 @@ export default function PortalLoginPage() {
             Wholesale portal
           </h1>
           <p className="mt-2 text-ink-2">
-            Account pricing, order history, and reorder tools are planned for
-            approved wholesale customers. Request access and we will follow up
-            when portal invitations open.
+            Account pricing, order history, reorder tools, invoices, and support cases for approved wholesale customers.
           </p>
 
           <div className="mt-7 rounded-[--r-md] border border-line bg-surface-1 p-6 shadow-[var(--shadow-sm)]">
             <h2 className="font-display text-lg font-semibold tracking-tight text-ink-1">
-              Request portal access
+              Open a demo workspace
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-ink-2">
-              Approved dealers can use the wholesale account flow to join the
-              invitation list for portal access.
+              Choose a seeded role to review the backend flows: staff operations,
+              dealer account management, installer jobs, or homeowner referral.
             </p>
-            <LinkButton href="/dealers" size="lg" className="mt-5 w-full">
-              Request wholesale account
+            <LinkButton href="/portal" size="lg" className="mt-5 w-full">
+              View portal workspaces
               <ArrowRight size={18} />
             </LinkButton>
             <Link
-              href="/contact"
+              href="/admin"
               className="mt-3 flex justify-center text-sm font-medium text-brand hover:text-brand-hover"
             >
-              Ask about an existing account
+              Open staff operations dashboard
             </Link>
           </div>
 
@@ -90,14 +90,31 @@ export default function PortalLoginPage() {
             })}
           </div>
           <Link
-            href="/dealers"
+            href="/portal/dealer"
             className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-brand hover:text-brand-hover"
           >
-            Open a wholesale account to get early access
+            Open seeded dealer account
             <ArrowRight size={15} />
           </Link>
+          <div className="mt-4 grid gap-2 sm:grid-cols-3">
+            <MiniPortal href="/admin" icon={<LayoutDashboard size={15} />} label="Staff" />
+            <MiniPortal href="/portal/installer" icon={<RefreshCw size={15} />} label="Installer" />
+            <MiniPortal href="/portal/homeowner" icon={<ShieldAlert size={15} />} label="Homeowner" />
+          </div>
         </div>
       </div>
     </Container>
+  );
+}
+
+function MiniPortal({ href, icon, label }: { href: string; icon: React.ReactNode; label: string }) {
+  return (
+    <Link
+      href={href}
+      className="inline-flex items-center justify-center gap-1.5 rounded-[--r-sm] border border-line bg-surface-1 px-3 py-2 text-xs font-medium text-ink-2 transition-colors hover:border-ink-4 hover:text-ink-1"
+    >
+      {icon}
+      {label}
+    </Link>
   );
 }

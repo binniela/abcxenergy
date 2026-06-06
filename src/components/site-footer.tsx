@@ -56,7 +56,8 @@ export function SiteFooter() {
             <FooterLink href="/contact">Contact</FooterLink>
             <FooterLink href="/resources">Resources</FooterLink>
             <FooterLink href="/dealers">Become a Dealer</FooterLink>
-            <FooterLink href="/portal/login">Wholesale Portal</FooterLink>
+            <FooterLink href="/portal">Portal Demo</FooterLink>
+            <FooterLink href="/admin">Staff Operations</FooterLink>
           </FooterCol>
 
           <div>

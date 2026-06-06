@@ -5,6 +5,7 @@ import * as React from "react";
 import { Container, Eyebrow } from "@/components/ui";
 import { ProductCard } from "@/components/product-card";
 import { SERIES, CATEGORY_LABEL, type Category } from "@/lib/products";
+import { getSeededSeriesCardSummary } from "@/lib/backend/catalog";
 
 type Ducting = "all" | "ductless" | "ducted";
 type ZoneFilter = "any" | "single" | "multi";
@@ -169,7 +170,7 @@ export default function ProductsPage() {
             ) : (
               <div className="grid gap-6 sm:grid-cols-2">
                 {filtered.map((s) => (
-                  <ProductCard key={s.slug} series={s} />
+                  <ProductCard key={s.slug} series={s} ops={getSeededSeriesCardSummary(s.slug)} />
                 ))}
               </div>
             )}

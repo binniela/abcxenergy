@@ -83,7 +83,7 @@ export function SiteNav() {
 
         <div className="flex items-center gap-2">
           <Link
-            href="/portal/login"
+            href="/portal"
             className="hidden items-center gap-1.5 rounded-[--r-sm] px-2.5 py-2 text-sm font-medium text-ink-2 hover:text-ink-1 sm:inline-flex"
           >
             <Lock size={14} strokeWidth={2.2} />
@@ -131,11 +131,11 @@ export function SiteNav() {
                 Get a Quote
               </Link>
               <Link
-                href="/dealers"
+                href="/portal"
                 onClick={closeMobile}
                 className="flex h-11 items-center justify-center rounded-[--r-sm] border border-line-strong bg-surface-1 text-sm font-medium text-ink-1"
               >
-                Request Account
+                Portal
               </Link>
               <a
                 href={SITE.phoneHref}

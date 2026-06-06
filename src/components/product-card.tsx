@@ -5,8 +5,15 @@ import { type Series, CATEGORY_LABEL, ENERGY_STAR_LABEL } from "@/lib/products";
 import { SpecStockStrip } from "./spec-stock-strip";
 import { AddToQuote } from "./add-to-quote";
 import { Chip } from "./ui";
+import type { SeriesCardSummary } from "@/lib/backend/catalog";
 
-export function ProductCard({ series }: { series: Series }) {
+export function ProductCard({
+  series,
+  ops,
+}: {
+  series: Series;
+  ops?: SeriesCardSummary;
+}) {
   const energyStar = ENERGY_STAR_LABEL[series.energyStar];
   return (
     <article className="group flex flex-col overflow-hidden rounded-[--r-md] border border-line bg-surface-1 shadow-[var(--shadow-sm)] transition-shadow duration-200 hover:shadow-[var(--shadow-md)]">
@@ -59,6 +66,13 @@ export function ProductCard({ series }: { series: Series }) {
         </div>
 
         <SpecStockStrip series={series} className="mt-auto" />
+        {ops && (
+          <div className="grid grid-cols-3 gap-px overflow-hidden rounded-[--r-sm] border border-line bg-line text-center">
+            <OpsCell label="SKUs" value={`${ops.skuCount}`} />
+            <OpsCell label="Available" value={`${ops.availableUnits}`} />
+            <OpsCell label="From" value={currency(ops.startingDealerPrice)} />
+          </div>
+        )}
 
         <div className="flex items-center gap-3">
           <AddToQuote slug={series.slug} name={series.name} size="sm" />
@@ -73,4 +87,17 @@ export function ProductCard({ series }: { series: Series }) {
       </div>
     </article>
   );
+}
+
+function OpsCell({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="bg-surface-1 px-2 py-2">
+      <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-ink-4">{label}</p>
+      <p className="tnum mt-1 font-mono text-sm font-semibold text-ink-1">{value}</p>
+    </div>
+  );
+}
+
+function currency(value: number) {
+  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(value);
 }

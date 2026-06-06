@@ -34,7 +34,10 @@ export default function DealersPage() {
   }, []);
 
   const next = (form: HTMLFormElement | null) => {
-    if (form) collectDraft(form);
+    if (form) {
+      if (!form.reportValidity()) return;
+      collectDraft(form);
+    }
     setStep((s) => Math.min(3, s + 1));
   };
   const back = () => setStep((s) => Math.max(1, s - 1));

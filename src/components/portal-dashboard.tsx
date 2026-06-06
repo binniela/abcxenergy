@@ -59,8 +59,10 @@ export function PortalDashboard({ overview }: { overview: PortalOverview }) {
           <div className="space-y-3">
             {[...overview.tasks, ...overview.rmas, ...overview.warrantyClaims, ...overview.rebateCases].slice(0, 6).map((item) => (
               <div key={item.id} className="rounded-[--r-sm] border border-line bg-surface-2/60 p-3">
-                <p className="text-sm font-semibold text-ink-1">{"title" in item ? item.title : item.number}</p>
-                <p className="mt-1 text-xs text-ink-3">{"detail" in item ? item.detail : `Due ${new Date(item.dueAt).toLocaleDateString("en-US")}`}</p>
+                <p className="text-sm font-semibold text-ink-1">{item.title}</p>
+                <p className="mt-1 text-xs text-ink-3">
+                  {"dueAt" in item ? `Due ${new Date(item.dueAt).toLocaleDateString("en-US")}` : item.detail}
+                </p>
               </div>
             ))}
           </div>
