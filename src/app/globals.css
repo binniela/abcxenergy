@@ -1,26 +1,173 @@
 @import "tailwindcss";
 
+/*
+  ABC X-Energy — "Supply counter, premium-grade"
+  Palette derived from the brand mark: a green→orange→red energy flame.
+  Green = brand / cooling / efficiency (the logo's left). Warm orange-red =
+  energy / heat / accent (the logo's right). Safety amber bridges them for
+  stock urgency. Warm certificate-paper canvas + warm-charcoal panels let both
+  logo colors pop. Hue is held constant across surfaces — only lightness shifts.
+*/
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* --- Canvas & surfaces: warm certificate paper, lightness-only steps --- */
+  --canvas: oklch(0.985 0.006 80);          /* page background — warm off-white */
+  --surface-1: oklch(1 0.002 80);           /* raised cards */
+  --surface-2: oklch(0.972 0.007 80);       /* inset wells, table headers */
+  --surface-3: oklch(0.955 0.009 78);       /* hover / nested */
+  --ink-panel: oklch(0.23 0.018 155);       /* warm charcoal-green panels (footer, fulfillment) */
+
+  /* --- Ink: four warm-grey text levels --- */
+  --ink-1: oklch(0.24 0.012 70);            /* primary */
+  --ink-2: oklch(0.43 0.012 72);            /* secondary */
+  --ink-3: oklch(0.57 0.012 74);            /* tertiary / metadata */
+  --ink-4: oklch(0.70 0.010 76);            /* muted / placeholder */
+
+  /* --- Borders: low-contrast warm, progression by intensity --- */
+  --line: oklch(0.24 0.01 70 / 0.10);       /* standard separation */
+  --line-soft: oklch(0.24 0.01 70 / 0.06);  /* whisper separation */
+  --line-strong: oklch(0.24 0.01 70 / 0.18);/* emphasis */
+
+  /* --- Brand: logo green (primary action, links, cooling/efficiency) --- */
+  --brand: oklch(0.535 0.155 150);
+  --brand-hover: oklch(0.475 0.155 150);
+  --brand-ink: oklch(0.99 0.02 150);        /* text on brand */
+  --brand-tint: oklch(0.535 0.155 150 / 0.10);
+
+  /* --- Energy accent: logo orange-red (the flame's heat side) --- */
+  --copper: oklch(0.625 0.165 47);
+  --copper-tint: oklch(0.625 0.165 47 / 0.12);
+
+  /* --- Brand identity gradient: the logo flame, green → orange → red --- */
+  --energy-gradient: linear-gradient(
+    100deg,
+    oklch(0.58 0.17 150) 0%,
+    oklch(0.70 0.16 90) 38%,
+    oklch(0.66 0.18 55) 64%,
+    oklch(0.57 0.21 28) 100%
+  );
+
+  /* --- Amber: stock / ship-today urgency --- */
+  --stock-ready: oklch(0.72 0.15 75);
+  --stock-ready-tint: oklch(0.72 0.15 75 / 0.16);
+  --stock-ready-ink: oklch(0.42 0.10 62);
+
+  /* --- Deep evergreen: efficiency / rebate / ENERGY STAR (distinct from brand) --- */
+  --eco: oklch(0.46 0.09 172);
+  --eco-tint: oklch(0.46 0.09 172 / 0.13);
+  --eco-ink: oklch(0.34 0.07 172);
+
+  /* --- Semantic --- */
+  --danger: oklch(0.55 0.18 25);
+  --danger-tint: oklch(0.55 0.18 25 / 0.10);
+
+  /* --- Form controls (tuned independently from layout surfaces) --- */
+  --control-bg: oklch(0.972 0.007 80);      /* inset, slightly darker than surface */
+  --control-border: oklch(0.24 0.01 70 / 0.16);
+
+  /* --- Radius scale --- */
+  --r-sm: 7px;     /* inputs, buttons, chips */
+  --r-md: 12px;    /* cards */
+  --r-lg: 18px;    /* modals, hero panels */
+
+  /* --- Elevation: subtle, warm-tinted shadows (approachable, not cold-tech) --- */
+  --shadow-sm: 0 1px 2px oklch(0.30 0.02 70 / 0.06);
+  --shadow-md: 0 4px 14px oklch(0.30 0.02 70 / 0.08), 0 1px 3px oklch(0.30 0.02 70 / 0.05);
+  --shadow-lg: 0 18px 50px oklch(0.30 0.02 70 / 0.14), 0 4px 12px oklch(0.30 0.02 70 / 0.07);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-canvas: var(--canvas);
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-ink-panel: var(--ink-panel);
+
+  --color-ink-1: var(--ink-1);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-ink-4: var(--ink-4);
+
+  --color-line: var(--line);
+  --color-line-soft: var(--line-soft);
+  --color-line-strong: var(--line-strong);
+
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-tint: var(--brand-tint);
+
+  --color-copper: var(--copper);
+  --color-copper-tint: var(--copper-tint);
+
+  --color-stock-ready: var(--stock-ready);
+  --color-stock-ready-tint: var(--stock-ready-tint);
+  --color-stock-ready-ink: var(--stock-ready-ink);
+
+  --color-eco: var(--eco);
+  --color-eco-tint: var(--eco-tint);
+  --color-eco-ink: var(--eco-ink);
+
+  --color-danger: var(--danger);
+  --color-danger-tint: var(--danger-tint);
+
+  --color-control-bg: var(--control-bg);
+  --color-control-border: var(--control-border);
+
+  --radius-sm: var(--r-sm);
+  --radius-md: var(--r-md);
+  --radius-lg: var(--r-lg);
+
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-grotesk), var(--font-inter), sans-serif;
+  --font-mono: var(--font-mono-jb), ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  border-color: var(--line);
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--canvas);
+  color: var(--ink-1);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
+
+/* Tabular figures everywhere specs appear */
+.tnum {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* Accessible focus ring, brand-colored */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+  border-radius: var(--r-sm);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Subtle entrance, used sparingly (deceleration ease, no bounce) */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.rise { animation: rise 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
