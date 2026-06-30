@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { QuoteProvider } from "@/components/quote-context";
-import { QuoteDrawer } from "@/components/quote-drawer";
+import { QuoteDrawerMount } from "@/components/quote-drawer-mount";
 import { SiteNav } from "@/components/site-nav";
 import { SiteFooter } from "@/components/site-footer";
 import { SITE } from "@/lib/site";
@@ -18,11 +18,11 @@ const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono-jb", di
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.abcxenergy.com"),
   title: {
-    default: "ABC X-Energy — Wholesale TCL HVAC for West Coast Contractors",
+    default: "ABC X-Energy - Wholesale TCL HVAC for West Coast Contractors",
     template: "%s · ABC X-Energy",
   },
   description:
-    "Wholesale TCL HVAC systems — in stock and shipped fast across the West Coast. AHRI-certified, contractor pricing, spec sheets, and rebate support.",
+    "Wholesale TCL HVAC systems, in stock and shipped fast across the West Coast. AHRI-certified, contractor pricing, spec sheets, and rebate support.",
   keywords: [
     "TCL HVAC wholesale",
     "wholesale heat pumps",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     "mini split wholesale California",
   ],
   openGraph: {
-    title: "ABC X-Energy — Wholesale TCL HVAC",
+    title: "ABC X-Energy - Wholesale TCL HVAC",
     description:
       "In-stock TCL HVAC, contractor pricing, fast West Coast fulfillment. AHRI-certified.",
     type: "website",
@@ -52,7 +52,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <SiteNav />
           <main id="main">{children}</main>
           <SiteFooter />
-          <QuoteDrawer />
+          <QuoteDrawerMount />
         </QuoteProvider>
       </body>
     </html>

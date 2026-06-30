@@ -36,7 +36,7 @@ export default function HomePage() {
               Wholesale TCL HVAC, in stock and shipped fast across the West Coast.
             </h1>
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink-2">
-              AHRI-certified systems at contractor pricing — with spec sheets,
+              AHRI-certified systems at contractor pricing, with spec sheets,
               stock status, and rebate support built for the way you actually
               bid and reorder. From “I need a unit” to “quote requested” in under
               a minute.
@@ -91,7 +91,7 @@ export default function HomePage() {
       {/* ── Trust band ─────────────────────────────────────────────────── */}
       <section className="border-b border-line bg-surface-1">
         <Container className="py-8">
-          <p className="mb-5 text-center font-mono text-xs font-medium uppercase tracking-[0.16em] text-ink-3">
+          <p className="mb-5 text-center text-sm text-ink-3">
             Certified TCL HVAC lineup
           </p>
           <TrustBadges />
@@ -102,8 +102,7 @@ export default function HomePage() {
       <section className="py-16 lg:py-20">
         <Container>
           <SectionHead
-            eyebrow="Start where you are"
-            title="Built around the contractor — homeowners welcome too."
+            title="Built around the contractor. Homeowners welcome too."
             sub="The contractor picks the brand, so the whole site is built for them. Homeowners get a fast path to a vetted installer."
           />
           <div className="mt-10 grid gap-5 md:grid-cols-3">
@@ -127,7 +126,7 @@ export default function HomePage() {
               icon={<Home size={20} />}
               tone="muted"
               title="Homeowners"
-              body="Not a contractor? We can connect you with a TCL installer in your area — no pressure, no markup games."
+              body="Not a contractor? We can connect you with a TCL installer in your area. No pressure, no markup games."
               cta="Find a TCL installer"
               href="/contact"
             />
@@ -146,7 +145,7 @@ export default function HomePage() {
             <ValueCell
               icon={<TrendingUp size={20} />}
               title="Margin that works"
-              body="TCL value pricing leaves real room on every bid — without cheapening the install."
+              body="TCL value pricing leaves real room on every bid, without cheapening the install."
             />
             <ValueCell
               icon={<PackageCheck size={20} />}
@@ -172,9 +171,8 @@ export default function HomePage() {
         <Container>
           <div className="flex items-end justify-between gap-4">
             <SectionHead
-              eyebrow="The TCL lineup"
               title="Find the right system, fast."
-              sub="Filter by BTU, SEER2, zones, and ducting — or jump straight to a series."
+              sub="Filter by BTU, SEER2, zones, and ducting, or jump straight to a series."
               align="left"
             />
             <Link
@@ -201,7 +199,7 @@ export default function HomePage() {
               West Coast fulfillment
             </span>
             <h2 className="mt-4 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
-              Stocked in Newark, CA — shipping the whole West Coast.
+              Stocked in Newark, CA. Shipping the whole West Coast.
             </h2>
             <p className="mt-4 max-w-lg text-white/65">
               Your units do not sit on a truck from across the country. Order in
@@ -209,7 +207,7 @@ export default function HomePage() {
             </p>
             <div className="mt-8 grid grid-cols-3 gap-6">
               <Stat value="Same-day" label="ship on in-stock units" />
-              <Stat value="5 states" label="CA · OR · WA · NV · AZ" />
+              <Stat value="5 states" label="CA, OR, WA, NV, AZ" />
               <Stat value="Will-call" label="& freight from Newark" />
             </div>
           </div>
@@ -237,7 +235,7 @@ export default function HomePage() {
                 Help your customers stack the rebates.
               </h2>
               <p className="mt-1 max-w-xl text-sm text-ink-2">
-                {REBATES.map((r) => r.name).join(" · ")} — we keep the guides
+                {REBATES.map((r) => r.name).join(", ")}. We keep the guides
                 current so you can close on total cost, not sticker price.
               </p>
             </div>
@@ -259,7 +257,7 @@ export default function HomePage() {
                 Open an account and price your next job today.
               </h2>
               <p className="mt-4 text-lg text-ink-2">
-                Contractor pricing, real stock, and spec support — one quick
+                Contractor pricing, real stock, and spec support. One quick
                 application gets you set up.
               </p>
               <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
@@ -287,14 +285,14 @@ function SectionHead({
   sub,
   align = "center",
 }: {
-  eyebrow: string;
+  eyebrow?: string;
   title: string;
   sub?: string;
   align?: "center" | "left";
 }) {
   return (
     <div className={align === "center" ? "mx-auto max-w-2xl text-center" : "max-w-2xl"}>
-      <Eyebrow>{eyebrow}</Eyebrow>
+      {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
       <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-ink-1 sm:text-[2.1rem]">
         {title}
       </h2>

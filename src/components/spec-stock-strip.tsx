@@ -52,7 +52,7 @@ export function SpecStockStrip({
     >
       <div className="flex flex-wrap items-end gap-x-6 gap-y-3">
         <SpecCell label="SEER2" value={`${series.seer2}`} />
-        <SpecCell label="HSPF2" value={series.hspf2 ? `${series.hspf2}` : "—"} />
+        <SpecCell label="HSPF2" value={series.hspf2 ? `${series.hspf2}` : "n/a"} />
         <SpecCell label="BTU" value={btuLabel(series)} />
         <SpecCell label="Min temp" value={series.minTemp} />
       </div>

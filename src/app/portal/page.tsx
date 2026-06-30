@@ -34,7 +34,7 @@ const PORTALS = [
 ] as const;
 
 export const metadata = {
-  title: "Portal Demo — ABC X-Energy",
+  title: "Portal Demo - ABC X-Energy",
 };
 
 export default function PortalPage() {

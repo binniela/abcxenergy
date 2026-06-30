@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, X, FileText, Lock } from "lucide-react";
 import * as React from "react";
@@ -18,15 +19,22 @@ const NAV = [
 function Wordmark() {
   return (
     <Link href="/" className="flex items-center gap-2.5" aria-label="ABC X-Energy home">
-      {/* Plain img tags to static assets — reliable, no optimizer indirection */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/logo.png" alt="" width={48} height={48} className="size-12 shrink-0 object-contain" />
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
+      <Image
+        src="/logo.png"
+        alt=""
+        width={48}
+        height={48}
+        priority
+        sizes="48px"
+        className="size-12 shrink-0 object-contain"
+      />
+      <Image
         src="/wordmark.png"
         alt="ABC X-Energy"
         width={150}
         height={53}
+        priority
+        sizes="150px"
         className="h-9 w-auto object-contain"
       />
     </Link>

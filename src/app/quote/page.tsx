@@ -56,7 +56,7 @@ export default function QuotePage() {
             Tell us what you need. We&apos;ll prepare pricing &amp; lead times.
           </h1>
           <p className="mt-3 text-ink-2">
-            Four fields, no account required. A real person replies — usually same
+            Four fields, no account required. A real person replies, usually same
             business day.
           </p>
 
@@ -93,7 +93,7 @@ export default function QuotePage() {
               <Field label="Email" required>
                 <Input name="email" type="email" required autoComplete="email" placeholder="you@company.com" />
               </Field>
-              <Field label="Phone" hint="Optional — fastest if you want a callback">
+              <Field label="Phone" hint="Optional, fastest if you want a callback">
                 <Input name="phone" type="tel" autoComplete="tel" placeholder="(415) 000-0000" />
               </Field>
               <Field label="What do you need?" required>
@@ -121,7 +121,7 @@ export default function QuotePage() {
             </h2>
             {items.length === 0 ? (
               <p className="mt-2 text-sm text-ink-3">
-                Nothing added yet — that is fine, just describe what you need above.
+                Nothing added yet. That is fine, just describe what you need above.
                 Or{" "}
                 <Link href="/products" className="font-medium text-brand">
                   browse products

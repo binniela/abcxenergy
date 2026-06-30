@@ -10,9 +10,11 @@ import type { SeriesCardSummary } from "@/lib/backend/catalog";
 export function ProductCard({
   series,
   ops,
+  priority = false,
 }: {
   series: Series;
   ops?: SeriesCardSummary;
+  priority?: boolean;
 }) {
   const energyStar = ENERGY_STAR_LABEL[series.energyStar];
   return (
@@ -25,6 +27,7 @@ export function ProductCard({
           src={series.image}
           alt={`${series.name} product image`}
           fill
+          priority={priority}
           sizes="(min-width: 1024px) 360px, (min-width: 640px) 50vw, 100vw"
           className="object-contain transition-transform duration-300 group-hover:scale-[1.03]"
         />

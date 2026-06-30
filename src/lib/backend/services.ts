@@ -1,4 +1,6 @@
 import { SERIES } from "@/lib/products";
+import { unstable_cache } from "next/cache";
+import { getSeededSeriesCardSummary } from "./catalog";
 import { createDemoOperationsData } from "./mock-data";
 import { invoiceBalance, summarizeInventory } from "./math";
 import {
@@ -17,6 +19,7 @@ import type {
   QuoteRequestInput,
   Sku,
 } from "./types";
+import type { SeriesCardSummary } from "./catalog";
 
 const data = createDemoOperationsData();
 
@@ -129,26 +132,97 @@ export async function getCatalogBackendSummaries(): Promise<Record<string, Serie
   return Object.fromEntries(entries);
 }
 
+async function loadSeriesCardSummaries(): Promise<Record<string, SeriesCardSummary>> {
+  const supabase = createServerSupabaseClient();
+  if (!supabase) {
+    return Object.fromEntries(
+      SERIES.map((series) => {
+        const summary = getSeededSeriesCardSummary(series.slug);
+        return [series.slug, summary] as const;
+      })
+    );
+  }
+
+  const [{ data: seriesRows, error: seriesError }, { data: skuRows, error: skuError }, { data: lotRows, error: lotError }] =
+    await Promise.all([
+      supabase.from("product_series").select("id, slug"),
+      supabase.from("skus").select("id, series_id, dealer_price"),
+      supabase.from("inventory_lots").select("sku_id, on_hand, reserved"),
+    ]);
+
+  if (seriesError || skuError || lotError || !seriesRows || !skuRows || !lotRows) {
+    return Object.fromEntries(
+      SERIES.map((series) => {
+        const summary = getSeededSeriesCardSummary(series.slug);
+        return [series.slug, summary] as const;
+      })
+    );
+  }
+
+  const slugBySeriesId = new Map(seriesRows.map((row) => [row.id, row.slug]));
+  const availableBySku = new Map<string, number>();
+  for (const lot of lotRows) {
+    availableBySku.set(
+      lot.sku_id,
+      (availableBySku.get(lot.sku_id) ?? 0) + Number(lot.on_hand) - Number(lot.reserved)
+    );
+  }
+
+  const summaries = new Map<string, SeriesCardSummary>();
+  for (const sku of skuRows) {
+    const slug = slugBySeriesId.get(sku.series_id);
+    if (!slug) continue;
+    const existing = summaries.get(slug) ?? {
+      skuCount: 0,
+      availableUnits: 0,
+      startingDealerPrice: Number.POSITIVE_INFINITY,
+    };
+    existing.skuCount += 1;
+    existing.availableUnits += availableBySku.get(sku.id) ?? 0;
+    existing.startingDealerPrice = Math.min(existing.startingDealerPrice, Number(sku.dealer_price));
+    summaries.set(slug, existing);
+  }
+
+  return Object.fromEntries(
+    SERIES.map((series) => {
+      const live = summaries.get(series.slug);
+      const summary = live
+        ? {
+            ...live,
+            startingDealerPrice: Number.isFinite(live.startingDealerPrice)
+              ? live.startingDealerPrice
+              : 0,
+          }
+        : getSeededSeriesCardSummary(series.slug);
+      return [series.slug, summary] as const;
+    })
+  );
+}
+
+export const getSeriesCardSummaries = unstable_cache(loadSeriesCardSummaries, ["series-card-summaries"], {
+  revalidate: 60,
+});
+
 export async function createQuoteRequest(input: unknown) {
   const parsed = quoteRequestSchema.parse(input);
   const supabase = createServerSupabaseClient();
 
   if (supabase) {
-    const { data: inserted, error } = await supabase
+    const id = crypto.randomUUID();
+    const { error } = await supabase
       .from("quote_requests")
       .insert({
+        id,
         name: parsed.name,
         email: parsed.email,
         phone: parsed.phone,
         need: parsed.need,
-      })
-      .select("id")
-      .single();
+      });
     if (error) throw new Error(error.message);
-    if (inserted && parsed.lines.length > 0) {
+    if (parsed.lines.length > 0) {
       const { error: lineError } = await supabase.from("quote_request_lines").insert(
         parsed.lines.map((line) => ({
-          quote_request_id: inserted.id,
+          quote_request_id: id,
           series_slug: line.seriesSlug,
           product_name: line.productName,
           quantity: line.quantity,
@@ -156,7 +230,7 @@ export async function createQuoteRequest(input: unknown) {
       );
       if (lineError) throw new Error(lineError.message);
     }
-    return { id: inserted?.id, mode: "supabase" as const };
+    return { id, mode: "supabase" as const };
   }
 
   return {
@@ -171,9 +245,11 @@ export async function createDealerApplication(input: unknown) {
   const supabase = createServerSupabaseClient();
 
   if (supabase) {
-    const { data: inserted, error } = await supabase
+    const id = crypto.randomUUID();
+    const { error } = await supabase
       .from("dealer_applications")
       .insert({
+        id,
         company: parsed.company,
         contact_name: parsed.contactName,
         email: parsed.email,
@@ -184,11 +260,9 @@ export async function createDealerApplication(input: unknown) {
         monthly_volume: parsed.monthlyVolume,
         brands: parsed.brands,
         notes: parsed.notes,
-      })
-      .select("id")
-      .single();
+      });
     if (error) throw new Error(error.message);
-    return { id: inserted?.id, mode: "supabase" as const };
+    return { id, mode: "supabase" as const };
   }
 
   return {
@@ -204,16 +278,18 @@ export async function createContactRequest(input: unknown) {
   const supabase = createServerSupabaseClient();
 
   if (supabase) {
-    const { data: inserted, error } = await supabase
-      .from("tasks")
+    const id = crypto.randomUUID();
+    const { error } = await supabase
+      .from("contact_requests")
       .insert({
-        title: `${parsed.topic}: ${parsed.name}`,
-        status: "open",
-      })
-      .select("id")
-      .single();
+        id,
+        topic: parsed.topic,
+        name: parsed.name,
+        email: parsed.email,
+        message: parsed.message,
+      });
     if (error) throw new Error(error.message);
-    return { id: inserted?.id, mode: "supabase" as const };
+    return { id, mode: "supabase" as const };
   }
 
   return {

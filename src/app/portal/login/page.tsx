@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import * as React from "react";
 import {
   Lock,
@@ -9,9 +10,10 @@ import {
   FileText,
   ShieldAlert,
   ArrowRight,
-  LayoutDashboard,
 } from "lucide-react";
-import { Container, Chip, LinkButton } from "@/components/ui";
+import { Container, Chip } from "@/components/ui";
+import { LoginForm } from "@/components/login-form";
+import { getSessionProfile } from "@/lib/backend/auth";
 import { SITE } from "@/lib/site";
 
 const PORTAL_FEATURES = [
@@ -23,47 +25,45 @@ const PORTAL_FEATURES = [
   { icon: ShieldAlert, label: "Warranty claims" },
 ] as const;
 
-export default function PortalLoginPage() {
+export default async function PortalLoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ next?: string }>;
+}) {
+  const { next } = await searchParams;
+  const profile = await getSessionProfile();
+
+  // Already signed in: send them where they belong.
+  if (profile) {
+    redirect(profile.role === "staff" ? (next ?? "/admin") : "/portal");
+  }
+
+  const target = next ?? "/portal";
+
   return (
     <Container className="py-14 lg:py-20">
       <div className="grid items-center gap-12 lg:grid-cols-2">
-        {/* Early access card */}
+        {/* Sign-in card */}
         <div className="mx-auto w-full max-w-sm">
           <div className="inline-flex items-center gap-2">
             <span className="grid size-10 place-items-center rounded-[--r-md] bg-brand-tint text-brand">
               <Lock size={20} />
             </span>
-            <Chip tone="copper">Early access</Chip>
+            <Chip tone="copper">Wholesale portal</Chip>
           </div>
           <h1 className="mt-5 font-display text-3xl font-semibold tracking-tight text-ink-1">
-            Wholesale portal
+            Sign in
           </h1>
           <p className="mt-2 text-ink-2">
             Account pricing, order history, reorder tools, invoices, and support cases for approved wholesale customers.
           </p>
 
-          <div className="mt-7 rounded-[--r-md] border border-line bg-surface-1 p-6 shadow-[var(--shadow-sm)]">
-            <h2 className="font-display text-lg font-semibold tracking-tight text-ink-1">
-              Open a demo workspace
-            </h2>
-            <p className="mt-2 text-sm leading-relaxed text-ink-2">
-              Choose a seeded role to review the backend flows: staff operations,
-              dealer account management, installer jobs, or homeowner referral.
-            </p>
-            <LinkButton href="/portal" size="lg" className="mt-5 w-full">
-              View portal workspaces
-              <ArrowRight size={18} />
-            </LinkButton>
-            <Link
-              href="/admin"
-              className="mt-3 flex justify-center text-sm font-medium text-brand hover:text-brand-hover"
-            >
-              Open staff operations dashboard
-            </Link>
-          </div>
+          <LoginForm next={target} />
 
           <p className="mt-4 text-center text-xs text-ink-4">
-            Account questions? Call{" "}
+            Need an account?{" "}
+            <Link href="/dealers" className="text-ink-2">Apply for wholesale</Link>
+            {" · "}Call{" "}
             <a href={SITE.phoneHref} className="text-ink-2">{SITE.phone}</a>
           </p>
         </div>
@@ -96,8 +96,7 @@ export default function PortalLoginPage() {
             Open seeded dealer account
             <ArrowRight size={15} />
           </Link>
-          <div className="mt-4 grid gap-2 sm:grid-cols-3">
-            <MiniPortal href="/admin" icon={<LayoutDashboard size={15} />} label="Staff" />
+          <div className="mt-4 grid gap-2 sm:grid-cols-2">
             <MiniPortal href="/portal/installer" icon={<RefreshCw size={15} />} label="Installer" />
             <MiniPortal href="/portal/homeowner" icon={<ShieldAlert size={15} />} label="Homeowner" />
           </div>

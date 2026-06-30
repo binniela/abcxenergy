@@ -34,7 +34,7 @@ export type Series = {
   warrantyCompressor: string;
   warrantyParts: string;
   stock: StockState;
-  leadTime: string; // e.g. "In stock — ships today" or "5–7 business days"
+  leadTime: string; // e.g. "In stock — ships today" or "5-7 business days"
   highlights: string[];
   // Internal launch-readiness notes for spec keys that need source confirmation.
   confirm: SpecKey[];
@@ -73,7 +73,7 @@ export const SERIES: Series[] = [
     warrantyCompressor: "7-yr",
     warrantyParts: "5-yr",
     stock: "ready",
-    leadTime: "In stock — ships today",
+    leadTime: "In stock, ships today",
     highlights: [
       "Up to 23 SEER rating",
       "Ultra-quiet indoor units",
@@ -105,7 +105,7 @@ export const SERIES: Series[] = [
     warrantyCompressor: "7-yr",
     warrantyParts: "5-yr",
     stock: "lead",
-    leadTime: "7–10 business days",
+    leadTime: "7-10 business days",
     highlights: [
       "Built-in fresh air ventilation",
       "Removes indoor air pollutants",
@@ -136,7 +136,7 @@ export const SERIES: Series[] = [
     warrantyCompressor: "7-yr",
     warrantyParts: "5-yr",
     stock: "ready",
-    leadTime: "In stock — ships today",
+    leadTime: "In stock, ships today",
     highlights: [
       "Highest energy efficiency",
       "Smart diagnostics + app control",
@@ -167,7 +167,7 @@ export const SERIES: Series[] = [
     warrantyCompressor: "7-yr",
     warrantyParts: "5-yr",
     stock: "lead",
-    leadTime: "10–14 business days",
+    leadTime: "10-14 business days",
     highlights: ["High-capacity cooling & heating", "Durable for high-traffic use", "Multiple indoor unit options"],
     confirm: ["seer2", "hspf2", "btu", "minTemp", "warranty"],
   },
@@ -194,7 +194,7 @@ export const SERIES: Series[] = [
     warrantyCompressor: "7-yr",
     warrantyParts: "5-yr",
     stock: "lead",
-    leadTime: "5–7 business days",
+    leadTime: "5-7 business days",
     highlights: [
       "Supports up to 4 zones",
       "Separate control per room",
@@ -225,7 +225,7 @@ export const SERIES: Series[] = [
     warrantyCompressor: "10-yr",
     warrantyParts: "5-yr",
     stock: "lead",
-    leadTime: "10–14 business days",
+    leadTime: "10-14 business days",
     highlights: [
       "High power and large-scale coverage",
       "Ideal for new construction or full replacements",
@@ -257,5 +257,5 @@ export const ENERGY_STAR_LABEL: Record<Series["energyStar"], string | null> = {
 
 export function btuLabel(s: Series): string {
   const fmt = (n: number) => `${(n / 1000).toLocaleString()}k`;
-  return s.btuMin === s.btuMax ? fmt(s.btuMin) : `${fmt(s.btuMin)}–${fmt(s.btuMax)}`;
+  return s.btuMin === s.btuMax ? fmt(s.btuMin) : `${fmt(s.btuMin)}-${fmt(s.btuMax)}`;
 }

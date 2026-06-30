@@ -7,14 +7,18 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "tsx --test tests/*.test.ts"
+    "test": "tsx --test tests/*.test.ts",
+    "seed:staff": "tsx scripts/create-staff-user.ts"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.12.0",
     "@supabase/supabase-js": "^2.107.0",
     "lucide-react": "^1.17.0",
     "next": "16.2.7",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "resend": "^6.16.0",
+    "stripe": "^22.3.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {

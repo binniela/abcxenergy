@@ -32,7 +32,7 @@ export default function ContactPage() {
             Talk to a real person who knows HVAC.
           </h1>
           <p className="mt-3 text-ink-2">
-            Pricing, stock, specs, warranty — or you&apos;re a homeowner who
+            Pricing, stock, specs, warranty, or you&apos;re a homeowner who
             needs an installer. Tell us what&apos;s up.
           </p>
 
@@ -43,7 +43,7 @@ export default function ContactPage() {
             </span>
             <p className="text-sm text-ink-2">
               <span className="font-semibold text-ink-1">Homeowner? </span>{" "}
-              We&apos;re a wholesaler, so we do not install — but pick “Find an
+              We&apos;re a wholesaler, so we do not install, but pick “Find an
               installer” below and we&apos;ll connect you with a vetted TCL
               contractor near you.
             </p>
@@ -110,7 +110,7 @@ export default function ContactPage() {
                     { value: "specs", label: "Specs / warranty question" },
                     {
                       value: "installer",
-                      label: "Homeowner — find an installer",
+                      label: "Homeowner - find an installer",
                     },
                     { value: "other", label: "Something else" },
                   ]}

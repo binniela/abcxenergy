@@ -14,7 +14,7 @@ import { TrustBadges } from "@/components/trust-badges";
 import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "About — Wholesale TCL HVAC Distributor in Newark, CA",
+  title: "About - Wholesale TCL HVAC Distributor in Newark, CA",
   description:
     "ABC X-Energy is an authorized wholesale distributor of TCL HVAC systems, based in Newark, CA, serving contractors across the West Coast.",
 };
@@ -65,7 +65,7 @@ export default function AboutPage() {
           <Pillar
             icon={<Truck size={20} />}
             title="Stocked Locally"
-            body="Core TCL SKUs stocked deep in Newark and shipped same-day across five states — not trucked in from across the country."
+            body="Core TCL SKUs stocked deep in Newark and shipped same-day across five states, not trucked in from across the country."
           />
           <Pillar
             icon={<ShieldCheck size={20} />}
@@ -75,7 +75,7 @@ export default function AboutPage() {
           <Pillar
             icon={<Users size={20} />}
             title="Contractor-first Mindset"
-            body="Real people who know HVAC answer the phone. We help you spec the job and find the rebate — then make reordering effortless."
+            body="Real people who know HVAC answer the phone. We help you spec the job and find the rebate, then make reordering effortless."
           />
         </div>
       </Container>

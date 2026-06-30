@@ -15,7 +15,7 @@ export const SITE = {
   phoneHref: "tel:+14159884445",
   email: "info@abcxenergy.com",
   emailHref: "mailto:info@abcxenergy.com",
-  hours: "Mon–Fri 7:00a–5:00p PT · Will-call & freight",
+  hours: "Mon-Fri 7:00a-5:00p PT · Will-call & freight",
   serviceArea: "California, Oregon, Washington, Nevada & Arizona",
   ahriDirectory: "https://www.ahridirectory.org/",
   energyStar: "https://www.energystar.gov/",
@@ -30,7 +30,7 @@ export const REBATES = [
   },
   {
     name: "TECH Clean California",
-    detail: "Heat pump incentives for California installs — amounts vary by contractor enrollment & region.",
+    detail: "Heat pump incentives for California installs. Amounts vary by contractor enrollment and region.",
     confirm: true,
   },
 ] as const;

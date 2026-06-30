@@ -37,7 +37,7 @@ export async function generateMetadata({
   const s = getSeries(series);
   if (!s) return { title: "Product not found" };
   return {
-    title: `${s.name} — ${s.family}`,
+    title: `${s.name} - ${s.family}`,
     description: `${s.tagline} ${s.description}`,
   };
 }
@@ -307,7 +307,7 @@ function SpecTable({ series: s }: { series: Series }) {
     { label: "System type", value: CATEGORY_LABEL[s.category] },
     { label: "Configuration", value: s.ducted ? "Ducted" : "Ductless" },
     { label: "SEER2 (cooling efficiency)", value: `${s.seer2}` },
-    { label: "HSPF2 (heating efficiency)", value: s.hspf2 ? `${s.hspf2}` : "—" },
+    { label: "HSPF2 (heating efficiency)", value: s.hspf2 ? `${s.hspf2}` : "n/a" },
     { label: "Capacity range", value: `${btuLabel(s)} BTU` },
     { label: "Max zones", value: `${s.zones}` },
     { label: "Min operating temp", value: s.minTemp },

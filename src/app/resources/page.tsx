@@ -6,7 +6,7 @@ import { SERIES } from "@/lib/products";
 import { REBATES, SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Resources — Spec Sheets, Install Manuals & Rebate Guides",
+  title: "Resources - Spec Sheets, Install Manuals & Rebate Guides",
   description:
     "Request TCL HVAC spec sheets and install manuals, and get rebate guidance: Federal 25C (up to $2,000) and TECH Clean California.",
 };
@@ -21,8 +21,8 @@ export default function ResourcesPage() {
             Everything you need to spec, install, and close the rebate.
           </h1>
           <p className="mt-3 max-w-2xl text-ink-2">
-            Spec sheets, install manuals, and current rebate guidance in one place
-            — so you spend less time hunting for documents and more time on the roof.
+            Spec sheets, install manuals, and current rebate guidance in one place,
+            so you spend less time hunting for documents and more time on the roof.
           </p>
         </Container>
       </section>

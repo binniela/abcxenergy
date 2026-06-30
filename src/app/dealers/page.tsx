@@ -84,7 +84,7 @@ export default function DealersPage() {
           </h1>
           <p className="mt-3 max-w-xl text-white/65">
             Contractor pricing, deep West Coast stock, spec &amp; rebate support,
-            and one-tap reorder. Takes about two minutes — our team reviews and replies
+            and one-tap reorder. Takes about two minutes. Our team reviews and replies
             within one business day.
           </p>
         </Container>
@@ -217,9 +217,9 @@ export default function DealersPage() {
                         onChange={setVolume}
                         placeholder="Units per month"
                         options={[
-                          { value: "1-5", label: "1–5 units / month" },
-                          { value: "6-20", label: "6–20 units / month" },
-                          { value: "21-50", label: "21–50 units / month" },
+                          { value: "1-5", label: "1-5 units / month" },
+                          { value: "6-20", label: "6-20 units / month" },
+                          { value: "21-50", label: "21-50 units / month" },
                           { value: "50+", label: "50+ units / month" },
                         ]}
                       />

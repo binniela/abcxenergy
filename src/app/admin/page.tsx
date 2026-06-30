@@ -15,7 +15,7 @@ import { Container, Chip, LinkButton } from "@/components/ui";
 import { getOperationsOverview } from "@/lib/backend/services";
 
 export const metadata = {
-  title: "Operations Dashboard — ABC X-Energy",
+  title: "Operations Dashboard - ABC X-Energy",
 };
 
 export default async function AdminPage() {

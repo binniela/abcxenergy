@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import { SITE } from "@/lib/site";
 import { SERIES } from "@/lib/products";
@@ -13,15 +14,14 @@ export function SiteFooter() {
           {/* Identity + NAP */}
           <div>
             <div className="flex items-center gap-2.5">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/logo.png" alt="" width={34} height={34} className="size-8 object-contain" />
+              <Image src="/logo.png" alt="" width={34} height={34} sizes="34px" className="size-8 object-contain" />
               <span className="font-display text-base font-semibold text-white">
                 ABC X-Energy
               </span>
             </div>
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-white/55">
               {SITE.brandLine}. Contractor pricing, deep West Coast stock, and
-              spec/rebate support — so you bid faster and reorder in one tap.
+              spec/rebate support, so you bid faster and reorder in one tap.
             </p>
             <dl className="mt-5 space-y-2.5 text-sm">
               <div className="flex items-start gap-2.5 text-white/70">
