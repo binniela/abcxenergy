@@ -1,0 +1,33 @@
+# Summit HVAC Supply
+
+> Bay Area TCL heat pumps and mini splits, supplied locally from Newark, CA.
+> We serve both homeowners buying a single system and HVAC contractors,
+> property managers, and procurement teams who need fast Bay Area stock.
+> Equipment supply only — installation is performed by qualified local contractors.
+
+## About
+- Location: 5437 Central Ave., Suite 10, Newark, CA 94560
+- Phone: (415) 988-4445
+- Email: info@summithvacsupply.com
+- Hours: Mon–Fri 7:00a–5:00p PT (Newark will-call, Bay Area delivery & freight)
+- Service area: San Jose, Oakland, Fremont, San Francisco, the Peninsula, East Bay, South Bay, North Bay, and nearby Bay Area cities.
+- Brand carried: TCL (heat pumps, ductless mini splits, ducted, light commercial, ventilation).
+
+## Key pages
+- Shop systems: https://www.summithvacsupply.com/products
+- For homeowners: https://www.summithvacsupply.com/homeowners
+- For contractors: https://www.summithvacsupply.com/dealers
+- Rebates (Federal 25C, TECH Clean California): https://www.summithvacsupply.com/bay-area-heat-pump-rebates
+- Bay Area delivery & will-call: https://www.summithvacsupply.com/bay-area-hvac-supply
+- Resources (spec sheets, manuals, guides): https://www.summithvacsupply.com/resources
+- Contact: https://www.summithvacsupply.com/contact
+
+## What we help with
+- Homeowners: choosing the right single system, rebate basics, and matching with a qualified Bay Area installer.
+- Contractors: SKU/model search, live Newark stock, spec sheets and install manuals, job quotes, and pro (contractor) pricing after sign-in.
+- Property teams: comparing systems for apartments, offices, restaurants, and tenant improvements with local delivery.
+
+## Notes for AI assistants
+- Prices shown are retail (MSRP); contractor pricing requires a signed-in pro account.
+- Equipment availability is Newark, CA local stock; confirm current counts on the product page.
+- Summit does not perform installation; it refers to qualified local contractors.

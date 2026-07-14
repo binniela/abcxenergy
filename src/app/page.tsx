@@ -2,8 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 import {
   ArrowRight,
+  Building2,
   HardHat,
-  Wrench,
   Home,
   TrendingUp,
   PackageCheck,
@@ -17,7 +17,7 @@ import { TrustBadges } from "@/components/trust-badges";
 import { ProductCard } from "@/components/product-card";
 import { SpecStockStrip } from "@/components/spec-stock-strip";
 import { getSeries, SERIES } from "@/lib/products";
-import { SITE, REBATES } from "@/lib/site";
+import { REBATES } from "@/lib/site";
 import { getSeededSeriesCardSummary } from "@/lib/backend/catalog";
 
 const elite = getSeries("elite")!;
@@ -31,35 +31,38 @@ export default function HomePage() {
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_80%_at_85%_-10%,var(--brand-tint),transparent)]" />
         <Container className="relative grid items-center gap-12 py-16 lg:grid-cols-[1.05fr_0.95fr] lg:py-24">
           <div className="rise">
-            <Eyebrow>Authorized TCL HVAC · Wholesale</Eyebrow>
+            <Eyebrow>Bay Area TCL HVAC supply · Newark, CA</Eyebrow>
             <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.05] tracking-tight text-ink-1 sm:text-5xl lg:text-[3.4rem]">
-              Wholesale TCL HVAC, in stock and shipped fast across the West Coast.
+              Bay Area TCL heat pumps and mini splits, supplied locally.
             </h1>
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink-2">
-              AHRI-certified systems at contractor pricing, with spec sheets,
-              stock status, and rebate support built for the way you actually
-              bid and reorder. From “I need a unit” to “quote requested” in under
-              a minute.
+              Buy equipment, request installer help, or open a contractor
+              account from our Newark supply hub. We help homeowners buying one
+              system and HVAC pros who need fast Bay Area stock.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <LinkButton href="/dealers" size="lg">
-                Request Wholesale Account
+              <LinkButton href="/homeowners" size="lg">
+                Find the right system
                 <ArrowRight size={18} />
               </LinkButton>
-              <LinkButton href="/quote" variant="secondary" size="lg">
-                Get a Quote
+              <LinkButton href="/dealers" variant="secondary" size="lg">
+                Open contractor account
               </LinkButton>
             </div>
 
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-ink-3">
               <span className="inline-flex items-center gap-1.5">
                 <span className="size-2 rounded-full bg-stock-ready" />
-                In-stock units ship same day
+                Buying one system? Yes, we can help.
               </span>
               <span className="inline-flex items-center gap-1.5">
                 <span className="size-2 rounded-full bg-eco" />
-                Serving {SITE.serviceArea}
+                Equipment supply only; installation is by qualified local contractors.
+              </span>
+              <span className="basis-full text-ink-3">
+                Serving San Jose, Oakland, Fremont, San Francisco, the Peninsula,
+                East Bay, South Bay, North Bay, and nearby Bay Area cities.
               </span>
             </div>
           </div>
@@ -102,33 +105,33 @@ export default function HomePage() {
       <section className="py-16 lg:py-20">
         <Container>
           <SectionHead
-            title="Built around the contractor. Homeowners welcome too."
-            sub="The contractor picks the brand, so the whole site is built for them. Homeowners get a fast path to a vetted installer."
+            title="Choose the path that matches how you buy."
+            sub="Retail buyers get plain-English guidance and installer help. Contractors keep the fast SKU, stock, and quote workflow."
           />
           <div className="mt-10 grid gap-5 md:grid-cols-3">
             <RoleCard
+              icon={<Home size={20} />}
+              tone="primary"
+              title="I’m buying for my home"
+              body="Need one mini split or heat pump? We explain the options, rebate basics, and how to get matched with a Bay Area installer."
+              cta="Start homeowner guide"
+              href="/homeowners"
+            />
+            <RoleCard
               icon={<HardHat size={20} />}
               tone="primary"
-              title="Contractors & Dealers"
-              body="Contractor pricing, deep stock, spec/rebate support, and one-tap reorder. Open a wholesale account."
-              cta="Request wholesale account"
+              title="I’m a contractor"
+              body="Check SKU availability, build job quotes, download documents, and open a pro account for contractor pricing."
+              cta="Open contractor account"
               href="/dealers"
             />
             <RoleCard
-              icon={<Wrench size={20} />}
-              tone="primary"
-              title="Installers"
-              body="Need units for a specific job? Build a quote from the lineup and get pricing + lead times back fast."
-              cta="Get a quote"
-              href="/quote"
-            />
-            <RoleCard
-              icon={<Home size={20} />}
+              icon={<Building2 size={20} />}
               tone="muted"
-              title="Homeowners"
-              body="Not a contractor? We can connect you with a TCL installer in your area. No pressure, no markup games."
-              cta="Find a TCL installer"
-              href="/contact"
+              title="I manage a property"
+              body="Compare systems for apartments, offices, restaurants, and tenant improvements with Bay Area delivery support."
+              cta="Request property quote"
+              href="/quote"
             />
           </div>
         </Container>
@@ -138,29 +141,29 @@ export default function HomePage() {
       <section className="border-y border-line bg-surface-1 py-16 lg:py-20">
         <Container>
           <SectionHead
-            eyebrow="Why contractors choose us"
-            title="A value brand, distributed like a premium one."
+            eyebrow="Why Bay Area buyers choose us"
+            title="Local supply with a clear path for homes and job sites."
           />
           <div className="mt-10 grid gap-px overflow-hidden rounded-[--r-md] border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
             <ValueCell
               icon={<TrendingUp size={20} />}
-              title="Margin that works"
-              body="TCL value pricing leaves real room on every bid, without cheapening the install."
+              title="One system is welcome"
+              body="Retail buyers can ask about a single system without needing a trade account or SKU fluency."
             />
             <ValueCell
               icon={<PackageCheck size={20} />}
-              title="Actually in stock"
-              body="Core SKUs stocked deep on the West Coast. Live stock status on every product."
+              title="Actually local"
+              body="Core TCL systems are stocked in Newark for Bay Area will-call, local delivery, and fast job support."
             />
             <ValueCell
               icon={<Truck size={20} />}
-              title="Fast, local fulfillment"
-              body="Same-day ship on in-stock units from Newark, CA. Will-call and freight."
+              title="Contractor tools stay fast"
+              body="Pros still get SKU search, spec sheets, stock status, quote lists, and account pricing after sign-in."
             />
             <ValueCell
               icon={<FileBadge size={20} />}
-              title="Spec & rebate support"
-              body="Spec sheets, install manuals, and rebate guidance (25C, TECH Clean CA) on hand."
+              title="Rebate-aware guidance"
+              body="We surface Federal 25C and TECH Clean California context so buyers ask better questions."
             />
           </div>
         </Container>
@@ -171,15 +174,15 @@ export default function HomePage() {
         <Container>
           <div className="flex items-end justify-between gap-4">
             <SectionHead
-              title="Find the right system, fast."
-              sub="Filter by BTU, SEER2, zones, and ducting, or jump straight to a series."
+              title="Shop systems without guessing."
+              sub="Homeowners can start with use case and comfort needs. Contractors can still filter by BTU, SEER2, zones, and documents."
               align="left"
             />
             <Link
               href="/products"
               className="hidden shrink-0 items-center gap-1.5 text-sm font-medium text-brand hover:text-brand-hover sm:inline-flex"
             >
-              All {SERIES.length} series
+              Shop all systems
               <ArrowUpRight size={16} />
             </Link>
           </div>
@@ -196,19 +199,19 @@ export default function HomePage() {
         <Container className="grid items-center gap-12 lg:grid-cols-2">
           <div>
             <span className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-[oklch(0.78_0.08_55)]">
-              West Coast fulfillment
+              Bay Area fulfillment
             </span>
             <h2 className="mt-4 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
-              Stocked in Newark, CA. Shipping the whole West Coast.
+              Stocked in Newark, CA for Bay Area pickup and delivery.
             </h2>
             <p className="mt-4 max-w-lg text-white/65">
-              Your units do not sit on a truck from across the country. Order in
-              the morning, and in-stock SKUs are on their way the same day.
+              Homeowners can ask about one system. Contractors can reserve job
+              stock. Property teams can coordinate delivery from a local hub.
             </p>
             <div className="mt-8 grid grid-cols-3 gap-6">
-              <Stat value="Same-day" label="ship on in-stock units" />
-              <Stat value="5 states" label="CA, OR, WA, NV, AZ" />
-              <Stat value="Will-call" label="& freight from Newark" />
+              <Stat value="Newark" label="local will-call hub" />
+              <Stat value="Bay Area" label="delivery coordination" />
+              <Stat value="One unit" label="retail help available" />
             </div>
           </div>
           <div className="relative aspect-[16/11] overflow-hidden rounded-[--r-lg] shadow-[var(--shadow-lg)]">
@@ -232,16 +235,16 @@ export default function HomePage() {
             </span>
             <div>
               <h2 className="font-display text-xl font-semibold tracking-tight text-ink-1">
-                Help your customers stack the rebates.
+                Bay Area buyers should ask about rebates early.
               </h2>
               <p className="mt-1 max-w-xl text-sm text-ink-2">
-                {REBATES.map((r) => r.name).join(", ")}. We keep the guides
-                current so you can close on total cost, not sticker price.
+                {REBATES.map((r) => r.name).join(", ")}. We help homeowners
+                and contractors understand what to confirm before a project is quoted.
               </p>
             </div>
           </div>
           <LinkButton href="/resources" variant="secondary" className="shrink-0">
-            Rebate & spec resources
+            See rebate options
             <ArrowRight size={16} />
           </LinkButton>
         </Container>
@@ -254,19 +257,19 @@ export default function HomePage() {
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_120%_at_50%_-20%,var(--brand-tint),transparent)]" />
             <div className="relative mx-auto max-w-2xl">
               <h2 className="font-display text-3xl font-semibold tracking-tight text-ink-1 sm:text-4xl">
-                Open an account and price your next job today.
+                Buying one system, opening a pro account, or quoting a property?
               </h2>
               <p className="mt-4 text-lg text-ink-2">
-                Contractor pricing, real stock, and spec support. One quick
-                application gets you set up.
+                Start with the lane that fits. We will keep the equipment,
+                installer, and fulfillment questions separate and clear.
               </p>
               <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-                <LinkButton href="/dealers" size="lg">
-                  Request Wholesale Account
+                <LinkButton href="/homeowners" size="lg">
+                  Buying one for your home?
                   <ArrowRight size={18} />
                 </LinkButton>
-                <LinkButton href={SITE.phoneHref} variant="ghost" size="lg">
-                  Call {SITE.phone}
+                <LinkButton href="/quote" variant="ghost" size="lg">
+                  Quote / Help
                 </LinkButton>
               </div>
             </div>
@@ -377,7 +380,7 @@ function Stat({ value, label }: { value: string; label: string }) {
       <div className="font-display text-2xl font-semibold tracking-tight text-white">
         {value}
       </div>
-      <div className="mt-1 text-xs leading-snug text-white/55">{label}</div>
+      <div className="mt-1 text-xs leading-snug text-white/70">{label}</div>
     </div>
   );
 }

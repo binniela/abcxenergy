@@ -14,14 +14,14 @@ export function SiteFooter() {
           {/* Identity + NAP */}
           <div>
             <div className="flex items-center gap-2.5">
-              <Image src="/logo.png" alt="" width={34} height={34} sizes="34px" className="size-8 object-contain" />
+              <Image src="/logo-summit.svg" alt="" width={34} height={34} sizes="34px" className="size-8 object-contain" />
               <span className="font-display text-base font-semibold text-white">
-                ABC X-Energy
+                Summit HVAC Supply
               </span>
             </div>
-            <p className="mt-3 max-w-xs text-sm leading-relaxed text-white/55">
-              {SITE.brandLine}. Contractor pricing, deep West Coast stock, and
-              spec/rebate support, so you bid faster and reorder in one tap.
+            <p className="mt-3 max-w-xs text-sm leading-relaxed text-white/70">
+              {SITE.brandLine}. One-system homeowner help, Bay Area installer
+              referral, and fast contractor supply from our Newark hub.
             </p>
             <dl className="mt-5 space-y-2.5 text-sm">
               <div className="flex items-start gap-2.5 text-white/70">
@@ -55,36 +55,36 @@ export function SiteFooter() {
             <FooterLink href="/about">About</FooterLink>
             <FooterLink href="/contact">Contact</FooterLink>
             <FooterLink href="/resources">Resources</FooterLink>
-            <FooterLink href="/dealers">Become a Dealer</FooterLink>
-            <FooterLink href="/portal">Portal Demo</FooterLink>
-            <FooterLink href="/admin">Staff Operations</FooterLink>
+            <FooterLink href="/homeowners">For Homeowners</FooterLink>
+            <FooterLink href="/dealers">For Contractors</FooterLink>
+            <FooterLink href="/portal/login">Account Portal</FooterLink>
           </FooterCol>
 
           <div>
-            <h3 className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-white/45">
-              For contractors
+            <h3 className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-white/65">
+              Start here
             </h3>
             <div className="mt-4 flex flex-col gap-2.5">
               <Link
-                href="/quote"
+                href="/homeowners"
                 className="flex h-11 items-center justify-center rounded-[--r-sm] bg-white text-sm font-semibold text-[var(--ink-panel)] transition-opacity hover:opacity-90"
               >
-                Get a Quote
+                Buying one for your home?
               </Link>
               <Link
                 href="/dealers"
                 className="flex h-11 items-center justify-center rounded-[--r-sm] border border-white/20 text-sm font-medium text-white transition-colors hover:bg-white/10"
               >
-                Request Wholesale Account
+                Open Contractor Account
               </Link>
             </div>
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col gap-2 border-t border-white/10 pt-6 text-xs text-white/45 sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} ABC X-Energy. Authorized TCL HVAC wholesale distributor.</p>
-          <p className="text-white/35">
-            Contractor pricing, stock, and spec support for West Coast HVAC pros.
+        <div className="mt-12 flex flex-col gap-2 border-t border-white/10 pt-6 text-xs text-white/65 sm:flex-row sm:items-center sm:justify-between">
+          <p>© {new Date().getFullYear()} Summit HVAC Supply. Bay Area TCL HVAC supply from Newark, CA.</p>
+          <p className="text-white/70">
+            Equipment supply only. Installation is handled by qualified local contractors.
           </p>
         </div>
       </div>
@@ -95,7 +95,7 @@ export function SiteFooter() {
 function FooterCol({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <h3 className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-white/45">
+      <h3 className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-white/65">
         {title}
       </h3>
       <ul className="mt-4 flex flex-col gap-2.5">{children}</ul>
