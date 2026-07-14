@@ -58,9 +58,9 @@ describe("backend inventory math", () => {
 
 describe("storefront SKU discovery", () => {
   it("searches by SKU, model, title, BTU, voltage, and series", () => {
-    assert.equal(searchStorefrontSkus("TCL-ELT-09HP-230")[0]?.sku, "TCL-ELT-09HP-230");
-    assert.equal(searchStorefrontSkus("ELITE-09-230V")[0]?.modelNumber, "ELITE-09-230V");
-    assert.ok(searchStorefrontSkus("Premium Heat Pump").some((sku) => sku.sku === "TCL-ELT-09HP-230"));
+    assert.equal(searchStorefrontSkus("TSC-09HA2/I3TI23")[0]?.sku, "TSC-09HA2/I3TI23");
+    assert.equal(searchStorefrontSkus("TSC-09HA2/I3TI23")[0]?.modelNumber, "TSC-09HA2/I3TI23");
+    assert.ok(searchStorefrontSkus("Hyper-Heat Pump").some((sku) => sku.sku === "TSC-09HA2/I3TI23"));
     assert.ok(searchStorefrontSkus("24000").some((sku) => sku.btu === 24000));
     assert.ok(searchStorefrontSkus("208/230V").length > 0);
     assert.ok(searchStorefrontSkus("BreezeIN").some((sku) => sku.seriesSlug === "breezein"));
@@ -76,9 +76,9 @@ describe("storefront SKU discovery", () => {
 describe("checkout validation", () => {
   const validItem = {
     skuId: "sku-elt-09",
-    sku: "TCL-ELT-09HP-230",
-    modelNumber: "ELITE-09-230V",
-    title: "Elite 9k Premium Heat Pump",
+    sku: "TSC-09HA2/I3TI23",
+    modelNumber: "TSC-09HA2/I3TI23",
+    title: "Elite 9K Hyper-Heat Pump",
     qty: 1,
   };
 
@@ -107,7 +107,7 @@ describe("SEO route inventory", () => {
   it("includes static, homeowner, and SKU URLs in sitemap", () => {
     const urls = sitemap().map((entry) => entry.url);
     assert.ok(urls.includes("https://www.summithvacsupply.com/homeowners"));
-    assert.ok(urls.includes("https://www.summithvacsupply.com/products/sku/TCL-ELT-09HP-230"));
+    assert.ok(urls.includes("https://www.summithvacsupply.com/products/sku/TSC-09HA2-I3TI23"));
   });
 });
 

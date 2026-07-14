@@ -61,10 +61,19 @@ export function getStorefrontSkus(): StorefrontSku[] {
   return demoSkus.map(toStorefrontSku);
 }
 
+// Real TCL model numbers can contain "/" (e.g. TSC-12HA2/I3TI23), which is not
+// URL-safe for a single dynamic segment. Route on a slash-free slug instead.
+export function skuSlug(sku: string): string {
+  return sku.replace(/\//g, "-");
+}
+
 export function getStorefrontSku(idOrSku: string): StorefrontSku | undefined {
   const normalized = idOrSku.toLowerCase();
   return getStorefrontSkus().find(
-    (sku) => sku.id.toLowerCase() === normalized || sku.sku.toLowerCase() === normalized
+    (sku) =>
+      sku.id.toLowerCase() === normalized ||
+      sku.sku.toLowerCase() === normalized ||
+      skuSlug(sku.sku).toLowerCase() === normalized
   );
 }
 
@@ -200,5 +209,5 @@ export function documentHref(doc: SkuDocument): string {
 }
 
 export function productHref(sku: Pick<StorefrontSku, "sku">): string {
-  return `/products/sku/${encodeURIComponent(sku.sku)}`;
+  return `/products/sku/${skuSlug(sku.sku)}`;
 }

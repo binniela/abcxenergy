@@ -16,11 +16,12 @@ import {
   getStorefrontSku,
   getStorefrontSkus,
   productHref,
+  skuSlug,
 } from "@/lib/storefront/catalog";
 import { SITE } from "@/lib/site";
 
 export function generateStaticParams() {
-  return getStorefrontSkus().map((sku) => ({ sku: sku.sku }));
+  return getStorefrontSkus().map((sku) => ({ sku: skuSlug(sku.sku) }));
 }
 
 export async function generateMetadata({ params }: PageProps<"/products/sku/[sku]">): Promise<Metadata> {

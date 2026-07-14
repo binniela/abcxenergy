@@ -1,12 +1,14 @@
 // TCL HVAC series catalog.
 //
 // ACCURACY POLICY (per project brief):
-//  - Product names, type lines, and highlights mirror the live Summit HVAC Supply
-//    products page.
-//  - SEER2 / HSPF2 / BTU / warranty values still need spec-sheet confirmation
-//    unless omitted from `confirm`.
-//  - Warranty terms vary by SKU/region (commonly 7-yr compressor / 5-yr parts) —
-//    always shown with a confirm flag.
+//  - Series map to real TCL product families. SEER2 / BTU / refrigerant / min-temp
+//    are sourced from public TCL retail + distributor listings (Home Depot TH-series;
+//    distributor TSC hyper-heat + TUM multi-zone). See src/lib/backend/mock-data.ts
+//    for per-SKU model numbers.
+//  - Anything still listed in each series' `confirm` array (e.g. HSPF2, exact
+//    warranty terms) needs spec-sheet confirmation before launch.
+//  - Warranty terms vary by SKU/region (commonly 7-yr compressor / 5-yr parts,
+//    10-yr on cassette & central) — always shown with a confirm flag.
 
 export type StockState = "ready" | "lead";
 export type Category = "ductless" | "ducted" | "commercial" | "ventilation";
@@ -62,12 +64,12 @@ export const SERIES: Series[] = [
     description:
       "Type: High-efficiency inverter split AC",
     bestFor: "Room additions, retrofits, spot heating & cooling",
-    seer2: 22,
+    seer2: 23,
     hspf2: 9.5,
     btuMin: 9000,
     btuMax: 24000,
     zones: 1,
-    minTemp: "5°F",
+    minTemp: "-13°F",
     refrigerant: "R-32",
     energyStar: "certified",
     warrantyCompressor: "7-yr",
@@ -75,12 +77,12 @@ export const SERIES: Series[] = [
     stock: "ready",
     leadTime: "In stock, ships today",
     highlights: [
-      "Up to 23 SEER rating",
+      "Up to 23 SEER2, low-ambient heat to -13°F",
       "Ultra-quiet indoor units",
-      "Wi-Fi smart control",
+      "Wi-Fi smart control (TCL Home app)",
       "Compact, sleek design",
     ],
-    confirm: ["seer2", "hspf2", "btu", "minTemp", "warranty"],
+    confirm: ["hspf2", "warranty"],
   },
   {
     slug: "freshin",
@@ -130,19 +132,19 @@ export const SERIES: Series[] = [
     btuMin: 9000,
     btuMax: 24000,
     zones: 1,
-    minTemp: "-13°F",
-    refrigerant: "R-32",
+    minTemp: "-22°F",
+    refrigerant: "R-454B",
     energyStar: "most-efficient",
     warrantyCompressor: "7-yr",
     warrantyParts: "5-yr",
     stock: "ready",
     leadTime: "In stock, ships today",
     highlights: [
-      "Highest energy efficiency",
+      "Up to 25 SEER2 hyper-heat, heats to -22°F",
+      "Low-GWP R-454B refrigerant",
       "Smart diagnostics + app control",
-      "Designed for quiet comfort",
     ],
-    confirm: ["hspf2", "warranty"],
+    confirm: ["warranty"],
   },
   {
     slug: "light-commercial",
@@ -156,20 +158,20 @@ export const SERIES: Series[] = [
     description:
       "Type: Ceiling cassette, floor-ceiling, ducted systems",
     bestFor: "Offices, retail, restaurants, tenant improvements",
-    seer2: 18,
+    seer2: 19,
     hspf2: 8.5,
-    btuMin: 24000,
-    btuMax: 60000,
+    btuMin: 36000,
+    btuMax: 48000,
     zones: 1,
     minTemp: "-4°F",
-    refrigerant: "R-32",
-    energyStar: "none",
-    warrantyCompressor: "7-yr",
+    refrigerant: "R-454B",
+    energyStar: "certified",
+    warrantyCompressor: "10-yr",
     warrantyParts: "5-yr",
     stock: "lead",
     leadTime: "10-14 business days",
-    highlights: ["High-capacity cooling & heating", "Durable for high-traffic use", "Multiple indoor unit options"],
-    confirm: ["seer2", "hspf2", "btu", "minTemp", "warranty"],
+    highlights: ["4-way ceiling cassette, high-capacity", "Durable for high-traffic use", "10-yr compressor warranty"],
+    confirm: ["seer2", "hspf2", "warranty"],
   },
   {
     slug: "multi-zone",
@@ -184,23 +186,23 @@ export const SERIES: Series[] = [
       "Type: Inverter outdoor unit + multiple indoor units",
     bestFor: "Whole-home ductless, multi-room, mixed indoor styles",
     seer2: 22,
-    hspf2: 10,
+    hspf2: 9,
     btuMin: 18000,
-    btuMax: 48000,
+    btuMax: 36000,
     zones: 4,
     minTemp: "-4°F",
-    refrigerant: "R-32",
+    refrigerant: "R-410A",
     energyStar: "certified",
     warrantyCompressor: "7-yr",
     warrantyParts: "5-yr",
     stock: "lead",
     leadTime: "5-7 business days",
     highlights: [
-      "Supports up to 4 zones",
+      "One condenser drives 2-4 indoor zones",
       "Separate control per room",
-      "Efficient space-saving design",
+      "Mix wall, cassette & floor heads",
     ],
-    confirm: ["seer2", "hspf2", "btu", "zones", "minTemp", "warranty"],
+    confirm: ["hspf2", "warranty"],
   },
   {
     slug: "central-system",
@@ -216,11 +218,11 @@ export const SERIES: Series[] = [
     bestFor: "New construction, full replacements, whole-home changeouts",
     seer2: 17,
     hspf2: 8.5,
-    btuMin: 24000,
-    btuMax: 60000,
+    btuMin: 36000,
+    btuMax: 48000,
     zones: 1,
     minTemp: "0°F",
-    refrigerant: "R-32",
+    refrigerant: "R-454B",
     energyStar: "certified",
     warrantyCompressor: "10-yr",
     warrantyParts: "5-yr",
