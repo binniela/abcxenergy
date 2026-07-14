@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { QuoteProvider } from "@/components/quote-context";
+import { FulfillmentProvider } from "@/components/fulfillment-context";
 import { QuoteDrawerMount } from "@/components/quote-drawer-mount";
 import { SiteNav } from "@/components/site-nav";
 import { SiteFooter } from "@/components/site-footer";
@@ -16,44 +17,78 @@ const grotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-grotesk", 
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono-jb", display: "swap" });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.abcxenergy.com"),
+  metadataBase: new URL(SITE.origin),
   title: {
-    default: "ABC X-Energy - Wholesale TCL HVAC for West Coast Contractors",
-    template: "%s · ABC X-Energy",
+    default: "Summit HVAC Supply - Bay Area TCL Heat Pumps & Mini Splits",
+    template: "%s · Summit HVAC Supply",
   },
   description:
-    "Wholesale TCL HVAC systems, in stock and shipped fast across the West Coast. AHRI-certified, contractor pricing, spec sheets, and rebate support.",
+    "Bay Area TCL heat pumps, mini splits, installer help, and contractor supply from Newark, CA. Buy one system, request Bay Area installer matching, or open a pro account.",
   keywords: [
-    "TCL HVAC wholesale",
-    "wholesale heat pumps",
-    "contractor HVAC distributor",
-    "mini split wholesale California",
+    "Bay Area heat pumps",
+    "Bay Area mini split supply",
+    "TCL HVAC Bay Area",
+    "Newark HVAC supply",
+    "Bay Area heat pump installer help",
   ],
   openGraph: {
-    title: "ABC X-Energy - Wholesale TCL HVAC",
+    title: "Summit HVAC Supply - Bay Area TCL HVAC",
     description:
-      "In-stock TCL HVAC, contractor pricing, fast West Coast fulfillment. AHRI-certified.",
+      "Local TCL heat pumps and mini splits for Bay Area homeowners, property teams, and contractors.",
     type: "website",
     siteName: SITE.name,
   },
+  alternates: {
+    canonical: "/",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f7f9fa" },
+    { media: "(prefers-color-scheme: dark)", color: "#1f5f4f" },
+  ],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const organizationJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "HVACBusiness",
+    name: SITE.name,
+    url: SITE.origin,
+    telephone: SITE.phone,
+    email: SITE.email,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: SITE.address.street,
+      addressLocality: SITE.address.city,
+      addressRegion: SITE.address.state,
+      postalCode: SITE.address.zip,
+      addressCountry: "US",
+    },
+    areaServed: SITE.serviceArea,
+  };
   return (
     <html lang="en" className={`${inter.variable} ${grotesk.variable} ${mono.variable}`}>
       <body className="min-h-dvh antialiased">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd).replace(/</g, "\\u003c") }}
+        />
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-[--r-sm] focus:bg-brand focus:px-4 focus:py-2 focus:text-sm focus:text-brand-ink"
         >
           Skip to content
         </a>
-        <QuoteProvider>
-          <SiteNav />
-          <main id="main">{children}</main>
-          <SiteFooter />
-          <QuoteDrawerMount />
-        </QuoteProvider>
+        <FulfillmentProvider>
+          <QuoteProvider>
+            <SiteNav />
+            <main id="main">{children}</main>
+            <SiteFooter />
+            <QuoteDrawerMount />
+          </QuoteProvider>
+        </FulfillmentProvider>
       </body>
     </html>
   );

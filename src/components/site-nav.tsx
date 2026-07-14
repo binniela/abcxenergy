@@ -3,41 +3,286 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Menu, X, FileText, Lock } from "lucide-react";
+import { Menu, X, FileText, Lock, Search, ChevronDown, LifeBuoy } from "lucide-react";
 import * as React from "react";
 import { useQuote } from "./quote-context";
 import { SITE } from "@/lib/site";
 
-const NAV = [
-  { href: "/products", label: "Products" },
-  { href: "/resources", label: "Resources" },
-  { href: "/dealers", label: "Become a Dealer" },
-  { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
+/* Primary nav is capped at 5 top-level targets. Rebates + Bay Area delivery
+   live under the Resources menu so the bar never overflows. */
+const PRIMARY = [
+  { href: "/products", label: "Shop Systems" },
+  { href: "/homeowners", label: "For Homeowners" },
+  { href: "/dealers", label: "For Contractors" },
 ];
+
+const RESOURCES = [
+  { href: "/resources", label: "Resources & buying guides" },
+  { href: "/bay-area-heat-pump-rebates", label: "Bay Area heat pump rebates" },
+  { href: "/bay-area-hvac-supply", label: "Bay Area delivery & will-call" },
+];
+
+const RESOURCE_HREFS = RESOURCES.map((r) => r.href);
 
 function Wordmark() {
   return (
-    <Link href="/" className="flex items-center gap-2.5" aria-label="ABC X-Energy home">
+    <Link href="/" className="flex shrink-0 items-center gap-2.5" aria-label="Summit HVAC Supply home">
       <Image
-        src="/logo.png"
+        src="/logo-summit.svg"
         alt=""
-        width={48}
-        height={48}
+        width={44}
+        height={44}
         priority
-        sizes="48px"
-        className="size-12 shrink-0 object-contain"
+        sizes="44px"
+        className="size-10 shrink-0 object-contain lg:size-11"
       />
       <Image
-        src="/wordmark.png"
-        alt="ABC X-Energy"
-        width={150}
-        height={53}
+        src="/wordmark-summit.svg"
+        alt="Summit HVAC Supply"
+        width={172}
+        height={42}
         priority
-        sizes="150px"
-        className="h-9 w-auto object-contain"
+        sizes="172px"
+        className="h-9 w-auto object-contain lg:h-10"
       />
     </Link>
+  );
+}
+
+type SearchResult = {
+  id: string;
+  sku: string;
+  modelNumber: string;
+  title: string;
+  btu: number;
+  voltage: string;
+  available: number;
+  href: string;
+};
+
+/* Shared search field + results. Rendered inside a desktop popover and inside
+   the mobile sheet. Fully keyboard-operable (↑/↓/Enter/Escape). */
+function SearchField({
+  onNavigate,
+  autoFocus = false,
+}: {
+  onNavigate?: () => void;
+  autoFocus?: boolean;
+}) {
+  const [query, setQuery] = React.useState("");
+  const [results, setResults] = React.useState<SearchResult[]>([]);
+  const [active, setActive] = React.useState(-1);
+  const [loading, setLoading] = React.useState(false);
+  const inputRef = React.useRef<HTMLInputElement>(null);
+
+  React.useEffect(() => {
+    if (autoFocus) inputRef.current?.focus();
+  }, [autoFocus]);
+
+  React.useEffect(() => {
+    const trimmed = query.trim();
+    if (trimmed.length < 2) {
+      setResults([]);
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    const controller = new AbortController();
+    const timer = setTimeout(() => {
+      fetch(`/api/search?q=${encodeURIComponent(trimmed)}`, { signal: controller.signal })
+        .then((res) => res.json())
+        .then((payload) => {
+          setResults(payload.results ?? []);
+          setActive(-1);
+        })
+        .catch(() => undefined)
+        .finally(() => setLoading(false));
+    }, 140);
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [query]);
+
+  const showResults = query.trim().length >= 2;
+  const resultsId = React.useId();
+
+  function onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (!showResults || results.length === 0) return;
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      setActive((i) => (i + 1) % results.length);
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault();
+      setActive((i) => (i <= 0 ? results.length - 1 : i - 1));
+    } else if (event.key === "Enter" && active >= 0) {
+      event.preventDefault();
+      window.location.href = results[active].href;
+      onNavigate?.();
+    }
+  }
+
+  return (
+    <div>
+      <div className="flex h-11 items-center gap-2 rounded-[--r-sm] border border-line-strong bg-surface-1 px-3 shadow-[var(--shadow-sm)] focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/25">
+        <Search size={16} className="shrink-0 text-ink-3" />
+        <input
+          ref={inputRef}
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          onKeyDown={onKeyDown}
+          role="combobox"
+          aria-expanded={showResults && results.length > 0}
+          aria-controls={resultsId}
+          aria-autocomplete="list"
+          aria-activedescendant={active >= 0 ? `${resultsId}-${active}` : undefined}
+          placeholder="Search model or SKU"
+          className="min-w-0 flex-1 bg-transparent text-sm text-ink-1 outline-none placeholder:text-ink-4"
+          aria-label="Search by SKU or model number"
+        />
+      </div>
+      {showResults && (
+        <ul
+          id={resultsId}
+          role="listbox"
+          aria-label="Search results"
+          className="mt-2 max-h-[60vh] overflow-y-auto overflow-hidden rounded-[--r-md] border border-line bg-surface-1 shadow-[var(--shadow-md)]"
+        >
+          {loading && results.length === 0 && (
+            <li className="px-3 py-3 text-sm text-ink-3">Searching…</li>
+          )}
+          {!loading && results.length === 0 && (
+            <li className="px-3 py-4 text-sm text-ink-3">
+              No matches for “{query.trim()}”. Try a model number, or{" "}
+              <Link href="/contact" onClick={onNavigate} className="font-medium text-brand hover:text-brand-hover">
+                contact our team
+              </Link>
+              .
+            </li>
+          )}
+          {results.map((result, index) => (
+            <li key={result.id} role="option" id={`${resultsId}-${index}`} aria-selected={index === active}>
+              <Link
+                href={result.href}
+                onClick={onNavigate}
+                onMouseEnter={() => setActive(index)}
+                className={`block border-b border-line px-3 py-3 last:border-b-0 ${
+                  index === active ? "bg-surface-2" : "hover:bg-surface-2"
+                }`}
+              >
+                <span className="block font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-3">
+                  {result.sku}
+                </span>
+                <span className="mt-0.5 block text-sm font-semibold text-ink-1">{result.title}</span>
+                <span className="mt-0.5 block text-xs text-ink-3">
+                  {result.modelNumber} · {result.btu.toLocaleString()} BTU · {result.voltage} · {result.available} available
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+/* Desktop search: an icon trigger that opens a popover. One search surface for
+   the whole site — the catalog page keeps its own dedicated sidebar search. */
+function SearchPopover() {
+  const [open, setOpen] = React.useState(false);
+  const wrapRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    if (!open) return;
+    const onDoc = (event: MouseEvent) => {
+      if (wrapRef.current && !wrapRef.current.contains(event.target as Node)) setOpen(false);
+    };
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("mousedown", onDoc);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDoc);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  return (
+    <div ref={wrapRef} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-label="Search products"
+        aria-expanded={open}
+        aria-haspopup="dialog"
+        className="grid size-10 place-items-center rounded-[--r-sm] text-ink-2 transition-colors hover:bg-surface-2 hover:text-ink-1"
+      >
+        <Search size={18} strokeWidth={2.2} />
+      </button>
+      {open && (
+        <div className="absolute right-0 top-12 z-50 w-[min(380px,calc(100vw-2rem))] rounded-[--r-md] border border-line bg-canvas p-3 shadow-[var(--shadow-lg)]">
+          <SearchField autoFocus onNavigate={() => setOpen(false)} />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ResourcesMenu({ pathname }: { pathname: string }) {
+  const [open, setOpen] = React.useState(false);
+  const wrapRef = React.useRef<HTMLDivElement>(null);
+  const active = RESOURCE_HREFS.some((href) => pathname === href || pathname.startsWith(href + "/"));
+
+  React.useEffect(() => {
+    if (!open) return;
+    const onDoc = (event: MouseEvent) => {
+      if (wrapRef.current && !wrapRef.current.contains(event.target as Node)) setOpen(false);
+    };
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("mousedown", onDoc);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDoc);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  return (
+    <div ref={wrapRef} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        aria-haspopup="menu"
+        className={`inline-flex items-center gap-1 rounded-[--r-sm] px-3 py-2 text-sm font-medium transition-colors ${
+          active || open ? "text-brand" : "text-ink-2 hover:bg-surface-2 hover:text-ink-1"
+        }`}
+      >
+        Resources
+        <ChevronDown size={15} className={`transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open && (
+        <div
+          role="menu"
+          className="absolute left-0 top-11 z-50 w-64 overflow-hidden rounded-[--r-md] border border-line bg-canvas p-1.5 shadow-[var(--shadow-lg)]"
+        >
+          {RESOURCES.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              role="menuitem"
+              onClick={() => setOpen(false)}
+              className="block rounded-[--r-sm] px-3 py-2.5 text-sm font-medium text-ink-1 hover:bg-surface-2"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -46,12 +291,12 @@ function QuoteButton() {
   return (
     <button
       onClick={toggle}
-      className="relative inline-flex h-10 items-center gap-2 rounded-[--r-sm] border border-line-strong bg-surface-1 px-3.5 text-sm font-medium text-ink-1 shadow-[var(--shadow-sm)] transition-colors hover:bg-surface-2"
+      aria-label={`Open your quote list${count > 0 ? ` (${count} ${count === 1 ? "item" : "items"})` : ""}`}
+      className="relative grid size-10 place-items-center rounded-[--r-sm] border border-line-strong bg-surface-1 text-ink-1 shadow-[var(--shadow-sm)] transition-colors hover:bg-surface-2"
     >
-      <FileText size={16} strokeWidth={2.2} />
-      Quote
+      <FileText size={18} strokeWidth={2.1} />
       {count > 0 && (
-        <span className="tnum grid min-w-5 place-items-center rounded-full bg-brand px-1 font-mono text-[11px] font-bold text-brand-ink">
+        <span className="tnum absolute -right-1.5 -top-1.5 grid min-w-[18px] place-items-center rounded-full bg-brand px-1 font-mono text-[10px] font-bold leading-[18px] text-brand-ink">
           {count}
         </span>
       )}
@@ -64,95 +309,156 @@ export function SiteNav() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const closeMobile = () => setMobileOpen(false);
 
+  // Close the mobile sheet whenever the route changes.
+  React.useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
+  const isActive = (href: string) => pathname === href || pathname.startsWith(href + "/");
+
   return (
     <header className="sticky top-0 z-30 border-b border-line bg-canvas/85 backdrop-blur-md">
-      {/* Brand flame echo — green → orange → red */}
-      <div className="h-[3px] w-full" style={{ background: "var(--energy-gradient)" }} />
-      <nav className="mx-auto flex h-16 w-full max-w-[1180px] items-center justify-between gap-4 px-5 sm:px-6 lg:px-8">
+      <div className="h-[3px] w-full" style={{ background: "var(--supply-gradient)" }} />
+      <nav className="mx-auto flex h-16 w-full max-w-[1180px] items-center gap-4 px-5 sm:px-6 lg:px-8">
         <Wordmark />
 
-        <ul className="hidden items-center gap-1 lg:flex">
-          {NAV.map((item) => {
-            const active = pathname === item.href || pathname.startsWith(item.href + "/");
-            return (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className={`rounded-[--r-sm] px-3 py-2 text-sm font-medium transition-colors ${
-                    active ? "text-brand" : "text-ink-2 hover:bg-surface-2 hover:text-ink-1"
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              </li>
-            );
-          })}
+        {/* Inline nav appears at xl, exactly where the hamburger hides — the two
+            switch at the same breakpoint so navigation is never unreachable. */}
+        <ul className="hidden flex-1 items-center gap-0.5 xl:flex">
+          {PRIMARY.map((item) => (
+            <li key={item.href}>
+              <Link
+                href={item.href}
+                className={`whitespace-nowrap rounded-[--r-sm] px-3 py-2 text-sm font-medium transition-colors ${
+                  isActive(item.href) ? "text-brand" : "text-ink-2 hover:bg-surface-2 hover:text-ink-1"
+                }`}
+              >
+                {item.label}
+              </Link>
+            </li>
+          ))}
+          <li>
+            <ResourcesMenu pathname={pathname} />
+          </li>
+          <li>
+            <Link
+              href="/contact"
+              className={`whitespace-nowrap rounded-[--r-sm] px-3 py-2 text-sm font-medium transition-colors ${
+                isActive("/contact") ? "text-brand" : "text-ink-2 hover:bg-surface-2 hover:text-ink-1"
+              }`}
+            >
+              Contact
+            </Link>
+          </li>
         </ul>
 
-        <div className="flex items-center gap-2">
+        {/* Right cluster */}
+        <div className="ml-auto flex items-center gap-1.5 xl:ml-0">
+          <div className="hidden sm:block">
+            <SearchPopover />
+          </div>
           <Link
-            href="/portal"
-            className="hidden items-center gap-1.5 rounded-[--r-sm] px-2.5 py-2 text-sm font-medium text-ink-2 hover:text-ink-1 sm:inline-flex"
+            href="/portal/login"
+            aria-label="Account portal"
+            className="hidden size-10 place-items-center rounded-[--r-sm] text-ink-2 transition-colors hover:bg-surface-2 hover:text-ink-1 sm:grid xl:hidden"
+          >
+            <Lock size={16} strokeWidth={2.2} />
+          </Link>
+          <Link
+            href="/portal/login"
+            className="hidden items-center gap-1.5 rounded-[--r-sm] px-2.5 py-2 text-sm font-medium text-ink-2 transition-colors hover:text-ink-1 xl:inline-flex"
           >
             <Lock size={14} strokeWidth={2.2} />
-            Portal
+            Account
           </Link>
           <QuoteButton />
           <Link
             href="/quote"
-            className="hidden h-10 items-center rounded-[--r-sm] bg-brand px-4 text-sm font-medium text-brand-ink shadow-[var(--shadow-sm)] transition-colors hover:bg-brand-hover sm:inline-flex"
+            className="hidden h-10 items-center gap-1.5 whitespace-nowrap rounded-[--r-sm] bg-brand px-3.5 text-sm font-medium text-brand-ink shadow-[var(--shadow-sm)] transition-colors hover:bg-brand-hover sm:inline-flex"
           >
-            Get a Quote
+            <LifeBuoy size={16} strokeWidth={2.2} />
+            <span className="hidden xl:inline">Get help</span>
           </Link>
           <button
             onClick={() => setMobileOpen((o) => !o)}
-            aria-label="Toggle menu"
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileOpen}
-            className="grid size-10 place-items-center rounded-[--r-sm] text-ink-1 hover:bg-surface-2 lg:hidden"
+            className="grid size-10 place-items-center rounded-[--r-sm] text-ink-1 transition-colors hover:bg-surface-2 xl:hidden"
           >
             {mobileOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
       </nav>
 
-      {/* Mobile sheet */}
+      {/* Mobile / tablet sheet — available at every width below xl. */}
       {mobileOpen && (
-        <div className="border-t border-line bg-canvas lg:hidden">
-          <ul className="mx-auto flex w-full max-w-[1180px] flex-col px-4 py-3">
-            {NAV.map((item) => (
-              <li key={item.href}>
+        <div className="border-t border-line bg-canvas xl:hidden">
+          <div className="mx-auto flex w-full max-w-[1180px] flex-col px-5 py-4 sm:px-6">
+            <SearchField onNavigate={closeMobile} />
+            <ul className="mt-4 flex flex-col">
+              {PRIMARY.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    onClick={closeMobile}
+                    className={`block rounded-[--r-sm] px-3 py-3 text-[15px] font-medium hover:bg-surface-2 ${
+                      isActive(item.href) ? "text-brand" : "text-ink-1"
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+              <li className="mt-2 border-t border-line pt-2">
+                <p className="px-3 pb-1 pt-2 font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-3">
+                  Resources
+                </p>
+                {RESOURCES.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={closeMobile}
+                    className="block rounded-[--r-sm] px-3 py-2.5 text-[15px] font-medium text-ink-1 hover:bg-surface-2"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </li>
+              <li>
                 <Link
-                  href={item.href}
+                  href="/contact"
                   onClick={closeMobile}
-                  className="block rounded-[--r-sm] px-3 py-3 text-[15px] font-medium text-ink-1 hover:bg-surface-2"
+                  className={`block rounded-[--r-sm] px-3 py-3 text-[15px] font-medium hover:bg-surface-2 ${
+                    isActive("/contact") ? "text-brand" : "text-ink-1"
+                  }`}
                 >
-                  {item.label}
+                  Contact
                 </Link>
               </li>
-            ))}
-            <li className="mt-2 grid grid-cols-2 gap-2 border-t border-line pt-3">
-              <Link
-                href="/quote"
-                onClick={closeMobile}
-                className="flex h-11 items-center justify-center rounded-[--r-sm] bg-brand text-sm font-medium text-brand-ink"
-              >
-                Get a Quote
-              </Link>
-              <Link
-                href="/portal"
-                onClick={closeMobile}
-                className="flex h-11 items-center justify-center rounded-[--r-sm] border border-line-strong bg-surface-1 text-sm font-medium text-ink-1"
-              >
-                Portal
-              </Link>
-              <a
-                href={SITE.phoneHref}
-                className="col-span-2 flex h-11 items-center justify-center rounded-[--r-sm] bg-surface-2 text-sm font-medium text-ink-1"
-              >
-                Call {SITE.phone}
-              </a>
-            </li>
-          </ul>
+              <li className="mt-3 grid grid-cols-2 gap-2 border-t border-line pt-3">
+                <Link
+                  href="/quote"
+                  onClick={closeMobile}
+                  className="flex h-11 items-center justify-center gap-1.5 rounded-[--r-sm] bg-brand text-sm font-medium text-brand-ink"
+                >
+                  <LifeBuoy size={16} /> Get help
+                </Link>
+                <Link
+                  href="/portal/login"
+                  onClick={closeMobile}
+                  className="flex h-11 items-center justify-center gap-1.5 rounded-[--r-sm] border border-line-strong bg-surface-1 text-sm font-medium text-ink-1"
+                >
+                  <Lock size={14} /> Account
+                </Link>
+                <a
+                  href={SITE.phoneHref}
+                  className="col-span-2 flex h-11 items-center justify-center rounded-[--r-sm] bg-surface-2 text-sm font-medium text-ink-1"
+                >
+                  Call {SITE.phone}
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
       )}
     </header>
