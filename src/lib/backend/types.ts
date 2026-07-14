@@ -88,7 +88,9 @@ export type InventorySummary = {
 };
 
 export type QuoteRequestLine = {
-  seriesSlug: string;
+  skuId: string;
+  sku: string;
+  modelNumber: string;
   productName: string;
   quantity: number;
 };

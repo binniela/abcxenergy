@@ -1,12 +1,12 @@
 // Sends a payment receipt for one invoice. Invoked by the stripe-webhook
 // function after apply_payment succeeds.
 //   supabase functions deploy send-receipt
-//   supabase secrets set RESEND_API_KEY=... EMAIL_FROM="ABC X-Energy <orders@abcxenergy.com>"
+//   supabase secrets set RESEND_API_KEY=... EMAIL_FROM="Summit HVAC Supply <orders@summithvacsupply.com>"
 import { Resend } from "npm:resend";
 import { createClient } from "npm:@supabase/supabase-js";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY")!);
-const FROM = Deno.env.get("EMAIL_FROM") ?? "ABC X-Energy <orders@abcxenergy.com>";
+const FROM = Deno.env.get("EMAIL_FROM") ?? "Summit HVAC Supply <orders@summithvacsupply.com>";
 const supabase = createClient(
   Deno.env.get("SUPABASE_URL")!,
   Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,

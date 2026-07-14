@@ -223,8 +223,8 @@ export async function createQuoteRequest(input: unknown) {
       const { error: lineError } = await supabase.from("quote_request_lines").insert(
         parsed.lines.map((line) => ({
           quote_request_id: id,
-          series_slug: line.seriesSlug,
-          product_name: line.productName,
+          series_slug: line.sku,
+          product_name: `${line.productName} (${line.modelNumber})`,
           quantity: line.quantity,
         }))
       );
@@ -234,7 +234,7 @@ export async function createQuoteRequest(input: unknown) {
   }
 
   return {
-    id: `qr-demo-${Date.now()}`,
+    id: `qr-${Date.now()}`,
     mode: "seeded" as const,
     prepared: toPreparedQuote(parsed),
   };
@@ -266,7 +266,7 @@ export async function createDealerApplication(input: unknown) {
   }
 
   return {
-    id: `dealer-demo-${Date.now()}`,
+    id: `dealer-${Date.now()}`,
     mode: "seeded" as const,
     status: "pending_review",
     company: parsed.company,
@@ -293,7 +293,7 @@ export async function createContactRequest(input: unknown) {
   }
 
   return {
-    id: `contact-demo-${Date.now()}`,
+    id: `contact-${Date.now()}`,
     mode: "seeded" as const,
     title: `${parsed.topic}: ${parsed.name}`,
   };

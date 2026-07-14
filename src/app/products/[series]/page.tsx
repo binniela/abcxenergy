@@ -25,6 +25,7 @@ import { ProductCard } from "@/components/product-card";
 import { SITE } from "@/lib/site";
 import { getSeriesBackendSummary } from "@/lib/backend/services";
 import { getSeededSeriesCardSummary } from "@/lib/backend/catalog";
+import { documentHref, getStorefrontSkus, productHref } from "@/lib/storefront/catalog";
 
 export function generateStaticParams() {
   return SERIES.map((s) => ({ series: s.slug }));
@@ -52,6 +53,8 @@ export default async function SeriesPage({ params }: PageProps<"/products/[serie
   const fallbackRelated = SERIES.filter((x) => x.slug !== s.slug).slice(0, 3);
   const relatedList = related.length ? related : fallbackRelated;
   const backendSummary = await getSeriesBackendSummary(s.slug);
+  const storefrontSkus = getStorefrontSkus().filter((sku) => sku.seriesSlug === s.slug);
+  const representativeSku = storefrontSkus[0];
 
   // Product structured data (escaped per Next.js JSON-LD guidance).
   const jsonLd = {
@@ -150,7 +153,7 @@ export default async function SeriesPage({ params }: PageProps<"/products/[serie
             <div className="mt-4 grid grid-cols-3 gap-px overflow-hidden rounded-[--r-sm] border border-line bg-line text-center">
               <BackendCell label="SKUs" value={`${backendSummary.skus.length}`} />
               <BackendCell label="Available" value={`${backendSummary.availableUnits}`} />
-              <BackendCell label="Dealer from" value={currency(backendSummary.startingDealerPrice)} />
+              <BackendCell label="Pro price" value="Sign in" />
             </div>
 
             <ul className="mt-6 grid gap-2.5">
@@ -163,7 +166,7 @@ export default async function SeriesPage({ params }: PageProps<"/products/[serie
             </ul>
 
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-              <AddToQuote slug={s.slug} name={s.name} full />
+              {representativeSku && <AddToQuote sku={representativeSku} full />}
               <LinkButton href="/quote" variant="secondary" size="md" className="sm:w-auto">
                 Get a Quote
               </LinkButton>
@@ -174,14 +177,14 @@ export default async function SeriesPage({ params }: PageProps<"/products/[serie
               <RequestRow
                 href="/contact"
                 icon={<FileText size={18} />}
-                title="Request spec sheet"
-                sub="Performance data for this series"
+                title="Download spec sheets"
+                sub="SKU-level performance PDFs"
               />
               <RequestRow
-                href="/contact"
+                href="/resources"
                 icon={<BookOpen size={18} />}
-                title="Request install manual"
-                sub="Line set, wiring, startup notes"
+                title="Download install manuals"
+                sub="Line set, wiring, startup notes by SKU"
               />
             </div>
           </div>
@@ -202,7 +205,7 @@ export default async function SeriesPage({ params }: PageProps<"/products/[serie
             SKU availability
           </h2>
           <p className="mt-1 text-sm text-ink-3">
-            Newark warehouse stock, dealer pricing, and mock document actions from the backend catalog.
+            Newark warehouse stock, public documents, and contractor pricing after sign-in.
           </p>
           <div className="mt-5 overflow-x-auto rounded-[--r-md] border border-line">
             <table className="w-full min-w-[760px] text-left text-sm">
@@ -211,7 +214,7 @@ export default async function SeriesPage({ params }: PageProps<"/products/[serie
                   <th className="px-4 py-3 font-medium">SKU</th>
                   <th className="px-4 py-3 font-medium">Model</th>
                   <th className="px-4 py-3 font-medium">BTU</th>
-                  <th className="px-4 py-3 font-medium">Dealer</th>
+                  <th className="px-4 py-3 font-medium">Pro price</th>
                   <th className="px-4 py-3 font-medium">Available</th>
                   <th className="px-4 py-3 font-medium">Documents</th>
                 </tr>
@@ -219,17 +222,25 @@ export default async function SeriesPage({ params }: PageProps<"/products/[serie
               <tbody className="divide-y divide-line">
                 {backendSummary.skus.map((sku) => (
                   <tr key={sku.id} className="bg-surface-1">
-                    <td className="px-4 py-3 font-mono text-xs font-semibold text-ink-1">{sku.sku}</td>
+                    <td className="px-4 py-3 font-mono text-xs font-semibold text-ink-1">
+                      <Link href={productHref(sku)} className="hover:text-brand">{sku.sku}</Link>
+                    </td>
                     <td className="px-4 py-3 text-ink-2">{sku.modelNumber}</td>
                     <td className="px-4 py-3 tnum font-mono">{sku.btu.toLocaleString()}</td>
-                    <td className="px-4 py-3 tnum font-mono font-semibold">{currency(sku.dealerPrice)}</td>
+                    <td className="px-4 py-3 text-sm font-medium text-brand">Sign in</td>
                     <td className="px-4 py-3">
                       <Chip tone={sku.status === "ready" ? "stock" : sku.status === "low" ? "copper" : "lead"}>
                         {sku.available} {sku.status}
                       </Chip>
                     </td>
                     <td className="px-4 py-3 text-xs text-ink-3">
-                      {backendSummary.documents.filter((doc) => doc.skuId === sku.id).length} linked
+                      <div className="flex flex-wrap gap-2">
+                        {backendSummary.documents.filter((doc) => doc.skuId === sku.id).map((doc) => (
+                          <a key={doc.id} href={documentHref(doc)} className="font-medium text-brand hover:text-brand-hover">
+                            {doc.kind === "spec_sheet" ? "Spec" : "Manual"}
+                          </a>
+                        ))}
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -266,10 +277,6 @@ function BackendCell({ label, value }: { label: string; value: string }) {
       <p className="tnum mt-1 font-mono text-sm font-semibold text-ink-1">{value}</p>
     </div>
   );
-}
-
-function currency(value: number) {
-  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(value);
 }
 
 function RequestRow({

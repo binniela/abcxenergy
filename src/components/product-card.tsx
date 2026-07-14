@@ -3,9 +3,11 @@ import Image from "next/image";
 import { ArrowUpRight, Leaf } from "lucide-react";
 import { type Series, CATEGORY_LABEL, ENERGY_STAR_LABEL } from "@/lib/products";
 import { SpecStockStrip } from "./spec-stock-strip";
+import { FulfillmentBadge } from "./fulfillment-badge";
 import { AddToQuote } from "./add-to-quote";
 import { Chip } from "./ui";
 import type { SeriesCardSummary } from "@/lib/backend/catalog";
+import { getStorefrontSkus } from "@/lib/storefront/catalog";
 
 export function ProductCard({
   series,
@@ -17,6 +19,7 @@ export function ProductCard({
   priority?: boolean;
 }) {
   const energyStar = ENERGY_STAR_LABEL[series.energyStar];
+  const representativeSku = getStorefrontSkus().find((sku) => sku.seriesSlug === series.slug);
   return (
     <article className="group flex flex-col overflow-hidden rounded-[--r-md] border border-line bg-surface-1 shadow-[var(--shadow-sm)] transition-shadow duration-200 hover:shadow-[var(--shadow-md)]">
       <Link
@@ -69,16 +72,17 @@ export function ProductCard({
         </div>
 
         <SpecStockStrip series={series} className="mt-auto" />
+        <FulfillmentBadge inStock={series.stock === "ready"} />
         {ops && (
           <div className="grid grid-cols-3 gap-px overflow-hidden rounded-[--r-sm] border border-line bg-line text-center">
             <OpsCell label="SKUs" value={`${ops.skuCount}`} />
             <OpsCell label="Available" value={`${ops.availableUnits}`} />
-            <OpsCell label="From" value={currency(ops.startingDealerPrice)} />
+            <OpsCell label="Pro price" value="Sign in" />
           </div>
         )}
 
         <div className="flex items-center gap-3">
-          <AddToQuote slug={series.slug} name={series.name} size="sm" />
+          {representativeSku && <AddToQuote sku={representativeSku} size="sm" />}
           <Link
             href={`/products/${series.slug}`}
             className="inline-flex items-center gap-1 text-sm font-medium text-ink-2 hover:text-brand"
@@ -99,8 +103,4 @@ function OpsCell({ label, value }: { label: string; value: string }) {
       <p className="tnum mt-1 font-mono text-sm font-semibold text-ink-1">{value}</p>
     </div>
   );
-}
-
-function currency(value: number) {
-  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(value);
 }

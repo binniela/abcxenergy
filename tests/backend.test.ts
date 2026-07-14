@@ -8,7 +8,10 @@ import {
   summarizeInventory,
 } from "../src/lib/backend/math";
 import { createDemoOperationsData } from "../src/lib/backend/mock-data";
+import { checkoutSchema } from "../src/lib/backend/schemas";
 import { roleCanAccessAccount } from "../src/lib/backend/services";
+import sitemap from "../src/app/sitemap";
+import { filterStorefrontSkus, searchStorefrontSkus } from "../src/lib/storefront/catalog";
 import type { InventoryLot, OrderLine } from "../src/lib/backend/types";
 
 describe("backend inventory math", () => {
@@ -50,6 +53,61 @@ describe("backend inventory math", () => {
         status: "ready",
       },
     ]);
+  });
+});
+
+describe("storefront SKU discovery", () => {
+  it("searches by SKU, model, title, BTU, voltage, and series", () => {
+    assert.equal(searchStorefrontSkus("TCL-ELT-09HP-230")[0]?.sku, "TCL-ELT-09HP-230");
+    assert.equal(searchStorefrontSkus("ELITE-09-230V")[0]?.modelNumber, "ELITE-09-230V");
+    assert.ok(searchStorefrontSkus("Premium Heat Pump").some((sku) => sku.sku === "TCL-ELT-09HP-230"));
+    assert.ok(searchStorefrontSkus("24000").some((sku) => sku.btu === 24000));
+    assert.ok(searchStorefrontSkus("208/230V").length > 0);
+    assert.ok(searchStorefrontSkus("BreezeIN").some((sku) => sku.seriesSlug === "breezein"));
+  });
+
+  it("filters by stable catalog facets", () => {
+    assert.ok(filterStorefrontSkus({ category: "ductless" }).every((sku) => sku.category === "ductless"));
+    assert.ok(filterStorefrontSkus({ btu: "large" }).every((sku) => sku.btu >= 36000));
+    assert.ok(filterStorefrontSkus({ stock: "ready" }).every((sku) => sku.stockStatus === "ready"));
+  });
+});
+
+describe("checkout validation", () => {
+  const validItem = {
+    skuId: "sku-elt-09",
+    sku: "TCL-ELT-09HP-230",
+    modelNumber: "ELITE-09-230V",
+    title: "Elite 9k Premium Heat Pump",
+    qty: 1,
+  };
+
+  it("accepts SKU-level reserve checkout payloads", () => {
+    const parsed = checkoutSchema.parse({
+      items: [validItem],
+      method: "pickup",
+      buyerName: "Andre Lewis",
+      buyerEmail: "andre@example.com",
+      phone: "(415) 555-0199",
+    });
+    assert.equal(parsed.items[0].skuId, "sku-elt-09");
+  });
+
+  it("rejects series-era cart lines and missing buyer contact", () => {
+    assert.throws(() =>
+      checkoutSchema.parse({
+        items: [{ slug: "elite", name: "Elite Series", qty: 1 }],
+        method: "pickup",
+      })
+    );
+  });
+});
+
+describe("SEO route inventory", () => {
+  it("includes static, homeowner, and SKU URLs in sitemap", () => {
+    const urls = sitemap().map((entry) => entry.url);
+    assert.ok(urls.includes("https://www.summithvacsupply.com/homeowners"));
+    assert.ok(urls.includes("https://www.summithvacsupply.com/products/sku/TCL-ELT-09HP-230"));
   });
 });
 

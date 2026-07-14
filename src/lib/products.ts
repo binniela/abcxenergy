@@ -1,7 +1,7 @@
 // TCL HVAC series catalog.
 //
 // ACCURACY POLICY (per project brief):
-//  - Product names, type lines, and highlights mirror the live ABC X-Energy
+//  - Product names, type lines, and highlights mirror the live Summit HVAC Supply
 //    products page.
 //  - SEER2 / HSPF2 / BTU / warranty values still need spec-sheet confirmation
 //    unless omitted from `confirm`.

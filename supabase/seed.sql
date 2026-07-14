@@ -1,5 +1,5 @@
 insert into accounts (id, type, name, status, price_tier, credit_limit, balance, service_area, license_number) values
-  ('10000000-0000-0000-0000-000000000001', 'internal', 'ABC X-Energy', 'active', 'internal', 0, 0, 'CA, OR, WA, NV, AZ', null),
+  ('10000000-0000-0000-0000-000000000001', 'internal', 'Summit HVAC Supply', 'active', 'internal', 0, 0, 'CA, OR, WA, NV, AZ', null),
   ('10000000-0000-0000-0000-000000000002', 'dealer', 'Bay Area Mechanical Supply', 'active', 'gold', 75000, 8420, 'California', 'C20-983422'),
   ('10000000-0000-0000-0000-000000000003', 'installer', 'Summit HVAC Installers', 'active', 'standard', 25000, 1280, 'California', 'C20-771144'),
   ('10000000-0000-0000-0000-000000000004', 'homeowner', 'Maria Chen Residence', 'active', 'retail_referral', 0, 0, 'San Jose, CA', null),
@@ -124,3 +124,15 @@ insert into activity_log (account_id, event, entity_type, entity_id) values
   ('10000000-0000-0000-0000-000000000002', 'Quote sent to dealer', 'quote', '61000000-0000-0000-0000-000000000001'),
   ('10000000-0000-0000-0000-000000000002', 'Invoice opened with mock AR balance', 'invoice', '63000000-0000-0000-0000-000000000001'),
   ('10000000-0000-0000-0000-000000000004', 'Homeowner referral case created', 'task', null);
+
+-- ── Bay Area delivery zones (served from the Newark, CA warehouse) ──────────
+insert into delivery_zones (zip, label, warehouse_id, local_delivery_eligible, delivery_fee, free_delivery_over, lead_time_hours) values
+  ('94560', 'Newark',        '50000000-0000-0000-0000-000000000001', true, 0,  0,    4),
+  ('94538', 'Fremont',       '50000000-0000-0000-0000-000000000001', true, 35, 2000, 8),
+  ('94587', 'Union City',    '50000000-0000-0000-0000-000000000001', true, 35, 2000, 8),
+  ('94544', 'Hayward',       '50000000-0000-0000-0000-000000000001', true, 45, 2000, 24),
+  ('94601', 'Oakland',       '50000000-0000-0000-0000-000000000001', true, 55, 2500, 24),
+  ('95131', 'San Jose',      '50000000-0000-0000-0000-000000000001', true, 55, 2500, 24),
+  ('94103', 'San Francisco', '50000000-0000-0000-0000-000000000001', true, 75, 3000, 24),
+  ('94303', 'Palo Alto',     '50000000-0000-0000-0000-000000000001', true, 65, 3000, 24)
+on conflict (zip) do nothing;

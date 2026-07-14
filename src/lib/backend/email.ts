@@ -8,7 +8,7 @@ import { createServiceRoleSupabaseClient } from "./supabase";
  * a flaky email provider never breaks an order or payment.
  */
 
-const FROM = process.env.EMAIL_FROM ?? "ABC X-Energy <orders@abcxenergy.com>";
+const FROM = process.env.EMAIL_FROM ?? "Summit HVAC Supply <orders@summithvacsupply.com>";
 
 function getResend(): Resend | null {
   const key = process.env.RESEND_API_KEY;
@@ -57,7 +57,7 @@ export async function sendInvoiceEmail(invoiceId: string): Promise<void> {
 
   await send(
     to,
-    `Invoice ${inv.invoice_number} from ABC X-Energy`,
+    `Invoice ${inv.invoice_number} from Summit HVAC Supply`,
     `<h2>Invoice ${inv.invoice_number}</h2>
      <p>Total: <strong>${money(Number(inv.total))}</strong></p>
      <p>Balance due: <strong>${money(Number(inv.balance))}</strong> by ${inv.due_date}</p>

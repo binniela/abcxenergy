@@ -5,7 +5,7 @@ import { getPortalOverview } from "@/lib/backend/services";
 import { redirect } from "next/navigation";
 
 export const metadata = {
-  title: "Installer Workspace - ABC X-Energy",
+  title: "Installer Workspace - Summit HVAC Supply",
 };
 
 export default async function InstallerPortalPage() {

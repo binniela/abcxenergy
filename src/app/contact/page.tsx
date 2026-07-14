@@ -32,8 +32,8 @@ export default function ContactPage() {
             Talk to a real person who knows HVAC.
           </h1>
           <p className="mt-3 text-ink-2">
-            Pricing, stock, specs, warranty, or you&apos;re a homeowner who
-            needs an installer. Tell us what&apos;s up.
+            One system for your home, contractor stock, property quotes, specs,
+            warranty, or installer help. Pick the lane that fits.
           </p>
 
           {/* Homeowner secondary path — capture & hand off, never dominate */}
@@ -43,9 +43,8 @@ export default function ContactPage() {
             </span>
             <p className="text-sm text-ink-2">
               <span className="font-semibold text-ink-1">Homeowner? </span>{" "}
-              We&apos;re a wholesaler, so we do not install, but pick “Find an
-              installer” below and we&apos;ll connect you with a vetted TCL
-              contractor near you.
+              We supply equipment and can help route you toward a qualified Bay
+              Area installer. We do not perform installation ourselves.
             </p>
           </div>
 
@@ -56,8 +55,9 @@ export default function ContactPage() {
                 Message prepared.
               </h2>
               <p className="mt-2 text-ink-2">
-                Your details are ready for follow-up. For urgent pricing, stock,
-                or installer help, call{" "}
+                Your details are ready for follow-up. We will review the topic
+                and explain the next step before asking you to buy equipment. For
+                urgent pricing, stock, or installer help, call{" "}
                 <a href={SITE.phoneHref} className="font-medium text-brand">
                   {SITE.phone}
                 </a>
@@ -75,6 +75,11 @@ export default function ContactPage() {
                 e.preventDefault();
                 setIsSubmitting(true);
                 setError(null);
+                if (!topic) {
+                  setIsSubmitting(false);
+                  setError("Please choose what you are reaching out about.");
+                  return;
+                }
                 const form = new FormData(e.currentTarget);
                 const response = await fetch("/api/contact-requests", {
                   method: "POST",
@@ -105,14 +110,11 @@ export default function ContactPage() {
                   onChange={setTopic}
                   placeholder="Choose a topic"
                   options={[
-                    { value: "pricing", label: "Pricing & availability" },
-                    { value: "account", label: "Opening a wholesale account" },
-                    { value: "specs", label: "Specs / warranty question" },
-                    {
-                      value: "installer",
-                      label: "Homeowner - find an installer",
-                    },
-                    { value: "other", label: "Something else" },
+                    { value: "one_system", label: "I want one system for my home" },
+                    { value: "installer", label: "I need installer help" },
+                    { value: "contractor", label: "I’m a contractor buying equipment" },
+                    { value: "property", label: "I manage a property" },
+                    { value: "specs", label: "Specs, warranty, or documents" },
                   ]}
                 />
               </Field>
@@ -143,7 +145,7 @@ export default function ContactPage() {
                 />
               </Field>
               <Button type="submit" size="lg" className="self-start">
-                {isSubmitting ? "Preparing..." : "Prepare message"}{" "}
+                {isSubmitting ? "Preparing..." : "Prepare request"}{" "}
                 <ArrowRight size={18} />
               </Button>
               {error && <p className="text-sm text-danger">{error}</p>}
@@ -184,7 +186,7 @@ export default function ContactPage() {
             className="mt-4 flex items-center justify-between gap-3 rounded-[--r-md] border border-line bg-brand-tint p-4 text-brand transition-colors hover:bg-brand/15"
           >
             <span className="text-sm font-semibold">
-              Ready to open an account?
+              Contractor? Open a pro account
             </span>
             <ArrowRight size={16} />
           </Link>

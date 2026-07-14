@@ -28,7 +28,7 @@ const CERTIFICATIONS = [
   },
 ] as const;
 
-/* Certification logos mirror the live ABC X-Energy product lineup trust band. */
+/* Certification logos mirror the live Summit HVAC Supply product lineup trust band. */
 export function TrustBadges({ className = "" }: { className?: string }) {
   return (
     <div

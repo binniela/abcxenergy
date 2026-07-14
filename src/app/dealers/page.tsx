@@ -80,10 +80,10 @@ export default function DealersPage() {
         <Container>
           <Eyebrow>Become a dealer</Eyebrow>
           <h1 className="mt-3 max-w-2xl font-display text-3xl font-semibold tracking-tight sm:text-4xl">
-            Open a wholesale account.
+            Open a contractor account.
           </h1>
           <p className="mt-3 max-w-xl text-white/65">
-            Contractor pricing, deep West Coast stock, spec &amp; rebate support,
+            Contractor pricing, Bay Area stock, spec &amp; rebate support,
             and one-tap reorder. Takes about two minutes. Our team reviews and replies
             within one business day.
           </p>
@@ -96,7 +96,7 @@ export default function DealersPage() {
             <div className="rounded-[--r-md] border border-eco/30 bg-eco-tint/50 p-8 text-center">
               <CheckCircle2 className="mx-auto text-eco" size={36} />
               <h2 className="mt-4 font-display text-2xl font-semibold text-ink-1">
-                Wholesale account request prepared.
+                Contractor account request prepared.
               </h2>
               <p className="mt-2 text-ink-2">
                 Your application details are ready for account review. Call or email us to finish setup, confirm your license, and unlock contractor pricing.
@@ -154,7 +154,7 @@ export default function DealersPage() {
                 {step === 1 && (
                   <div className="flex flex-col gap-5">
                     <Field label="Company name" required>
-                      <Input name="company" required placeholder="ABC Mechanical, Inc." />
+                      <Input name="company" required placeholder="Summit Mechanical, Inc." />
                     </Field>
                     <Field label="Contact name" required>
                       <Input name="contact" required autoComplete="name" placeholder="First & last name" />

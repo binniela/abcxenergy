@@ -17,6 +17,24 @@ export function getSeededSeriesCardSummary(slug: string): SeriesCardSummary {
   };
 }
 
+export type SeriesStartingPrices = {
+  /** Lowest dealer (Pro) price across the series' SKUs. */
+  dealer: number;
+  /** Lowest MSRP (public retail) across the series' SKUs. */
+  retail: number;
+};
+
+/** Representative starting prices for a series, by tier. Drives checkout line
+ *  pricing in seeded mode and the public-vs-Pro price display. */
+export function getSeriesStartingPrices(slug: string): SeriesStartingPrices {
+  const skus = demoSkus.filter((sku) => sku.seriesSlug === slug);
+  if (skus.length === 0) return { dealer: 0, retail: 0 };
+  return {
+    dealer: Math.min(...skus.map((sku) => sku.dealerPrice)),
+    retail: Math.min(...skus.map((sku) => sku.msrp)),
+  };
+}
+
 export function getSeededSeriesDocuments(slug: string) {
   const skuIds = new Set(demoSkus.filter((sku) => sku.seriesSlug === slug).map((sku) => sku.id));
   return demoSkuDocuments.filter((doc) => skuIds.has(doc.skuId));

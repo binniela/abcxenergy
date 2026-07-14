@@ -34,13 +34,13 @@ const PORTALS = [
 ] as const;
 
 export const metadata = {
-  title: "Portal Demo - ABC X-Energy",
+  title: "Account Portal - Summit HVAC Supply",
 };
 
 export default function PortalPage() {
   return (
     <Container className="py-12 lg:py-16">
-      <Chip tone="copper">Role-based backend demo</Chip>
+      <Chip tone="copper">Role-based account access</Chip>
       <h1 className="mt-4 font-display text-3xl font-semibold tracking-tight text-ink-1 sm:text-4xl">
         Choose a portal workspace.
       </h1>

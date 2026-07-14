@@ -1,69 +1,64 @@
 @import "tailwindcss";
 
 /*
-  ABC X-Energy — "Supply counter, premium-grade"
-  Palette derived from the brand mark: a green→orange→red energy flame.
-  Green = brand / cooling / efficiency (the logo's left). Warm orange-red =
-  energy / heat / accent (the logo's right). Safety amber bridges them for
-  stock urgency. Warm certificate-paper canvas + warm-charcoal panels let both
-  logo colors pop. Hue is held constant across surfaces — only lightness shifts.
+  Summit HVAC Supply — "mountain air, contractor-grade"
+  The palette pairs slate ridge tones with evergreen supply-counter confidence,
+  cool airflow blue, and a measured amber accent for stock and fulfillment.
 */
 
 :root {
-  /* --- Canvas & surfaces: warm certificate paper, lightness-only steps --- */
-  --canvas: oklch(0.985 0.006 80);          /* page background — warm off-white */
-  --surface-1: oklch(1 0.002 80);           /* raised cards */
-  --surface-2: oklch(0.972 0.007 80);       /* inset wells, table headers */
-  --surface-3: oklch(0.955 0.009 78);       /* hover / nested */
-  --ink-panel: oklch(0.23 0.018 155);       /* warm charcoal-green panels (footer, fulfillment) */
+  /* --- Canvas & surfaces: cool warehouse paper with crisp spec-sheet layers --- */
+  --canvas: oklch(0.982 0.005 222);
+  --surface-1: oklch(1 0.002 222);
+  --surface-2: oklch(0.966 0.008 222);
+  --surface-3: oklch(0.946 0.011 222);
+  --ink-panel: oklch(0.25 0.044 213);
 
-  /* --- Ink: four warm-grey text levels --- */
-  --ink-1: oklch(0.24 0.012 70);            /* primary */
-  --ink-2: oklch(0.43 0.012 72);            /* secondary */
-  --ink-3: oklch(0.57 0.012 74);            /* tertiary / metadata */
-  --ink-4: oklch(0.70 0.010 76);            /* muted / placeholder */
+  /* --- Ink: slate, steady and readable on dense contractor pages --- */
+  --ink-1: oklch(0.24 0.027 224);
+  --ink-2: oklch(0.42 0.024 224);
+  --ink-3: oklch(0.56 0.021 224);
+  --ink-4: oklch(0.70 0.017 224);
 
-  /* --- Borders: low-contrast warm, progression by intensity --- */
-  --line: oklch(0.24 0.01 70 / 0.10);       /* standard separation */
-  --line-soft: oklch(0.24 0.01 70 / 0.06);  /* whisper separation */
-  --line-strong: oklch(0.24 0.01 70 / 0.18);/* emphasis */
+  /* --- Borders: blue-grey metal shelving, low contrast until emphasis --- */
+  --line: oklch(0.24 0.025 224 / 0.11);
+  --line-soft: oklch(0.24 0.025 224 / 0.065);
+  --line-strong: oklch(0.24 0.025 224 / 0.20);
 
-  /* --- Brand: logo green (primary action, links, cooling/efficiency) --- */
-  --brand: oklch(0.535 0.155 150);
-  --brand-hover: oklch(0.475 0.155 150);
-  --brand-ink: oklch(0.99 0.02 150);        /* text on brand */
-  --brand-tint: oklch(0.535 0.155 150 / 0.10);
+  /* --- Brand: summit evergreen for actions, links, and active state --- */
+  --brand: oklch(0.45 0.105 178);
+  --brand-hover: oklch(0.39 0.105 178);
+  --brand-ink: oklch(0.99 0.012 190);
+  --brand-tint: oklch(0.45 0.105 178 / 0.12);
 
-  /* --- Energy accent: logo orange-red (the flame's heat side) --- */
-  --copper: oklch(0.625 0.165 47);
-  --copper-tint: oklch(0.625 0.165 47 / 0.12);
+  /* --- Amber accent: will-call, stock, and high-value moments --- */
+  --copper: oklch(0.72 0.14 72);
+  --copper-tint: oklch(0.72 0.14 72 / 0.14);
 
-  /* --- Brand identity gradient: the logo flame, green → orange → red --- */
-  --energy-gradient: linear-gradient(
+  --supply-gradient: linear-gradient(
     100deg,
-    oklch(0.58 0.17 150) 0%,
-    oklch(0.70 0.16 90) 38%,
-    oklch(0.66 0.18 55) 64%,
-    oklch(0.57 0.21 28) 100%
+    oklch(0.31 0.075 224) 0%,
+    oklch(0.45 0.105 178) 46%,
+    oklch(0.70 0.13 72) 100%
   );
 
   /* --- Amber: stock / ship-today urgency --- */
-  --stock-ready: oklch(0.72 0.15 75);
-  --stock-ready-tint: oklch(0.72 0.15 75 / 0.16);
-  --stock-ready-ink: oklch(0.42 0.10 62);
+  --stock-ready: oklch(0.70 0.13 72);
+  --stock-ready-tint: oklch(0.70 0.13 72 / 0.16);
+  --stock-ready-ink: oklch(0.38 0.085 65);
 
-  /* --- Deep evergreen: efficiency / rebate / ENERGY STAR (distinct from brand) --- */
-  --eco: oklch(0.46 0.09 172);
-  --eco-tint: oklch(0.46 0.09 172 / 0.13);
-  --eco-ink: oklch(0.34 0.07 172);
+  /* --- Airflow blue: certification, efficiency, and cooling cues --- */
+  --eco: oklch(0.55 0.082 214);
+  --eco-tint: oklch(0.55 0.082 214 / 0.13);
+  --eco-ink: oklch(0.36 0.065 214);
 
   /* --- Semantic --- */
   --danger: oklch(0.55 0.18 25);
   --danger-tint: oklch(0.55 0.18 25 / 0.10);
 
   /* --- Form controls (tuned independently from layout surfaces) --- */
-  --control-bg: oklch(0.972 0.007 80);      /* inset, slightly darker than surface */
-  --control-border: oklch(0.24 0.01 70 / 0.16);
+  --control-bg: oklch(0.966 0.008 222);
+  --control-border: oklch(0.24 0.025 224 / 0.16);
 
   /* --- Radius scale --- */
   --r-sm: 7px;     /* inputs, buttons, chips */
@@ -71,9 +66,9 @@
   --r-lg: 18px;    /* modals, hero panels */
 
   /* --- Elevation: subtle, warm-tinted shadows (approachable, not cold-tech) --- */
-  --shadow-sm: 0 1px 2px oklch(0.30 0.02 70 / 0.06);
-  --shadow-md: 0 4px 14px oklch(0.30 0.02 70 / 0.08), 0 1px 3px oklch(0.30 0.02 70 / 0.05);
-  --shadow-lg: 0 18px 50px oklch(0.30 0.02 70 / 0.14), 0 4px 12px oklch(0.30 0.02 70 / 0.07);
+  --shadow-sm: 0 1px 2px oklch(0.25 0.04 224 / 0.06);
+  --shadow-md: 0 4px 14px oklch(0.25 0.04 224 / 0.08), 0 1px 3px oklch(0.25 0.04 224 / 0.05);
+  --shadow-lg: 0 18px 50px oklch(0.25 0.04 224 / 0.14), 0 4px 12px oklch(0.25 0.04 224 / 0.07);
 }
 
 @theme inline {

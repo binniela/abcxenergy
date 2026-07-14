@@ -7,8 +7,13 @@ import * as React from "react";
    localStorage so a contractor building a job over the day doesn't lose it. */
 
 export type QuoteItem = {
-  slug: string;
-  name: string;
+  skuId: string;
+  sku: string;
+  modelNumber: string;
+  title: string;
+  image: string;
+  unitPrice: number;
+  available: number;
   qty: number;
 };
 
@@ -16,9 +21,9 @@ type QuoteState = {
   items: QuoteItem[];
   isOpen: boolean;
   count: number;
-  add: (slug: string, name: string) => void;
-  remove: (slug: string) => void;
-  setQty: (slug: string, qty: number) => void;
+  add: (item: Omit<QuoteItem, "qty">) => void;
+  remove: (skuId: string) => void;
+  setQty: (skuId: string, qty: number) => void;
   clear: () => void;
   open: () => void;
   close: () => void;
@@ -26,7 +31,7 @@ type QuoteState = {
 };
 
 const QuoteCtx = React.createContext<QuoteState | null>(null);
-const STORAGE_KEY = "abcx-quote-v1";
+const STORAGE_KEY = "summit-quote-v1";
 
 function readStoredItems(): QuoteItem[] {
   if (typeof window === "undefined") return [];
@@ -39,8 +44,13 @@ function readStoredItems(): QuoteItem[] {
       (item): item is QuoteItem =>
         typeof item === "object" &&
         item !== null &&
-        typeof (item as QuoteItem).slug === "string" &&
-        typeof (item as QuoteItem).name === "string" &&
+        typeof (item as QuoteItem).skuId === "string" &&
+        typeof (item as QuoteItem).sku === "string" &&
+        typeof (item as QuoteItem).modelNumber === "string" &&
+        typeof (item as QuoteItem).title === "string" &&
+        typeof (item as QuoteItem).image === "string" &&
+        typeof (item as QuoteItem).unitPrice === "number" &&
+        typeof (item as QuoteItem).available === "number" &&
         typeof (item as QuoteItem).qty === "number"
     );
   } catch {
@@ -60,25 +70,25 @@ export function QuoteProvider({ children }: { children: React.ReactNode }) {
     }
   }, [items]);
 
-  const add = React.useCallback((slug: string, name: string) => {
+  const add = React.useCallback((item: Omit<QuoteItem, "qty">) => {
     setItems((prev) => {
-      const existing = prev.find((i) => i.slug === slug);
+      const existing = prev.find((i) => i.skuId === item.skuId);
       if (existing) {
-        return prev.map((i) => (i.slug === slug ? { ...i, qty: i.qty + 1 } : i));
+        return prev.map((i) => (i.skuId === item.skuId ? { ...i, ...item, qty: i.qty + 1 } : i));
       }
-      return [...prev, { slug, name, qty: 1 }];
+      return [...prev, { ...item, qty: 1 }];
     });
     setIsOpen(true);
   }, []);
 
-  const remove = React.useCallback((slug: string) => {
-    setItems((prev) => prev.filter((i) => i.slug !== slug));
+  const remove = React.useCallback((skuId: string) => {
+    setItems((prev) => prev.filter((i) => i.skuId !== skuId));
   }, []);
 
-  const setQty = React.useCallback((slug: string, qty: number) => {
+  const setQty = React.useCallback((skuId: string, qty: number) => {
     setItems((prev) =>
       prev
-        .map((i) => (i.slug === slug ? { ...i, qty: Math.max(0, qty) } : i))
+        .map((i) => (i.skuId === skuId ? { ...i, qty: Math.max(0, qty) } : i))
         .filter((i) => i.qty > 0)
     );
   }, []);

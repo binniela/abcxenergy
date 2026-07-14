@@ -1,4 +1,4 @@
-# ABC X-Energy Supabase Demo Backend
+# Summit HVAC Supply Supabase Demo Backend
 
 This folder contains the Supabase-ready wholesale operations backend for the sales demo.
 

@@ -76,7 +76,7 @@ export function PortalDashboard({ overview }: { overview: PortalOverview }) {
         <Panel title="Orders" action="Fulfillment">
           <MiniList rows={overview.orders.map((order) => [order.orderNumber, currency(order.total), order.status])} empty="No orders yet." />
         </Panel>
-        <Panel title="Invoices" action="Mock AR ledger">
+        <Panel title="Invoices" action="AR ledger">
           <MiniList rows={overview.invoices.map((invoice) => [invoice.invoiceNumber, `${currency(invoice.balance)} balance`, invoice.status])} empty="No invoices yet." />
         </Panel>
       </section>

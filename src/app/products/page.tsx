@@ -1,9 +1,13 @@
 import { ProductCatalog } from "@/components/product-catalog";
-import { getSeriesCardSummaries } from "@/lib/backend/services";
 
 export const revalidate = 60;
 
-export default async function ProductsPage() {
-  const summaries = await getSeriesCardSummaries();
-  return <ProductCatalog summaries={summaries} />;
+export const metadata = {
+  title: "TCL HVAC SKUs - Search Stock, Specs & Pricing",
+  description:
+    "Search Summit HVAC Supply SKUs by model, BTU, voltage, unit type, stock, documents, and contractor pricing.",
+};
+
+export default function ProductsPage() {
+  return <ProductCatalog />;
 }

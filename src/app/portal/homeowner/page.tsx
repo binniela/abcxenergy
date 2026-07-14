@@ -5,7 +5,7 @@ import { getPortalOverview } from "@/lib/backend/services";
 import { redirect } from "next/navigation";
 
 export const metadata = {
-  title: "Homeowner Referral Portal - ABC X-Energy",
+  title: "Homeowner Referral Portal - Summit HVAC Supply",
 };
 
 export default async function HomeownerPortalPage() {

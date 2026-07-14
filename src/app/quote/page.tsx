@@ -29,8 +29,10 @@ export default function QuotePage() {
         phone: String(form.get("phone") ?? ""),
         need: String(form.get("need") ?? ""),
         lines: items.map((item) => ({
-          seriesSlug: item.slug,
-          productName: item.name,
+          skuId: item.skuId,
+          sku: item.sku,
+          modelNumber: item.modelNumber,
+          productName: item.title,
           quantity: item.qty,
         })),
       }),
@@ -131,9 +133,9 @@ export default function QuotePage() {
             ) : (
               <ul className="mt-3 divide-y divide-[var(--line)]">
                 {items.map((i) => (
-                  <li key={i.slug} className="flex items-center justify-between gap-2 py-2.5 text-sm">
-                    <Link href={`/products/${i.slug}`} className="text-ink-1 hover:text-brand">
-                      {i.name}
+                  <li key={i.skuId} className="flex items-center justify-between gap-2 py-2.5 text-sm">
+                    <Link href={`/products/sku/${encodeURIComponent(i.sku)}`} className="text-ink-1 hover:text-brand">
+                      {i.title}
                     </Link>
                     <span className="tnum font-mono text-ink-3">×{i.qty}</span>
                   </li>

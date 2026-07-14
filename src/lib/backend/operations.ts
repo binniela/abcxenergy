@@ -64,6 +64,11 @@ export async function invoiceOrder(orderId: string, dueDate?: string): Promise<s
   return invoiceId;
 }
 
+/** Advance an order's pickup/delivery status (staff only; enforced in DB). */
+export async function advanceFulfillment(orderId: string, status: string): Promise<void> {
+  await rpc("advance_fulfillment", { p_order_id: orderId, p_status: status });
+}
+
 /** Manual (non-Stripe) payment, e.g. a check at the counter. */
 export async function recordManualPayment(
   invoiceId: string,

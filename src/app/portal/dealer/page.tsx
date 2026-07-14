@@ -5,7 +5,7 @@ import { getPortalOverview } from "@/lib/backend/services";
 import { redirect } from "next/navigation";
 
 export const metadata = {
-  title: "Dealer Portal - ABC X-Energy",
+  title: "Dealer Portal - Summit HVAC Supply",
 };
 
 export default async function DealerPortalPage() {

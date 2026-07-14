@@ -39,6 +39,22 @@ Deno.serve(async (request) => {
   if (event.type === "payment_intent.succeeded") {
     const pi = event.data.object as Stripe.PaymentIntent;
     const invoiceId = pi.metadata?.invoice_id;
+    const orderId = pi.metadata?.order_id;
+
+    // Storefront checkout pays at the ORDER level (no invoice yet). Mark the
+    // order paid, idempotently on the Stripe event id.
+    if (orderId && !invoiceId) {
+      const { error } = await supabase.rpc("mark_order_paid", {
+        p_order_id: orderId,
+        p_amount: pi.amount_received / 100,
+        p_stripe_event_id: event.id,
+      });
+      if (error) {
+        console.error("mark_order_paid failed:", error.message);
+        return new Response("Order update failed", { status: 500 });
+      }
+    }
+
     if (invoiceId) {
       const { error } = await supabase.rpc("apply_payment", {
         p_invoice_id: invoiceId,

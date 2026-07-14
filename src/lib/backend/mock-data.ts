@@ -24,7 +24,7 @@ export const demoAccounts: Account[] = [
   {
     id: "acct-internal",
     type: "internal",
-    name: "ABC X-Energy",
+    name: "Summit HVAC Supply",
     status: "active",
     priceTier: "internal",
     creditLimit: 0,
@@ -107,7 +107,7 @@ export const demoUsers: DemoUser[] = [
     accountId: "acct-internal",
     role: "staff",
     name: "Operations Manager",
-    email: "ops@abcxenergy.example",
+    email: "ops@summithvacsupply.example",
   },
   {
     id: "user-dealer",
@@ -341,7 +341,13 @@ export const demoQuoteRequests: QuoteRequest[] = [
     need: "Three Elite 9k systems for San Mateo tenant improvement.",
     status: "new",
     createdAt: "2026-06-05T16:20:00.000Z",
-    lines: [{ seriesSlug: "elite", productName: "Elite Series", quantity: 3 }],
+    lines: [{
+      skuId: "sku-elt-09",
+      sku: "TCL-ELT-09HP-230",
+      modelNumber: "ELITE-09-230V",
+      productName: "Elite 9k Premium Heat Pump",
+      quantity: 3,
+    }],
   },
 ];
 
@@ -498,7 +504,7 @@ export const demoActivity: Activity[] = [
   {
     id: "act-invoice-opened",
     accountId: "acct-dealer-bay",
-    event: "Invoice opened with mock AR balance",
+    event: "Invoice opened with AR balance",
     entityType: "invoice",
     entityId: "inv-1884",
     createdAt: "2026-06-05T18:30:00.000Z",

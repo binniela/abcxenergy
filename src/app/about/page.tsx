@@ -14,9 +14,9 @@ import { TrustBadges } from "@/components/trust-badges";
 import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "About - Wholesale TCL HVAC Distributor in Newark, CA",
+  title: "About - Bay Area TCL HVAC Supply in Newark, CA",
   description:
-    "ABC X-Energy is an authorized wholesale distributor of TCL HVAC systems, based in Newark, CA, serving contractors across the West Coast.",
+    "Summit HVAC Supply provides Bay Area TCL heat pump and mini split equipment, homeowner guidance, installer referral, and contractor supply from Newark, CA.",
 };
 
 export default function AboutPage() {
@@ -25,21 +25,19 @@ export default function AboutPage() {
       <section className="border-b border-line bg-surface-1">
         <Container className="grid items-center gap-10 py-14 lg:grid-cols-2 lg:py-20">
           <div>
-            <Eyebrow>About ABC X-Energy</Eyebrow>
+            <Eyebrow>About Summit HVAC Supply</Eyebrow>
             <h1 className="mt-3 font-display text-3xl font-semibold tracking-tight text-ink-1 sm:text-4xl">
-              A West Coast distributor built for the people who install the
-              systems.
+              Local TCL HVAC supply for Bay Area homes, properties, and pros.
             </h1>
             <p className="mt-4 text-lg leading-relaxed text-ink-2">
-              We&apos;re an authorized wholesale distributor of TCL HVAC systems
-              based in Newark, California. Our job is simple: keep the units
-              contractors need in stock, price them so there&apos;s real margin
-              on the bid, and back them with the spec sheets and rebate help
-              that close the sale.
+              We supply TCL heat pumps and mini splits from Newark, California.
+              Homeowners can ask about one system and installer help; contractors
+              still get fast SKU availability, documents, and account pricing.
+              Installation is handled by qualified local contractors.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <LinkButton href="/dealers">
-                Request a wholesale account
+                Open contractor account
               </LinkButton>
               <LinkButton href="/contact" variant="secondary">
                 Contact us
@@ -65,7 +63,7 @@ export default function AboutPage() {
           <Pillar
             icon={<Truck size={20} />}
             title="Stocked Locally"
-            body="Core TCL SKUs stocked deep in Newark and shipped same-day across five states, not trucked in from across the country."
+            body="Core TCL systems are stocked in Newark for Bay Area will-call, delivery coordination, and fast job support."
           />
           <Pillar
             icon={<ShieldCheck size={20} />}
@@ -74,8 +72,8 @@ export default function AboutPage() {
           />
           <Pillar
             icon={<Users size={20} />}
-            title="Contractor-first Mindset"
-            body="Real people who know HVAC answer the phone. We help you spec the job and find the rebate, then make reordering effortless."
+            title="Two clear buying paths"
+            body="Homeowners get plain-English equipment guidance. Contractors get the dense pro workflow where it belongs."
           />
         </div>
       </Container>
@@ -127,7 +125,7 @@ export default function AboutPage() {
                   {SITE.address.full}
                 </p>
                 <p className="mt-3 font-mono text-xs uppercase tracking-[0.14em] text-ink-3">
-                  Will-call · freight · West Coast service
+                  Newark will-call · Bay Area delivery · freight
                 </p>
               </div>
             </div>

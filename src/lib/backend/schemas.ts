@@ -1,7 +1,9 @@
 import { z } from "zod";
 
 export const quoteRequestLineSchema = z.object({
-  seriesSlug: z.string().min(1),
+  skuId: z.string().min(1),
+  sku: z.string().min(1),
+  modelNumber: z.string().min(1),
   productName: z.string().min(1),
   quantity: z.number().int().min(1).max(200),
 });
@@ -26,6 +28,46 @@ export const dealerApplicationSchema = z.object({
   brands: z.string().optional(),
   notes: z.string().optional(),
 });
+
+export const checkoutSchema = z.object({
+  items: z
+    .array(
+      z.object({
+        skuId: z.string().min(1),
+        sku: z.string().min(1),
+        modelNumber: z.string().min(1),
+        title: z.string().min(1),
+        qty: z.number().int().min(1).max(200),
+      })
+    )
+    .min(1),
+  method: z.enum(["pickup", "local_delivery", "freight"]),
+  zip: z.string().optional(),
+  address: z.string().optional(),
+  company: z.string().optional(),
+  phone: z.string().optional(),
+  role: z.string().optional(),
+  poNumber: z.string().optional(),
+  billingContact: z.string().optional(),
+  window: z.string().optional(),
+  buyerName: z.string().optional(),
+  buyerEmail: z.string().email().optional(),
+}).superRefine((value, ctx) => {
+  if (value.method === "local_delivery" && (!value.address || value.address.trim().length < 5)) {
+    ctx.addIssue({ code: "custom", path: ["address"], message: "Jobsite address is required for local delivery." });
+  }
+  if (!value.buyerName || value.buyerName.trim().length < 2) {
+    ctx.addIssue({ code: "custom", path: ["buyerName"], message: "Buyer name is required." });
+  }
+  if (!value.buyerEmail) {
+    ctx.addIssue({ code: "custom", path: ["buyerEmail"], message: "Buyer email is required." });
+  }
+  if (!value.phone || value.phone.trim().length < 7) {
+    ctx.addIssue({ code: "custom", path: ["phone"], message: "Phone is required for order follow-up." });
+  }
+});
+
+export type CheckoutInput = z.infer<typeof checkoutSchema>;
 
 export const contactRequestSchema = z.object({
   topic: z.string().min(1),

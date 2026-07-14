@@ -19,7 +19,7 @@ written and the Next app builds. These steps connect it to live cloud services
 ## 1. Auth — first staff user
 ```bash
 set -a; source .env.local; set +a
-npm run seed:staff -- staff@abcxenergy.com 'StrongPass!23' 'Avery Stocke'
+npm run seed:staff -- staff@summithvacsupply.com 'StrongPass!23' 'Avery Stocke'
 ```
 Visit `/portal/login`, sign in, land on `/admin`. A non-staff session is
 redirected, and (more importantly) blocked by RLS + the `assert_staff()` guard
@@ -39,7 +39,7 @@ supabase functions deploy send-receipt
 
 ## 3. Resend + scheduled jobs
 ```bash
-supabase secrets set RESEND_API_KEY=re_... EMAIL_FROM="ABC X-Energy <orders@abcxenergy.com>" OPS_ALERT_EMAIL=ops@abcxenergy.com
+supabase secrets set RESEND_API_KEY=re_... EMAIL_FROM="Summit HVAC Supply <orders@summithvacsupply.com>" OPS_ALERT_EMAIL=ops@summithvacsupply.com
 supabase functions deploy low-stock-alert
 supabase functions deploy ar-statements
 ```

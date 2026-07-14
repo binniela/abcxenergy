@@ -1,7 +1,7 @@
 /**
  * Create (or update) a staff auth user + user_profiles row.
  *
- *   npx tsx scripts/create-staff-user.ts staff@abcxenergy.com 'StrongPass!23' 'Avery Stocke'
+ *   npx tsx scripts/create-staff-user.ts staff@summithvacsupply.com 'StrongPass!23' 'Avery Stocke'
  *
  * Requires NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in the env
  * (load .env.local first, e.g. `set -a; source .env.local; set +a`).

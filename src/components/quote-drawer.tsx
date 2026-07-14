@@ -5,22 +5,46 @@ import Image from "next/image";
 import { X, Minus, Plus, Trash2, FileText } from "lucide-react";
 import * as React from "react";
 import { useQuote } from "./quote-context";
-import { getSeries } from "@/lib/products";
+import { productHref } from "@/lib/storefront/catalog";
 
 /* Right-side drawer that mirrors the contractor's quote list. Not a checkout —
    it hands off to the /quote request form with the list prefilled in mind. */
 export function QuoteDrawer() {
   const { items, isOpen, close, setQty, remove, clear, count } = useQuote();
+  const panelRef = React.useRef<HTMLElement>(null);
+  const closeRef = React.useRef<HTMLButtonElement>(null);
+  const previousFocus = React.useRef<HTMLElement | null>(null);
 
   // Lock scroll + close on Escape while open.
   React.useEffect(() => {
     if (!isOpen) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && close();
+    previousFocus.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    closeRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") close();
+      if (e.key !== "Tab" || !panelRef.current) return;
+      const focusable = Array.from(
+        panelRef.current.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+      );
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
     document.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
     return () => {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
+      previousFocus.current?.focus();
     };
   }, [isOpen, close]);
 
@@ -35,8 +59,9 @@ export function QuoteDrawer() {
       />
       {/* Panel */}
       <aside
+        ref={panelRef}
         role={isOpen ? "dialog" : undefined}
-        aria-label={isOpen ? "Your quote list" : undefined}
+        aria-labelledby={isOpen ? "quote-drawer-title" : undefined}
         aria-modal={isOpen ? "true" : undefined}
         aria-hidden={!isOpen}
         inert={!isOpen}
@@ -46,14 +71,15 @@ export function QuoteDrawer() {
       >
         <header className="flex items-center justify-between border-b border-line px-5 py-4">
           <div className="flex flex-col">
-            <h2 className="font-display text-lg font-semibold tracking-tight text-ink-1">
+            <h2 id="quote-drawer-title" className="font-display text-lg font-semibold tracking-tight text-ink-1">
               Your quote
             </h2>
             <span className="text-xs text-ink-3">
-              {count} {count === 1 ? "unit" : "units"} · no pricing shown until we reply
+              {count} {count === 1 ? "unit" : "units"} · check out now or request a quote
             </span>
           </div>
           <button
+            ref={closeRef}
             onClick={close}
             aria-label="Close quote"
             className="grid size-9 place-items-center rounded-[--r-sm] text-ink-2 hover:bg-surface-2 hover:text-ink-1"
@@ -83,32 +109,30 @@ export function QuoteDrawer() {
           <>
             <ul className="flex-1 divide-y divide-[var(--line)] overflow-y-auto px-5">
               {items.map((item) => {
-                const series = getSeries(item.slug);
                 return (
-                <li key={item.slug} className="flex items-center gap-3 py-4">
+                <li key={item.skuId} className="flex items-center gap-3 py-4">
                   <div className="relative size-14 shrink-0 overflow-hidden rounded-[--r-sm] border border-line bg-surface-2">
-                    {series ? (
-                      <Image
-                        src={series.image}
-                        alt=""
-                        fill
-                        sizes="56px"
-                        className="object-contain"
-                      />
-                    ) : (
-                      <FileText size={20} className="m-auto mt-4 text-ink-4" />
-                    )}
+                    <Image
+                      src={item.image}
+                      alt=""
+                      fill
+                      sizes="56px"
+                      className="object-contain"
+                    />
                   </div>
                   <div className="min-w-0 flex-1">
                     <Link
-                      href={`/products/${item.slug}`}
+                      href={productHref(item)}
                       onClick={close}
                       className="block truncate text-sm font-semibold text-ink-1 hover:text-brand"
                     >
-                      {item.name}
+                      {item.title}
                     </Link>
+                    <p className="mt-0.5 truncate font-mono text-[11px] uppercase tracking-[0.12em] text-ink-3">
+                      {item.sku} · {item.modelNumber}
+                    </p>
                     <button
-                      onClick={() => remove(item.slug)}
+                      onClick={() => remove(item.skuId)}
                       className="mt-1 inline-flex items-center gap-1 text-xs text-ink-3 hover:text-danger"
                     >
                       <Trash2 size={12} /> Remove
@@ -116,7 +140,7 @@ export function QuoteDrawer() {
                   </div>
                   <div className="flex items-center gap-1 rounded-[--r-sm] border border-control-border bg-control-bg">
                     <button
-                      onClick={() => setQty(item.slug, item.qty - 1)}
+                      onClick={() => setQty(item.skuId, item.qty - 1)}
                       aria-label="Decrease quantity"
                       className="grid size-8 place-items-center text-ink-2 hover:text-ink-1"
                     >
@@ -126,7 +150,7 @@ export function QuoteDrawer() {
                       {item.qty}
                     </span>
                     <button
-                      onClick={() => setQty(item.slug, item.qty + 1)}
+                      onClick={() => setQty(item.skuId, item.qty + 1)}
                       aria-label="Increase quantity"
                       className="grid size-8 place-items-center text-ink-2 hover:text-ink-1"
                     >
@@ -140,11 +164,18 @@ export function QuoteDrawer() {
 
             <footer className="border-t border-line bg-surface-2 px-5 py-4">
               <Link
-                href="/quote"
+                href="/checkout"
                 onClick={close}
                 className="flex h-12 w-full items-center justify-center gap-2 rounded-[--r-sm] bg-brand text-[15px] font-medium text-brand-ink shadow-[var(--shadow-sm)] transition-colors hover:bg-brand-hover"
               >
-                Request pricing & availability
+                Checkout: pickup or delivery
+              </Link>
+              <Link
+                href="/quote"
+                onClick={close}
+                className="mt-2 flex h-11 w-full items-center justify-center gap-2 rounded-[--r-sm] border border-line-strong bg-surface-1 text-sm font-medium text-ink-1 transition-colors hover:bg-surface-2"
+              >
+                Or request a custom quote
               </Link>
               <button
                 onClick={clear}

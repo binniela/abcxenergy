@@ -15,7 +15,7 @@ import { Container, Chip, LinkButton } from "@/components/ui";
 import { getOperationsOverview } from "@/lib/backend/services";
 
 export const metadata = {
-  title: "Operations Dashboard - ABC X-Energy",
+  title: "Operations Dashboard - Summit HVAC Supply",
 };
 
 export default async function AdminPage() {
@@ -35,7 +35,7 @@ export default async function AdminPage() {
             Wholesale operations dashboard
           </h1>
           <p className="mt-2 max-w-2xl text-ink-2">
-            Track stock, dealer activity, quotes, orders, invoices, purchase orders, receiving, and open support cases from one sales-demo console.
+            Track stock, dealer activity, quotes, orders, invoices, purchase orders, receiving, and open support cases from one operations console.
           </p>
         </div>
         <LinkButton href="/products" variant="secondary">
@@ -109,7 +109,7 @@ export default async function AdminPage() {
           ]} />
         </Panel>
 
-        <Panel title="Orders & invoices" icon={<FileText size={18} />} action="Mock AR ledger">
+        <Panel title="Orders & invoices" icon={<FileText size={18} />} action="AR ledger">
           <List rows={[
             ...ops.orders.map((order) => [order.orderNumber, `${currency(order.total)} · ${order.status}`, "order"]),
             ...ops.invoices.map((invoice) => [invoice.invoiceNumber, `${currency(invoice.balance)} balance`, invoice.status]),

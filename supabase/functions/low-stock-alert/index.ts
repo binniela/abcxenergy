@@ -4,8 +4,8 @@ import { Resend } from "npm:resend";
 import { createClient } from "npm:@supabase/supabase-js";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY")!);
-const FROM = Deno.env.get("EMAIL_FROM") ?? "ABC X-Energy <orders@abcxenergy.com>";
-const OPS = Deno.env.get("OPS_ALERT_EMAIL") ?? "ops@abcxenergy.com";
+const FROM = Deno.env.get("EMAIL_FROM") ?? "Summit HVAC Supply <orders@summithvacsupply.com>";
+const OPS = Deno.env.get("OPS_ALERT_EMAIL") ?? "ops@summithvacsupply.com";
 const supabase = createClient(
   Deno.env.get("SUPABASE_URL")!,
   Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
