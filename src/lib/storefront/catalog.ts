@@ -1,0 +1,204 @@
+import { SERIES, CATEGORY_LABEL, type Category, getSeries } from "@/lib/products";
+import {
+  demoInventoryLots,
+  demoSkuDocuments,
+  demoSkus,
+  demoWarehouses,
+} from "@/lib/backend/mock-data";
+import { summarizeInventory } from "@/lib/backend/math";
+import type { InventorySummary, Sku, SkuDocument } from "@/lib/backend/types";
+
+export type StorefrontSku = Sku & {
+  seriesName: string;
+  seriesSlug: string;
+  category: Category;
+  categoryLabel: string;
+  image: string;
+  available: number;
+  stockStatus: InventorySummary["status"];
+  documents: SkuDocument[];
+  warehouse: {
+    code: string;
+    name: string;
+    address: string;
+  };
+};
+
+export type CatalogFilters = {
+  q?: string;
+  category?: Category | "all";
+  btu?: string;
+  voltage?: string;
+  unitType?: string;
+  stock?: "all" | "ready" | "low" | "backorder";
+  minSeer?: number;
+};
+
+const inventoryBySku = new Map(summarizeInventory(demoInventoryLots).map((summary) => [summary.skuId, summary]));
+const warehouse = demoWarehouses[0];
+
+function toStorefrontSku(sku: Sku): StorefrontSku {
+  const series = getSeries(sku.seriesSlug);
+  const inventory = inventoryBySku.get(sku.id);
+  return {
+    ...sku,
+    seriesName: series?.name ?? sku.seriesSlug,
+    category: series?.category ?? "ductless",
+    categoryLabel: series ? CATEGORY_LABEL[series.category] : "HVAC",
+    image: series?.image ?? "/logo-summit.svg",
+    available: inventory?.available ?? 0,
+    stockStatus: inventory?.status ?? "backorder",
+    documents: demoSkuDocuments.filter((doc) => doc.skuId === sku.id),
+    warehouse: {
+      code: warehouse.code,
+      name: warehouse.name,
+      address: warehouse.address,
+    },
+  };
+}
+
+export function getStorefrontSkus(): StorefrontSku[] {
+  return demoSkus.map(toStorefrontSku);
+}
+
+export function getStorefrontSku(idOrSku: string): StorefrontSku | undefined {
+  const normalized = idOrSku.toLowerCase();
+  return getStorefrontSkus().find(
+    (sku) => sku.id.toLowerCase() === normalized || sku.sku.toLowerCase() === normalized
+  );
+}
+
+export function getRelatedSkus(sku: StorefrontSku, limit = 4): StorefrontSku[] {
+  return getStorefrontSkus()
+    .filter((candidate) => candidate.id !== sku.id)
+    .sort((a, b) => {
+      const seriesScore = Number(b.seriesSlug === sku.seriesSlug) - Number(a.seriesSlug === sku.seriesSlug);
+      if (seriesScore !== 0) return seriesScore;
+      const categoryScore = Number(b.category === sku.category) - Number(a.category === sku.category);
+      if (categoryScore !== 0) return categoryScore;
+      return Math.abs(a.btu - sku.btu) - Math.abs(b.btu - sku.btu);
+    })
+    .slice(0, limit);
+}
+
+export function searchStorefrontSkus(query: string, limit = 6): StorefrontSku[] {
+  const q = query.trim().toLowerCase();
+  if (q.length < 2) return [];
+  return getStorefrontSkus()
+    .map((sku) => {
+      const haystack = [
+        sku.sku,
+        sku.modelNumber,
+        sku.title,
+        sku.seriesName,
+        sku.unitType,
+        sku.voltage,
+        `${sku.btu}`,
+        sku.categoryLabel,
+      ]
+        .join(" ")
+        .toLowerCase();
+      const exact = sku.sku.toLowerCase() === q || sku.modelNumber.toLowerCase() === q;
+      const starts = sku.sku.toLowerCase().startsWith(q) || sku.modelNumber.toLowerCase().startsWith(q);
+      const contains = haystack.includes(q);
+      return { sku, score: exact ? 3 : starts ? 2 : contains ? 1 : 0 };
+    })
+    .filter((item) => item.score > 0)
+    .sort((a, b) => b.score - a.score || a.sku.title.localeCompare(b.sku.title))
+    .slice(0, limit)
+    .map((item) => item.sku);
+}
+
+export function filterStorefrontSkus(filters: CatalogFilters): StorefrontSku[] {
+  const q = filters.q?.trim().toLowerCase() ?? "";
+  return getStorefrontSkus().filter((sku) => {
+    if (q) {
+      const haystack = [
+        sku.sku,
+        sku.modelNumber,
+        sku.title,
+        sku.seriesName,
+        sku.unitType,
+        sku.voltage,
+        `${sku.btu}`,
+      ]
+        .join(" ")
+        .toLowerCase();
+      if (!haystack.includes(q)) return false;
+    }
+    if (filters.category && filters.category !== "all" && sku.category !== filters.category) return false;
+    if (filters.voltage && sku.voltage !== filters.voltage) return false;
+    if (filters.unitType && sku.unitType !== filters.unitType) return false;
+    if (filters.stock && filters.stock !== "all" && sku.stockStatus !== filters.stock) return false;
+    if (filters.btu) {
+      if (filters.btu === "small" && sku.btu > 12000) return false;
+      if (filters.btu === "mid" && (sku.btu < 18000 || sku.btu > 36000)) return false;
+      if (filters.btu === "large" && sku.btu < 36000) return false;
+    }
+    if (filters.minSeer) {
+      const series = getSeries(sku.seriesSlug);
+      if (!series || series.seer2 < filters.minSeer) return false;
+    }
+    return true;
+  });
+}
+
+export type SortKey =
+  | "relevance"
+  | "price-asc"
+  | "price-desc"
+  | "btu-asc"
+  | "btu-desc"
+  | "seer-desc"
+  | "availability";
+
+export const SORT_OPTIONS: { value: SortKey; label: string }[] = [
+  { value: "relevance", label: "Most relevant" },
+  { value: "price-asc", label: "Price: low to high" },
+  { value: "price-desc", label: "Price: high to low" },
+  { value: "btu-asc", label: "Capacity: low to high" },
+  { value: "btu-desc", label: "Capacity: high to low" },
+  { value: "seer-desc", label: "Efficiency: SEER2 high to low" },
+  { value: "availability", label: "Availability: in stock first" },
+];
+
+export function sortStorefrontSkus(skus: StorefrontSku[], sort: SortKey = "relevance"): StorefrontSku[] {
+  const seer = (s: StorefrontSku) => getSeries(s.seriesSlug)?.seer2 ?? 0;
+  const copy = [...skus];
+  switch (sort) {
+    case "price-asc":
+      return copy.sort((a, b) => a.msrp - b.msrp);
+    case "price-desc":
+      return copy.sort((a, b) => b.msrp - a.msrp);
+    case "btu-asc":
+      return copy.sort((a, b) => a.btu - b.btu);
+    case "btu-desc":
+      return copy.sort((a, b) => b.btu - a.btu);
+    case "seer-desc":
+      return copy.sort((a, b) => seer(b) - seer(a));
+    case "availability":
+      return copy.sort((a, b) => b.available - a.available);
+    default:
+      return copy;
+  }
+}
+
+export function getCatalogFacets() {
+  const skus = getStorefrontSkus();
+  return {
+    categories: SERIES.map((series) => ({
+      value: series.category,
+      label: CATEGORY_LABEL[series.category],
+    })).filter((item, index, arr) => arr.findIndex((candidate) => candidate.value === item.value) === index),
+    voltages: Array.from(new Set(skus.map((sku) => sku.voltage))).sort(),
+    unitTypes: Array.from(new Set(skus.map((sku) => sku.unitType))).sort(),
+  };
+}
+
+export function documentHref(doc: SkuDocument): string {
+  return `/api/documents/${doc.id}`;
+}
+
+export function productHref(sku: Pick<StorefrontSku, "sku">): string {
+  return `/products/sku/${encodeURIComponent(sku.sku)}`;
+}
