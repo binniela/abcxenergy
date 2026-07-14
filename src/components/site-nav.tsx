@@ -288,14 +288,19 @@ function ResourcesMenu({ pathname }: { pathname: string }) {
 
 function QuoteButton() {
   const { count, toggle } = useQuote();
+  // The count comes from localStorage (client-only), so defer showing it until
+  // after mount — otherwise SSR (count 0) and hydration (real count) mismatch.
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => setMounted(true), []);
+  const showCount = mounted && count > 0;
   return (
     <button
       onClick={toggle}
-      aria-label={`Open your quote list${count > 0 ? ` (${count} ${count === 1 ? "item" : "items"})` : ""}`}
+      aria-label={showCount ? `Open your quote list (${count} ${count === 1 ? "item" : "items"})` : "Open your quote list"}
       className="relative grid size-10 place-items-center rounded-[--r-sm] border border-line-strong bg-surface-1 text-ink-1 shadow-[var(--shadow-sm)] transition-colors hover:bg-surface-2"
     >
       <FileText size={18} strokeWidth={2.1} />
-      {count > 0 && (
+      {showCount && (
         <span className="tnum absolute -right-1.5 -top-1.5 grid min-w-[18px] place-items-center rounded-full bg-brand px-1 font-mono text-[10px] font-bold leading-[18px] text-brand-ink">
           {count}
         </span>
