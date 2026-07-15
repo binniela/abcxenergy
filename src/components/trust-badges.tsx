@@ -41,7 +41,7 @@ export function TrustBadges({ className = "" }: { className?: string }) {
           target="_blank"
           rel="noopener noreferrer"
           aria-label={cert.name}
-          className="flex h-20 items-center justify-center rounded-[--r-sm] bg-white px-4 transition-transform hover:-translate-y-0.5"
+          className="flex h-20 items-center justify-center rounded-(--r-sm) bg-white px-4 transition-transform hover:-translate-y-0.5"
         >
           <Image
             src={cert.image}

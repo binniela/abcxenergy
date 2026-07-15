@@ -61,14 +61,14 @@ export default async function FulfillmentQueuePage() {
       </p>
 
       {!supabase && (
-        <div className="mt-8 rounded-[--r-md] border border-dashed border-line-strong bg-surface-2/40 p-10 text-center text-ink-2">
+        <div className="mt-8 rounded-(--r-md) border border-dashed border-line-strong bg-surface-2/40 p-10 text-center text-ink-2">
           Connect Supabase to see live checkout orders here. In seeded mode there
           are no storefront orders to fulfill yet.
         </div>
       )}
 
       {supabase && orders.length === 0 && (
-        <div className="mt-8 rounded-[--r-md] border border-dashed border-line-strong bg-surface-2/40 p-10 text-center text-ink-2">
+        <div className="mt-8 rounded-(--r-md) border border-dashed border-line-strong bg-surface-2/40 p-10 text-center text-ink-2">
           No fulfillment orders yet. They appear here the moment a customer checks out.
         </div>
       )}
@@ -79,7 +79,7 @@ export default async function FulfillmentQueuePage() {
         return (
           <section key={method} className="mt-10">
             <div className="flex items-center gap-2">
-              <span className="grid size-8 place-items-center rounded-[--r-sm] bg-brand-tint text-brand">
+              <span className="grid size-8 place-items-center rounded-(--r-sm) bg-brand-tint text-brand">
                 {METHOD_META[method].icon}
               </span>
               <h2 className="font-display text-lg font-semibold tracking-tight text-ink-1">
@@ -87,7 +87,7 @@ export default async function FulfillmentQueuePage() {
               </h2>
               <Chip tone="neutral">{group.length}</Chip>
             </div>
-            <div className="mt-4 overflow-x-auto rounded-[--r-md] border border-line">
+            <div className="mt-4 overflow-x-auto rounded-(--r-md) border border-line">
               <table className="w-full min-w-[760px] text-left text-sm">
                 <thead className="border-b border-line bg-surface-2 text-xs uppercase tracking-[0.12em] text-ink-3">
                   <tr>

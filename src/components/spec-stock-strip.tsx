@@ -48,7 +48,7 @@ export function SpecStockStrip({
 }) {
   return (
     <div
-      className={`flex flex-wrap items-end justify-between gap-x-6 gap-y-4 rounded-[--r-sm] border border-line bg-surface-2 px-4 py-3 ${className}`}
+      className={`flex flex-wrap items-end justify-between gap-x-6 gap-y-4 rounded-(--r-sm) border border-line bg-surface-2 px-4 py-3 ${className}`}
     >
       <div className="flex flex-wrap items-end gap-x-6 gap-y-3">
         <SpecCell label="SEER2" value={`${series.seer2}`} />

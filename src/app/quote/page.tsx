@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { CheckCircle2, ArrowRight, Phone } from "lucide-react";
 import * as React from "react";
@@ -63,7 +64,7 @@ export default function QuotePage() {
           </p>
 
           {sent ? (
-            <div className="mt-8 rounded-[--r-md] border border-eco/30 bg-eco-tint/50 p-6">
+            <div className="mt-8 rounded-(--r-md) border border-eco/30 bg-eco-tint/50 p-6">
               <CheckCircle2 className="text-eco" size={28} />
               <h2 className="mt-3 font-display text-xl font-semibold text-ink-1">
                 Quote request prepared.
@@ -117,7 +118,22 @@ export default function QuotePage() {
 
         {/* Aside: quote summary + reassurance */}
         <aside className="lg:sticky lg:top-24 lg:self-start">
-          <div className="rounded-[--r-md] border border-line bg-surface-1 p-5 shadow-[var(--shadow-sm)]">
+          <div className="mb-4 overflow-hidden rounded-(--r-md) border border-line bg-surface-2 shadow-[var(--shadow-sm)]">
+            <div className="relative aspect-[16/10]">
+              <Image
+                src="/site/generated/spec-workbench-documents.jpg"
+                alt="HVAC quote preparation with spec sheets and installation materials"
+                fill
+                sizes="(min-width: 1024px) 380px, 100vw"
+                className="object-cover"
+              />
+            </div>
+            <p className="p-4 text-sm leading-relaxed text-ink-2">
+              Quotes are reviewed against equipment details, stock, documents,
+              and fulfillment timing before follow-up.
+            </p>
+          </div>
+          <div className="rounded-(--r-md) border border-line bg-surface-1 p-5 shadow-[var(--shadow-sm)]">
             <h2 className="font-display text-sm font-semibold text-ink-1">
               On your quote list
             </h2>
@@ -146,9 +162,9 @@ export default function QuotePage() {
 
           <a
             href={SITE.phoneHref}
-            className="mt-4 flex items-center gap-3 rounded-[--r-md] border border-line bg-surface-2 p-4 text-ink-1 transition-colors hover:bg-surface-3"
+            className="mt-4 flex items-center gap-3 rounded-(--r-md) border border-line bg-surface-2 p-4 text-ink-1 transition-colors hover:bg-surface-3"
           >
-            <span className="grid size-10 place-items-center rounded-[--r-sm] bg-brand-tint text-brand">
+            <span className="grid size-10 place-items-center rounded-(--r-sm) bg-brand-tint text-brand">
               <Phone size={18} />
             </span>
             <span className="flex flex-col leading-tight">

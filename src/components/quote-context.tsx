@@ -86,9 +86,11 @@ export function QuoteProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const setQty = React.useCallback((skuId: string, qty: number) => {
+    // NaN or junk input must never delete a line item — keep the prior qty.
+    if (!Number.isFinite(qty)) return;
     setItems((prev) =>
       prev
-        .map((i) => (i.skuId === skuId ? { ...i, qty: Math.max(0, qty) } : i))
+        .map((i) => (i.skuId === skuId ? { ...i, qty: Math.max(0, Math.floor(qty)) } : i))
         .filter((i) => i.qty > 0)
     );
   }, []);

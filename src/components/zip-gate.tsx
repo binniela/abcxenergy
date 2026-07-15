@@ -19,7 +19,7 @@ export function ZipGate({ className = "" }: { className?: string }) {
       }}
       className={`flex items-center gap-2 ${className}`}
     >
-      <span className="grid size-8 shrink-0 place-items-center rounded-[--r-sm] bg-brand-tint text-brand">
+      <span className="grid size-8 shrink-0 place-items-center rounded-(--r-sm) bg-brand-tint text-brand">
         <MapPin size={16} strokeWidth={2.2} />
       </span>
       {zip && zone ? (
@@ -52,11 +52,11 @@ export function ZipGate({ className = "" }: { className?: string }) {
             inputMode="numeric"
             placeholder="Enter ZIP for availability"
             aria-label="ZIP code"
-            className="h-9 w-44 rounded-[--r-sm] border border-control-border bg-control-bg px-3 text-sm text-ink-1 placeholder:text-ink-4 focus:outline-none"
+            className="h-9 w-44 rounded-(--r-sm) border border-control-border bg-control-bg px-3 text-sm text-ink-1 placeholder:text-ink-4 focus:outline-none"
           />
           <button
             type="submit"
-            className="h-9 rounded-[--r-sm] bg-brand px-3 text-sm font-medium text-brand-ink hover:bg-brand-hover"
+            className="h-9 rounded-(--r-sm) bg-brand px-3 text-sm font-medium text-brand-ink hover:bg-brand-hover"
           >
             Check
           </button>

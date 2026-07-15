@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ArrowRight, CheckCircle2, Home, Ruler, ShieldCheck, Users } from "lucide-react";
 import { Container, Eyebrow, LinkButton } from "@/components/ui";
 import { HomeownerRequestForm } from "@/components/homeowner-request-form";
+import { HeroRoutingPanel } from "@/components/homepage-conversion-tools";
 import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -74,7 +75,12 @@ export default function HomeownersPage() {
               </LinkButton>
             </div>
           </div>
-          <div className="rounded-[--r-md] border border-line bg-canvas p-5 shadow-[var(--shadow-sm)]">
+          <div className="flex flex-col gap-5">
+            {/* Relocated from the homepage hero — ZIP + role routing earns its
+                keep here, inside the installer-matching flow. */}
+            <HeroRoutingPanel />
+            <div className="overflow-hidden rounded-(--r-md) border border-line bg-canvas shadow-[var(--shadow-sm)]">
+            <div className="p-5">
             <h2 className="font-display text-lg font-semibold text-ink-1">
               What we do and do not do
             </h2>
@@ -82,6 +88,8 @@ export default function HomeownersPage() {
               <Proof title="Yes, one system is okay" body="You do not need to be buying a truckload or know the exact SKU." />
               <Proof title="Equipment supply only" body="We do not install. We help you prepare for a qualified installer conversation." />
               <Proof title="Local Bay Area focus" body={`Newark supply hub serving ${SITE.serviceArea}.`} />
+            </div>
+            </div>
             </div>
           </div>
         </Container>
@@ -110,7 +118,7 @@ export default function HomeownersPage() {
           </div>
           <div className="grid gap-3">
             {faq.map((item) => (
-              <div key={item.q} className="rounded-[--r-md] border border-line bg-canvas p-5">
+              <div key={item.q} className="rounded-(--r-md) border border-line bg-canvas p-5">
                 <h3 className="font-display text-base font-semibold text-ink-1">{item.q}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-ink-2">{item.a}</p>
               </div>
@@ -130,7 +138,7 @@ export default function HomeownersPage() {
 
 function Proof({ title, body }: { title: string; body: string }) {
   return (
-    <div className="flex gap-3 rounded-[--r-sm] border border-line bg-surface-1 p-3">
+    <div className="flex gap-3 rounded-(--r-sm) border border-line bg-surface-1 p-3">
       <CheckCircle2 size={18} className="mt-0.5 shrink-0 text-eco" />
       <div>
         <h3 className="text-sm font-semibold text-ink-1">{title}</h3>
@@ -142,8 +150,8 @@ function Proof({ title, body }: { title: string; body: string }) {
 
 function Step({ icon, title, body }: { icon: React.ReactNode; title: string; body: string }) {
   return (
-    <div className="rounded-[--r-md] border border-line bg-surface-1 p-5 shadow-[var(--shadow-sm)]">
-      <span className="grid size-11 place-items-center rounded-[--r-sm] bg-brand-tint text-brand">{icon}</span>
+    <div className="rounded-(--r-md) border border-line bg-surface-1 p-5 shadow-[var(--shadow-sm)]">
+      <span className="grid size-11 place-items-center rounded-(--r-sm) bg-brand-tint text-brand">{icon}</span>
       <h2 className="mt-4 font-display text-lg font-semibold tracking-tight text-ink-1">{title}</h2>
       <p className="mt-2 text-sm leading-relaxed text-ink-2">{body}</p>
     </div>

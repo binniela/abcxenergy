@@ -204,6 +204,17 @@ export function getCatalogFacets() {
   };
 }
 
+export type SeriesPriceRange = { low: number; high: number; count: number };
+
+/** Retail (MSRP) price range across a series' SKUs — powers "From $X,XXX". */
+export function getSeriesPriceRange(seriesSlug: string): SeriesPriceRange | null {
+  const prices = getStorefrontSkus()
+    .filter((sku) => sku.seriesSlug === seriesSlug)
+    .map((sku) => sku.msrp);
+  if (prices.length === 0) return null;
+  return { low: Math.min(...prices), high: Math.max(...prices), count: prices.length };
+}
+
 export function documentHref(doc: SkuDocument): string {
   return `/api/documents/${doc.id}`;
 }

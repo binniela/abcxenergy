@@ -65,7 +65,7 @@ export function ProductGallery({
   return (
     <div className="flex flex-col gap-3">
       {/* Main frame */}
-      <div className="relative aspect-[16/11] overflow-hidden rounded-[--r-lg] border border-line bg-surface-2 shadow-[var(--shadow-md)]">
+      <div className="relative aspect-[16/11] overflow-hidden rounded-(--r-lg) border border-line bg-surface-2 shadow-[var(--shadow-md)]">
         {current.kind === "photo" ? (
           <>
             <Image
@@ -80,7 +80,7 @@ export function ProductGallery({
               type="button"
               onClick={() => setZoom(true)}
               aria-label="Zoom image"
-              className="absolute bottom-3 right-3 grid size-10 place-items-center rounded-[--r-sm] border border-line bg-surface-1/90 text-ink-2 shadow-[var(--shadow-sm)] backdrop-blur transition-colors hover:text-ink-1"
+              className="absolute bottom-3 right-3 grid size-10 place-items-center rounded-(--r-sm) border border-line bg-surface-1/90 text-ink-2 shadow-[var(--shadow-sm)] backdrop-blur transition-colors hover:text-ink-1"
             >
               <ZoomIn size={18} />
             </button>
@@ -121,7 +121,7 @@ export function ProductGallery({
               aria-selected={index === active}
               aria-label={slide.kind === "photo" ? `Photo ${index + 1}` : "Specifications"}
               onClick={() => setActive(index)}
-              className={`relative grid size-16 place-items-center overflow-hidden rounded-[--r-sm] border bg-surface-1 transition-colors ${
+              className={`relative grid size-16 place-items-center overflow-hidden rounded-(--r-sm) border bg-surface-1 transition-colors ${
                 index === active ? "border-brand ring-2 ring-brand/25" : "border-line hover:border-line-strong"
               }`}
             >
@@ -155,7 +155,7 @@ export function ProductGallery({
             <X size={22} />
           </button>
           <div
-            className="relative h-[80vh] w-[min(90vw,1100px)] cursor-zoom-out overflow-hidden rounded-[--r-lg] bg-surface-1"
+            className="relative h-[80vh] w-[min(90vw,1100px)] cursor-zoom-out overflow-hidden rounded-(--r-lg) bg-surface-1"
             onClick={(e) => e.stopPropagation()}
             onMouseMove={onMove}
             onMouseLeave={() => setOrigin("50% 50%")}

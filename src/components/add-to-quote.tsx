@@ -38,8 +38,8 @@ export function AddToQuote({
   return (
     <button
       onClick={handle}
-      aria-label={`Add ${sku.title} to quote`}
-      className={`inline-flex items-center justify-center gap-2 rounded-[--r-sm] font-medium
+      aria-label={`Add ${sku.title} to cart`}
+      className={`inline-flex items-center justify-center gap-2 rounded-(--r-sm) font-medium
         transition-[background-color,box-shadow] duration-150 ease-out active:translate-y-px
         ${full ? "w-full" : ""} ${sizing}
         ${
@@ -49,7 +49,7 @@ export function AddToQuote({
         }`}
     >
       {added ? <Check size={16} strokeWidth={2.5} /> : <Plus size={16} strokeWidth={2.5} />}
-      {added ? "Added to quote" : "Add to Quote"}
+      {added ? "Added to cart" : "Add to Cart"}
     </button>
   );
 }

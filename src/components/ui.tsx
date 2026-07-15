@@ -9,7 +9,7 @@ type ButtonVariant = "primary" | "secondary" | "ghost" | "quiet";
 type ButtonSize = "md" | "lg";
 
 const buttonBase =
-  "inline-flex items-center justify-center gap-2 font-medium rounded-[--r-sm] " +
+  "inline-flex items-center justify-center gap-2 font-medium rounded-(--r-sm) " +
   "transition-[background-color,box-shadow,transform] duration-150 ease-out " +
   "active:translate-y-px disabled:opacity-50 disabled:pointer-events-none whitespace-nowrap";
 
@@ -56,7 +56,7 @@ type LinkButtonProps = {
   size?: ButtonSize;
   className?: string;
   children: React.ReactNode;
-};
+} & Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "href" | "className" | "children">;
 
 export function LinkButton({
   href,
@@ -64,18 +64,25 @@ export function LinkButton({
   size = "md",
   className = "",
   children,
+  ...props
 }: LinkButtonProps) {
   const external = href.startsWith("http") || href.startsWith("tel:") || href.startsWith("mailto:");
   const cls = `${buttonBase} ${buttonVariants[variant]} ${buttonSizes[size]} ${className}`;
   if (external) {
     return (
-      <a href={href} className={cls} target={href.startsWith("http") ? "_blank" : undefined} rel={href.startsWith("http") ? "noopener noreferrer" : undefined}>
+      <a
+        href={href}
+        className={cls}
+        target={href.startsWith("http") ? "_blank" : props.target}
+        rel={href.startsWith("http") ? "noopener noreferrer" : props.rel}
+        {...props}
+      >
         {children}
       </a>
     );
   }
   return (
-    <Link href={href} className={cls}>
+    <Link href={href} className={cls} {...props}>
       {children}
     </Link>
   );
@@ -128,9 +135,11 @@ export function Container({
   );
 }
 
+/* Plain semibold label — the old all-caps letterspaced mono eyebrow read as
+   SaaS-dashboard chrome; a supply house says it straight. */
 export function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
-    <span className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-copper">
+    <span className="text-sm font-semibold tracking-tight text-copper">
       {children}
     </span>
   );

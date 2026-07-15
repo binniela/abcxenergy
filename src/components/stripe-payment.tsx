@@ -46,7 +46,7 @@ function PayForm({ orderNumber }: { orderNumber: string }) {
       <button
         type="submit"
         disabled={!stripe || submitting}
-        className="mt-5 flex h-12 w-full items-center justify-center rounded-[--r-sm] bg-brand text-sm font-semibold text-brand-ink hover:bg-brand-hover disabled:opacity-50"
+        className="mt-5 flex h-12 w-full items-center justify-center rounded-(--r-sm) bg-brand text-sm font-semibold text-brand-ink hover:bg-brand-hover disabled:opacity-50"
       >
         {submitting ? "Processing…" : "Pay now"}
       </button>
@@ -64,7 +64,7 @@ export function StripePayment({
   const promise = getStripePromise();
   if (!promise) {
     return (
-      <p className="mt-4 rounded-[--r-sm] border border-line bg-surface-2 p-4 text-sm text-ink-2">
+      <p className="mt-4 rounded-(--r-sm) border border-line bg-surface-2 p-4 text-sm text-ink-2">
         Card payment is not configured (set NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY). Your
         order is placed; staff will follow up to collect payment.
       </p>

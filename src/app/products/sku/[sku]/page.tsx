@@ -4,6 +4,9 @@ import { notFound } from "next/navigation";
 import { Check, FileText, Home, ShieldCheck, Truck, UserCheck, Wrench } from "lucide-react";
 import { AddToQuote } from "@/components/add-to-quote";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { BuyBoxAssurance } from "@/components/buy-box-assurance";
+import { DeliveryEstimate } from "@/components/delivery-estimate";
+import { StickyBuyBar } from "@/components/sticky-buy-bar";
 import { ProductGallery } from "@/components/product-gallery";
 import { ProductReviews, ReviewStarsInline } from "@/components/product-reviews";
 import { getReviews, reviewSummary } from "@/lib/reviews";
@@ -18,7 +21,7 @@ import {
   productHref,
   skuSlug,
 } from "@/lib/storefront/catalog";
-import { SITE } from "@/lib/site";
+import { SITE, financingMonthly } from "@/lib/site";
 
 export function generateStaticParams() {
   return getStorefrontSkus().map((sku) => ({ sku: skuSlug(sku.sku) }));
@@ -130,7 +133,17 @@ export default async function SkuPage({ params }: PageProps<"/products/sku/[sku]
                 <ReviewStarsInline summary={summary} />
               </a>
             )}
-            <div className="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-[--r-md] border border-line bg-line sm:grid-cols-4">
+            <div className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <span className="tnum font-display text-3xl font-semibold tracking-tight text-ink-1">
+                {currency(sku.msrp)}
+              </span>
+              <span className="text-sm text-ink-2">
+                retail · as low as{" "}
+                <span className="tnum font-semibold text-ink-1">{currency(financingMonthly(sku.msrp))}/mo</span>{" "}
+                with financing
+              </span>
+            </div>
+            <div className="mt-4 grid grid-cols-2 gap-px overflow-hidden rounded-(--r-md) border border-line bg-line sm:grid-cols-4">
               <Metric label="Retail" value={currency(sku.msrp)} />
               <Metric label="Contractor" value="Sign in" />
               <Metric label="AHRI" value={sku.ahriReference} />
@@ -140,7 +153,7 @@ export default async function SkuPage({ params }: PageProps<"/products/sku/[sku]
               <BuyerPath
                 icon={<Home size={18} />}
                 title="Buying this for your home?"
-                body="Ask about one system and Bay Area installer help before you worry about exact SKU details."
+                body="Buy at retail with no trade account — ships from Newark or ready for will-call. We can also refer qualified Bay Area installers."
                 href="/homeowners#homeowner-request"
                 cta="Get installer help"
               />
@@ -154,8 +167,11 @@ export default async function SkuPage({ params }: PageProps<"/products/sku/[sku]
             </div>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <AddToQuote sku={sku} full />
-              <LinkButton href="/quote" variant="secondary">Request current price</LinkButton>
+              <LinkButton href="/quote" variant="secondary">Request a Quote</LinkButton>
             </div>
+
+            <DeliveryEstimate inStock={sku.available > 0} />
+            <BuyBoxAssurance price={sku.msrp} className="mt-5" />
             <div className="mt-7 grid gap-3 sm:grid-cols-3">
               <Trust icon={<Truck size={18} />} title="Newark stock" body={`${sku.available} available from ${sku.warehouse.name}`} />
               <Trust icon={<ShieldCheck size={18} />} title="Warranty" body={`${sku.warrantyCompressor} compressor / ${sku.warrantyParts} parts`} />
@@ -167,7 +183,7 @@ export default async function SkuPage({ params }: PageProps<"/products/sku/[sku]
         <section className="mt-16 grid gap-8 lg:grid-cols-[1fr_0.8fr]">
           <div>
             <h2 className="font-display text-2xl font-semibold tracking-tight text-ink-1">Specifications</h2>
-            <div className="mt-5 overflow-hidden rounded-[--r-md] border border-line">
+            <div className="mt-5 overflow-hidden rounded-(--r-md) border border-line">
               <Spec label="SKU" value={sku.sku} />
               <Spec label="Model number" value={sku.modelNumber} />
               <Spec label="Capacity" value={`${sku.btu.toLocaleString()} BTU`} />
@@ -182,7 +198,7 @@ export default async function SkuPage({ params }: PageProps<"/products/sku/[sku]
             <h2 className="font-display text-2xl font-semibold tracking-tight text-ink-1">Documents</h2>
             <div className="mt-5 grid gap-3">
               {sku.documents.map((doc) => (
-                <a key={doc.id} href={documentHref(doc)} className="flex items-center gap-3 rounded-[--r-sm] border border-line bg-surface-1 p-3 text-sm font-medium text-ink-1 hover:border-ink-4">
+                <a key={doc.id} href={documentHref(doc)} className="flex items-center gap-3 rounded-(--r-sm) border border-line bg-surface-1 p-3 text-sm font-medium text-ink-1 hover:border-ink-4">
                   <FileText size={18} className="text-brand" />
                   {doc.title}
                 </a>
@@ -203,9 +219,9 @@ export default async function SkuPage({ params }: PageProps<"/products/sku/[sku]
           </div>
           <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {accessoriesForCategory(sku.category).map((item) => (
-              <div key={item.key} className="rounded-[--r-md] border border-line bg-surface-1 p-4">
+              <div key={item.key} className="rounded-(--r-md) border border-line bg-surface-1 p-4">
                 <div className="flex items-start gap-3">
-                  <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-[--r-sm] bg-copper-tint text-copper">
+                  <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-(--r-sm) bg-copper-tint text-copper">
                     <Wrench size={16} />
                   </span>
                   <div>
@@ -236,6 +252,8 @@ export default async function SkuPage({ params }: PageProps<"/products/sku/[sku]
           </div>
         </section>
       </Container>
+
+      <StickyBuyBar sku={sku} priceLabel={currency(sku.msrp)} />
     </>
   );
 }
@@ -264,8 +282,8 @@ function Spec({ label, value }: { label: string; value: string }) {
 
 function Trust({ icon, title, body }: { icon: React.ReactNode; title: string; body: string }) {
   return (
-    <div className="rounded-[--r-md] border border-line bg-surface-1 p-4">
-      <span className="grid size-10 place-items-center rounded-[--r-sm] bg-brand-tint text-brand">{icon}</span>
+    <div className="rounded-(--r-md) border border-line bg-surface-1 p-4">
+      <span className="grid size-10 place-items-center rounded-(--r-sm) bg-brand-tint text-brand">{icon}</span>
       <h3 className="mt-3 font-display text-base font-semibold text-ink-1">{title}</h3>
       <p className="mt-1 text-sm text-ink-2">{body}</p>
     </div>
@@ -286,8 +304,8 @@ function BuyerPath({
   cta: string;
 }) {
   return (
-    <Link href={href} className="rounded-[--r-md] border border-line bg-surface-1 p-4 transition-colors hover:border-line-strong hover:bg-surface-2">
-      <span className="grid size-10 place-items-center rounded-[--r-sm] bg-brand-tint text-brand">{icon}</span>
+    <Link href={href} className="rounded-(--r-md) border border-line bg-surface-1 p-4 transition-colors hover:border-line-strong hover:bg-surface-2">
+      <span className="grid size-10 place-items-center rounded-(--r-sm) bg-brand-tint text-brand">{icon}</span>
       <h2 className="mt-3 font-display text-base font-semibold text-ink-1">{title}</h2>
       <p className="mt-1 text-sm leading-relaxed text-ink-2">{body}</p>
       <span className="mt-3 inline-flex text-sm font-medium text-brand">{cta}</span>
@@ -297,7 +315,7 @@ function BuyerPath({
 
 function Guidance({ title, body }: { title: string; body: string }) {
   return (
-    <div className="rounded-[--r-md] border border-line bg-surface-1 p-5">
+    <div className="rounded-(--r-md) border border-line bg-surface-1 p-5">
       <h3 className="font-display text-base font-semibold text-ink-1">{title}</h3>
       <p className="mt-2 text-sm leading-relaxed text-ink-2">{body}</p>
     </div>

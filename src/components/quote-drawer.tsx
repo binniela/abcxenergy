@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { X, Minus, Plus, Trash2, FileText } from "lucide-react";
+import { X, Minus, Plus, Trash2, FileText, Wrench } from "lucide-react";
 import * as React from "react";
 import { useQuote } from "./quote-context";
-import { productHref } from "@/lib/storefront/catalog";
+import { getStorefrontSku, productHref } from "@/lib/storefront/catalog";
+import { accessoriesForCategory, type Accessory } from "@/lib/accessories";
 
-/* Right-side drawer that mirrors the contractor's quote list. Not a checkout —
-   it hands off to the /quote request form with the list prefilled in mind. */
+/* Right-side cart drawer. Primary path is /checkout (pickup, delivery, or
+   freight); the /quote request form remains the secondary, custom-pricing path. */
 export function QuoteDrawer() {
   const { items, isOpen, close, setQty, remove, clear, count } = useQuote();
   const panelRef = React.useRef<HTMLElement>(null);
@@ -72,7 +73,7 @@ export function QuoteDrawer() {
         <header className="flex items-center justify-between border-b border-line px-5 py-4">
           <div className="flex flex-col">
             <h2 id="quote-drawer-title" className="font-display text-lg font-semibold tracking-tight text-ink-1">
-              Your quote
+              Your cart
             </h2>
             <span className="text-xs text-ink-3">
               {count} {count === 1 ? "unit" : "units"} · check out now or request a quote
@@ -81,8 +82,8 @@ export function QuoteDrawer() {
           <button
             ref={closeRef}
             onClick={close}
-            aria-label="Close quote"
-            className="grid size-9 place-items-center rounded-[--r-sm] text-ink-2 hover:bg-surface-2 hover:text-ink-1"
+            aria-label="Close cart"
+            className="grid size-9 place-items-center rounded-(--r-sm) text-ink-2 hover:bg-surface-2 hover:text-ink-1"
           >
             <X size={18} />
           </button>
@@ -94,8 +95,8 @@ export function QuoteDrawer() {
               <FileText size={22} />
             </span>
             <p className="text-sm text-ink-2">
-              Your quote list is empty. Add units from any product and request
-              contractor pricing in one step.
+              Your cart is empty. Add units from any product page — check out
+              directly, or request contractor pricing in one step.
             </p>
             <Link
               href="/products"
@@ -111,7 +112,7 @@ export function QuoteDrawer() {
               {items.map((item) => {
                 return (
                 <li key={item.skuId} className="flex items-center gap-3 py-4">
-                  <div className="relative size-14 shrink-0 overflow-hidden rounded-[--r-sm] border border-line bg-surface-2">
+                  <div className="relative size-14 shrink-0 overflow-hidden rounded-(--r-sm) border border-line bg-surface-2">
                     <Image
                       src={item.image}
                       alt=""
@@ -138,7 +139,7 @@ export function QuoteDrawer() {
                       <Trash2 size={12} /> Remove
                     </button>
                   </div>
-                  <div className="flex items-center gap-1 rounded-[--r-sm] border border-control-border bg-control-bg">
+                  <div className="flex items-center gap-1 rounded-(--r-sm) border border-control-border bg-control-bg">
                     <button
                       onClick={() => setQty(item.skuId, item.qty - 1)}
                       aria-label="Decrease quantity"
@@ -162,18 +163,20 @@ export function QuoteDrawer() {
               })}
             </ul>
 
+            <CartCrossSell skuIds={items.map((i) => i.skuId)} onNavigate={close} />
+
             <footer className="border-t border-line bg-surface-2 px-5 py-4">
               <Link
                 href="/checkout"
                 onClick={close}
-                className="flex h-12 w-full items-center justify-center gap-2 rounded-[--r-sm] bg-brand text-[15px] font-medium text-brand-ink shadow-[var(--shadow-sm)] transition-colors hover:bg-brand-hover"
+                className="flex h-12 w-full items-center justify-center gap-2 rounded-(--r-sm) bg-brand text-[15px] font-medium text-brand-ink shadow-[var(--shadow-sm)] transition-colors hover:bg-brand-hover"
               >
                 Checkout: pickup or delivery
               </Link>
               <Link
                 href="/quote"
                 onClick={close}
-                className="mt-2 flex h-11 w-full items-center justify-center gap-2 rounded-[--r-sm] border border-line-strong bg-surface-1 text-sm font-medium text-ink-1 transition-colors hover:bg-surface-2"
+                className="mt-2 flex h-11 w-full items-center justify-center gap-2 rounded-(--r-sm) border border-line-strong bg-surface-1 text-sm font-medium text-ink-1 transition-colors hover:bg-surface-2"
               >
                 Or request a custom quote
               </Link>
@@ -181,12 +184,55 @@ export function QuoteDrawer() {
                 onClick={clear}
                 className="mt-2 w-full text-center text-xs text-ink-3 hover:text-danger"
               >
-                Clear list
+                Clear cart
               </button>
             </footer>
           </>
         )}
       </aside>
     </>
+  );
+}
+
+/* "You'll also need" — a bare condenser without a lineset is a support ticket.
+   Derives accessory suggestions from the categories already in the cart. */
+function CartCrossSell({ skuIds, onNavigate }: { skuIds: string[]; onNavigate: () => void }) {
+  const suggestions = React.useMemo(() => {
+    const seen = new Map<string, Accessory>();
+    for (const id of skuIds) {
+      const sku = getStorefrontSku(id);
+      if (!sku) continue;
+      for (const acc of accessoriesForCategory(sku.category)) {
+        if (!seen.has(acc.key)) seen.set(acc.key, acc);
+      }
+    }
+    return Array.from(seen.values()).slice(0, 3);
+  }, [skuIds]);
+
+  if (suggestions.length === 0) return null;
+
+  return (
+    <div className="border-t border-line px-5 py-4">
+      <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-3">
+        You&apos;ll also need
+      </p>
+      <ul className="mt-2.5 flex flex-col gap-2">
+        {suggestions.map((acc) => (
+          <li key={acc.key} className="flex items-center gap-2.5 text-sm">
+            <span className="grid size-7 shrink-0 place-items-center rounded-(--r-sm) bg-copper-tint text-copper">
+              <Wrench size={13} />
+            </span>
+            <span className="min-w-0 flex-1 truncate text-ink-1">{acc.name}</span>
+          </li>
+        ))}
+      </ul>
+      <Link
+        href="/quote"
+        onClick={onNavigate}
+        className="mt-2.5 inline-block text-xs font-medium text-brand hover:text-brand-hover"
+      >
+        Add accessories to your quote →
+      </Link>
+    </div>
   );
 }

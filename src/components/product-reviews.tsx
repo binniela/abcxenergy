@@ -56,8 +56,8 @@ export function ProductReviews({
       </div>
 
       {reviews.length === 0 ? (
-        <div className="mt-5 flex flex-col items-start gap-3 rounded-[--r-md] border border-dashed border-line-strong bg-surface-2/50 p-6">
-          <span className="grid size-10 place-items-center rounded-[--r-sm] bg-surface-3 text-ink-3">
+        <div className="mt-5 flex flex-col items-start gap-3 rounded-(--r-md) border border-dashed border-line-strong bg-surface-2/50 p-6">
+          <span className="grid size-10 place-items-center rounded-(--r-sm) bg-surface-3 text-ink-3">
             <MessageSquarePlus size={18} />
           </span>
           <div>
@@ -69,7 +69,7 @@ export function ProductReviews({
           </div>
           <Link
             href="/contact?topic=review"
-            className="inline-flex h-10 items-center rounded-[--r-sm] bg-brand px-4 text-sm font-medium text-brand-ink hover:bg-brand-hover"
+            className="inline-flex h-10 items-center rounded-(--r-sm) bg-brand px-4 text-sm font-medium text-brand-ink hover:bg-brand-hover"
           >
             Write a review
           </Link>
@@ -77,7 +77,7 @@ export function ProductReviews({
       ) : (
         <ul className="mt-6 grid gap-4 md:grid-cols-2">
           {reviews.map((review, index) => (
-            <li key={index} className="rounded-[--r-md] border border-line bg-surface-1 p-5">
+            <li key={index} className="rounded-(--r-md) border border-line bg-surface-1 p-5">
               <div className="flex items-center justify-between gap-3">
                 <Stars value={review.rating} />
                 {review.verified && (

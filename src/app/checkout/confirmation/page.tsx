@@ -59,7 +59,7 @@ function ConfirmationInner() {
         </p>
 
         {order && !paid && order.payment === "card" && order.clientSecret && (
-          <div className="mt-8 rounded-[--r-md] border border-line bg-surface-1 p-6 shadow-[var(--shadow-sm)]">
+          <div className="mt-8 rounded-(--r-md) border border-line bg-surface-1 p-6 shadow-[var(--shadow-sm)]">
             <div className="flex items-center justify-between">
               <h2 className="font-display text-lg font-semibold text-ink-1">Pay {currency(order.total)}</h2>
             </div>
@@ -94,13 +94,13 @@ function ConfirmationInner() {
         <div className="mt-8 flex gap-3">
           <Link
             href="/products"
-            className="inline-flex h-11 items-center rounded-[--r-sm] border border-line-strong bg-surface-1 px-4 text-sm font-medium text-ink-1 hover:bg-surface-2"
+            className="inline-flex h-11 items-center rounded-(--r-sm) border border-line-strong bg-surface-1 px-4 text-sm font-medium text-ink-1 hover:bg-surface-2"
           >
             Keep shopping
           </Link>
           <Link
             href="/portal"
-            className="inline-flex h-11 items-center rounded-[--r-sm] bg-brand px-4 text-sm font-medium text-brand-ink hover:bg-brand-hover"
+            className="inline-flex h-11 items-center rounded-(--r-sm) bg-brand px-4 text-sm font-medium text-brand-ink hover:bg-brand-hover"
           >
             View in portal
           </Link>
@@ -112,8 +112,8 @@ function ConfirmationInner() {
 
 function NextStep({ icon, title, body }: { icon: React.ReactNode; title: string; body: string }) {
   return (
-    <div className="mt-8 flex gap-4 rounded-[--r-md] border border-line bg-surface-1 p-6">
-      <span className="grid size-10 shrink-0 place-items-center rounded-[--r-sm] bg-brand-tint text-brand">
+    <div className="mt-8 flex gap-4 rounded-(--r-md) border border-line bg-surface-1 p-6">
+      <span className="grid size-10 shrink-0 place-items-center rounded-(--r-sm) bg-brand-tint text-brand">
         {icon}
       </span>
       <div>

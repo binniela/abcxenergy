@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
-import { Menu, X, FileText, Lock, Search, ChevronDown, LifeBuoy } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { Menu, X, Lock, Search, ChevronDown, LifeBuoy, Phone, ShoppingCart } from "lucide-react";
 import * as React from "react";
 import { useQuote } from "./quote-context";
 import { SITE } from "@/lib/site";
@@ -23,6 +23,14 @@ const RESOURCES = [
 ];
 
 const RESOURCE_HREFS = RESOURCES.map((r) => r.href);
+
+function useClientMounted() {
+  return React.useSyncExternalStore(
+    React.useCallback(() => () => undefined, []),
+    () => true,
+    () => false
+  );
+}
 
 function Wordmark() {
   return (
@@ -69,6 +77,7 @@ function SearchField({
   onNavigate?: () => void;
   autoFocus?: boolean;
 }) {
+  const router = useRouter();
   const [query, setQuery] = React.useState("");
   const [results, setResults] = React.useState<SearchResult[]>([]);
   const [active, setActive] = React.useState(-1);
@@ -81,12 +90,7 @@ function SearchField({
 
   React.useEffect(() => {
     const trimmed = query.trim();
-    if (trimmed.length < 2) {
-      setResults([]);
-      setLoading(false);
-      return;
-    }
-    setLoading(true);
+    if (trimmed.length < 2) return;
     const controller = new AbortController();
     const timer = setTimeout(() => {
       fetch(`/api/search?q=${encodeURIComponent(trimmed)}`, { signal: controller.signal })
@@ -107,6 +111,18 @@ function SearchField({
   const showResults = query.trim().length >= 2;
   const resultsId = React.useId();
 
+  function onQueryChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const next = event.target.value;
+    setQuery(next);
+    if (next.trim().length < 2) {
+      setResults([]);
+      setActive(-1);
+      setLoading(false);
+    } else {
+      setLoading(true);
+    }
+  }
+
   function onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
     if (!showResults || results.length === 0) return;
     if (event.key === "ArrowDown") {
@@ -117,19 +133,19 @@ function SearchField({
       setActive((i) => (i <= 0 ? results.length - 1 : i - 1));
     } else if (event.key === "Enter" && active >= 0) {
       event.preventDefault();
-      window.location.href = results[active].href;
+      router.push(results[active].href);
       onNavigate?.();
     }
   }
 
   return (
     <div>
-      <div className="flex h-11 items-center gap-2 rounded-[--r-sm] border border-line-strong bg-surface-1 px-3 shadow-[var(--shadow-sm)] focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/25">
+      <div className="flex h-11 items-center gap-2 rounded-(--r-sm) border border-line-strong bg-surface-1 px-3 shadow-[var(--shadow-sm)] focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/25">
         <Search size={16} className="shrink-0 text-ink-3" />
         <input
           ref={inputRef}
           value={query}
-          onChange={(event) => setQuery(event.target.value)}
+          onChange={onQueryChange}
           onKeyDown={onKeyDown}
           role="combobox"
           aria-expanded={showResults && results.length > 0}
@@ -146,7 +162,7 @@ function SearchField({
           id={resultsId}
           role="listbox"
           aria-label="Search results"
-          className="mt-2 max-h-[60vh] overflow-y-auto overflow-hidden rounded-[--r-md] border border-line bg-surface-1 shadow-[var(--shadow-md)]"
+          className="mt-2 max-h-[60vh] overflow-y-auto overflow-hidden rounded-(--r-md) border border-line bg-surface-1 shadow-[var(--shadow-md)]"
         >
           {loading && results.length === 0 && (
             <li className="px-3 py-3 text-sm text-ink-3">Searching…</li>
@@ -216,12 +232,12 @@ function SearchPopover() {
         aria-label="Search products"
         aria-expanded={open}
         aria-haspopup="dialog"
-        className="grid size-10 place-items-center rounded-[--r-sm] text-ink-2 transition-colors hover:bg-surface-2 hover:text-ink-1"
+        className="grid size-10 place-items-center rounded-(--r-sm) text-ink-2 transition-colors hover:bg-surface-2 hover:text-ink-1"
       >
         <Search size={18} strokeWidth={2.2} />
       </button>
       {open && (
-        <div className="absolute right-0 top-12 z-50 w-[min(380px,calc(100vw-2rem))] rounded-[--r-md] border border-line bg-canvas p-3 shadow-[var(--shadow-lg)]">
+        <div className="absolute right-0 top-12 z-50 w-[min(380px,calc(100vw-2rem))] rounded-(--r-md) border border-line bg-canvas p-3 shadow-[var(--shadow-lg)]">
           <SearchField autoFocus onNavigate={() => setOpen(false)} />
         </div>
       )}
@@ -257,7 +273,7 @@ function ResourcesMenu({ pathname }: { pathname: string }) {
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         aria-haspopup="menu"
-        className={`inline-flex items-center gap-1 rounded-[--r-sm] px-3 py-2 text-sm font-medium transition-colors ${
+        className={`inline-flex items-center gap-1 rounded-(--r-sm) px-3 py-2 text-sm font-medium transition-colors ${
           active || open ? "text-brand" : "text-ink-2 hover:bg-surface-2 hover:text-ink-1"
         }`}
       >
@@ -267,7 +283,7 @@ function ResourcesMenu({ pathname }: { pathname: string }) {
       {open && (
         <div
           role="menu"
-          className="absolute left-0 top-11 z-50 w-64 overflow-hidden rounded-[--r-md] border border-line bg-canvas p-1.5 shadow-[var(--shadow-lg)]"
+          className="absolute left-0 top-11 z-50 w-64 overflow-hidden rounded-(--r-md) border border-line bg-canvas p-1.5 shadow-[var(--shadow-lg)]"
         >
           {RESOURCES.map((item) => (
             <Link
@@ -275,7 +291,7 @@ function ResourcesMenu({ pathname }: { pathname: string }) {
               href={item.href}
               role="menuitem"
               onClick={() => setOpen(false)}
-              className="block rounded-[--r-sm] px-3 py-2.5 text-sm font-medium text-ink-1 hover:bg-surface-2"
+              className="block rounded-(--r-sm) px-3 py-2.5 text-sm font-medium text-ink-1 hover:bg-surface-2"
             >
               {item.label}
             </Link>
@@ -286,20 +302,19 @@ function ResourcesMenu({ pathname }: { pathname: string }) {
   );
 }
 
-function QuoteButton() {
+function CartButton() {
   const { count, toggle } = useQuote();
   // The count comes from localStorage (client-only), so defer showing it until
   // after mount — otherwise SSR (count 0) and hydration (real count) mismatch.
-  const [mounted, setMounted] = React.useState(false);
-  React.useEffect(() => setMounted(true), []);
+  const mounted = useClientMounted();
   const showCount = mounted && count > 0;
   return (
     <button
       onClick={toggle}
-      aria-label={showCount ? `Open your quote list (${count} ${count === 1 ? "item" : "items"})` : "Open your quote list"}
-      className="relative grid size-10 place-items-center rounded-[--r-sm] border border-line-strong bg-surface-1 text-ink-1 shadow-[var(--shadow-sm)] transition-colors hover:bg-surface-2"
+      aria-label={showCount ? `Open your cart (${count} ${count === 1 ? "item" : "items"})` : "Open your cart"}
+      className="relative grid size-10 place-items-center rounded-(--r-sm) border border-line-strong bg-surface-1 text-ink-1 shadow-[var(--shadow-sm)] transition-colors hover:bg-surface-2"
     >
-      <FileText size={18} strokeWidth={2.1} />
+      <ShoppingCart size={18} strokeWidth={2.1} />
       {showCount && (
         <span className="tnum absolute -right-1.5 -top-1.5 grid min-w-[18px] place-items-center rounded-full bg-brand px-1 font-mono text-[10px] font-bold leading-[18px] text-brand-ink">
           {count}
@@ -313,11 +328,6 @@ export function SiteNav() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const closeMobile = () => setMobileOpen(false);
-
-  // Close the mobile sheet whenever the route changes.
-  React.useEffect(() => {
-    setMobileOpen(false);
-  }, [pathname]);
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + "/");
 
@@ -334,7 +344,7 @@ export function SiteNav() {
             <li key={item.href}>
               <Link
                 href={item.href}
-                className={`whitespace-nowrap rounded-[--r-sm] px-3 py-2 text-sm font-medium transition-colors ${
+                className={`whitespace-nowrap rounded-(--r-sm) px-3 py-2 text-sm font-medium transition-colors ${
                   isActive(item.href) ? "text-brand" : "text-ink-2 hover:bg-surface-2 hover:text-ink-1"
                 }`}
               >
@@ -348,7 +358,7 @@ export function SiteNav() {
           <li>
             <Link
               href="/contact"
-              className={`whitespace-nowrap rounded-[--r-sm] px-3 py-2 text-sm font-medium transition-colors ${
+              className={`whitespace-nowrap rounded-(--r-sm) px-3 py-2 text-sm font-medium transition-colors ${
                 isActive("/contact") ? "text-brand" : "text-ink-2 hover:bg-surface-2 hover:text-ink-1"
               }`}
             >
@@ -365,30 +375,31 @@ export function SiteNav() {
           <Link
             href="/portal/login"
             aria-label="Account portal"
-            className="hidden size-10 place-items-center rounded-[--r-sm] text-ink-2 transition-colors hover:bg-surface-2 hover:text-ink-1 sm:grid xl:hidden"
+            className="hidden size-10 place-items-center rounded-(--r-sm) text-ink-2 transition-colors hover:bg-surface-2 hover:text-ink-1 sm:grid xl:hidden"
           >
             <Lock size={16} strokeWidth={2.2} />
           </Link>
           <Link
             href="/portal/login"
-            className="hidden items-center gap-1.5 rounded-[--r-sm] px-2.5 py-2 text-sm font-medium text-ink-2 transition-colors hover:text-ink-1 xl:inline-flex"
+            className="hidden items-center gap-1.5 rounded-(--r-sm) px-2.5 py-2 text-sm font-medium text-ink-2 transition-colors hover:text-ink-1 xl:inline-flex"
           >
             <Lock size={14} strokeWidth={2.2} />
             Account
           </Link>
-          <QuoteButton />
-          <Link
-            href="/quote"
-            className="hidden h-10 items-center gap-1.5 whitespace-nowrap rounded-[--r-sm] bg-brand px-3.5 text-sm font-medium text-brand-ink shadow-[var(--shadow-sm)] transition-colors hover:bg-brand-hover sm:inline-flex"
+          <CartButton />
+          {/* Big-ticket, high-anxiety category — people call. The number is the CTA. */}
+          <a
+            href={SITE.phoneHref}
+            className="hidden h-10 items-center gap-1.5 whitespace-nowrap rounded-(--r-sm) bg-brand px-3.5 text-sm font-semibold text-brand-ink shadow-[var(--shadow-sm)] transition-colors hover:bg-brand-hover md:inline-flex"
           >
-            <LifeBuoy size={16} strokeWidth={2.2} />
-            <span className="hidden xl:inline">Get help</span>
-          </Link>
+            <Phone size={15} strokeWidth={2.2} />
+            <span className="tnum">{SITE.phone}</span>
+          </a>
           <button
             onClick={() => setMobileOpen((o) => !o)}
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileOpen}
-            className="grid size-10 place-items-center rounded-[--r-sm] text-ink-1 transition-colors hover:bg-surface-2 xl:hidden"
+            className="grid size-10 place-items-center rounded-(--r-sm) text-ink-1 transition-colors hover:bg-surface-2 xl:hidden"
           >
             {mobileOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -406,7 +417,7 @@ export function SiteNav() {
                   <Link
                     href={item.href}
                     onClick={closeMobile}
-                    className={`block rounded-[--r-sm] px-3 py-3 text-[15px] font-medium hover:bg-surface-2 ${
+                    className={`block rounded-(--r-sm) px-3 py-3 text-[15px] font-medium hover:bg-surface-2 ${
                       isActive(item.href) ? "text-brand" : "text-ink-1"
                     }`}
                   >
@@ -423,7 +434,7 @@ export function SiteNav() {
                     key={item.href}
                     href={item.href}
                     onClick={closeMobile}
-                    className="block rounded-[--r-sm] px-3 py-2.5 text-[15px] font-medium text-ink-1 hover:bg-surface-2"
+                    className="block rounded-(--r-sm) px-3 py-2.5 text-[15px] font-medium text-ink-1 hover:bg-surface-2"
                   >
                     {item.label}
                   </Link>
@@ -433,7 +444,7 @@ export function SiteNav() {
                 <Link
                   href="/contact"
                   onClick={closeMobile}
-                  className={`block rounded-[--r-sm] px-3 py-3 text-[15px] font-medium hover:bg-surface-2 ${
+                  className={`block rounded-(--r-sm) px-3 py-3 text-[15px] font-medium hover:bg-surface-2 ${
                     isActive("/contact") ? "text-brand" : "text-ink-1"
                   }`}
                 >
@@ -444,22 +455,28 @@ export function SiteNav() {
                 <Link
                   href="/quote"
                   onClick={closeMobile}
-                  className="flex h-11 items-center justify-center gap-1.5 rounded-[--r-sm] bg-brand text-sm font-medium text-brand-ink"
+                  className="flex h-11 items-center justify-center gap-1.5 rounded-(--r-sm) bg-brand text-sm font-medium text-brand-ink"
                 >
                   <LifeBuoy size={16} /> Get help
                 </Link>
                 <Link
                   href="/portal/login"
                   onClick={closeMobile}
-                  className="flex h-11 items-center justify-center gap-1.5 rounded-[--r-sm] border border-line-strong bg-surface-1 text-sm font-medium text-ink-1"
+                  className="flex h-11 items-center justify-center gap-1.5 rounded-(--r-sm) border border-line-strong bg-surface-1 text-sm font-medium text-ink-1"
                 >
                   <Lock size={14} /> Account
                 </Link>
                 <a
                   href={SITE.phoneHref}
-                  className="col-span-2 flex h-11 items-center justify-center rounded-[--r-sm] bg-surface-2 text-sm font-medium text-ink-1"
+                  className="flex h-11 items-center justify-center rounded-(--r-sm) bg-surface-2 text-sm font-medium text-ink-1"
                 >
                   Call {SITE.phone}
+                </a>
+                <a
+                  href={SITE.smsHref}
+                  className="flex h-11 items-center justify-center rounded-(--r-sm) bg-surface-2 text-sm font-medium text-ink-1"
+                >
+                  Text us
                 </a>
               </li>
             </ul>

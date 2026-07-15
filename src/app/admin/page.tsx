@@ -88,7 +88,7 @@ export default async function AdminPage() {
         <Panel title="Work queue" icon={<AlertTriangle size={18} />} action={`${ops.kpis.openCases} open cases`}>
           <div className="space-y-3">
             {[...ops.tasks, ...ops.rmas, ...ops.warrantyClaims, ...ops.rebateCases].slice(0, 7).map((item) => (
-              <div key={item.id} className="rounded-[--r-sm] border border-line bg-surface-2/60 p-3">
+              <div key={item.id} className="rounded-(--r-sm) border border-line bg-surface-2/60 p-3">
                 <p className="text-sm font-semibold text-ink-1">{item.title}</p>
                 <p className="mt-1 text-xs text-ink-3">
                   {"dueAt" in item
@@ -154,9 +154,9 @@ export default async function AdminPage() {
 
 function Kpi({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
-    <div className="rounded-[--r-md] border border-line bg-surface-1 p-5 shadow-[var(--shadow-sm)]">
+    <div className="rounded-(--r-md) border border-line bg-surface-1 p-5 shadow-[var(--shadow-sm)]">
       <div className="flex items-center gap-3">
-        <span className="grid size-10 place-items-center rounded-[--r-sm] bg-brand-tint text-brand">{icon}</span>
+        <span className="grid size-10 place-items-center rounded-(--r-sm) bg-brand-tint text-brand">{icon}</span>
         <span className="text-sm text-ink-3">{label}</span>
       </div>
       <p className="mt-4 font-display text-3xl font-semibold tracking-tight text-ink-1">{value}</p>
@@ -176,7 +176,7 @@ function Panel({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-[--r-md] border border-line bg-surface-1 p-5 shadow-[var(--shadow-sm)]">
+    <section className="rounded-(--r-md) border border-line bg-surface-1 p-5 shadow-[var(--shadow-sm)]">
       <div className="mb-4 flex items-center justify-between gap-3">
         <h2 className="flex items-center gap-2 font-display text-lg font-semibold tracking-tight text-ink-1">
           <span className="text-brand">{icon}</span>

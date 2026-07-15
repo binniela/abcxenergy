@@ -7,7 +7,15 @@ import { FulfillmentBadge } from "./fulfillment-badge";
 import { AddToQuote } from "./add-to-quote";
 import { Chip } from "./ui";
 import type { SeriesCardSummary } from "@/lib/backend/catalog";
-import { getStorefrontSkus } from "@/lib/storefront/catalog";
+import { getSeriesPriceRange, getStorefrontSkus } from "@/lib/storefront/catalog";
+
+function currency(value: number) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  }).format(value);
+}
 
 export function ProductCard({
   series,
@@ -20,8 +28,9 @@ export function ProductCard({
 }) {
   const energyStar = ENERGY_STAR_LABEL[series.energyStar];
   const representativeSku = getStorefrontSkus().find((sku) => sku.seriesSlug === series.slug);
+  const priceRange = getSeriesPriceRange(series.slug);
   return (
-    <article className="group flex flex-col overflow-hidden rounded-[--r-md] border border-line bg-surface-1 shadow-[var(--shadow-sm)] transition-shadow duration-200 hover:shadow-[var(--shadow-md)]">
+    <article className="group flex flex-col overflow-hidden rounded-(--r-md) border border-line bg-surface-1 shadow-[var(--shadow-sm)] transition-shadow duration-200 hover:shadow-[var(--shadow-md)]">
       <Link
         href={`/products/${series.slug}`}
         className="relative flex aspect-[16/10] items-center justify-center overflow-hidden bg-surface-2"
@@ -74,10 +83,13 @@ export function ProductCard({
         <SpecStockStrip series={series} className="mt-auto" />
         <FulfillmentBadge inStock={series.stock === "ready"} />
         {ops && (
-          <div className="grid grid-cols-3 gap-px overflow-hidden rounded-[--r-sm] border border-line bg-line text-center">
+          <div className="grid grid-cols-3 gap-px overflow-hidden rounded-(--r-sm) border border-line bg-line text-center">
             <OpsCell label="SKUs" value={`${ops.skuCount}`} />
             <OpsCell label="Available" value={`${ops.availableUnits}`} />
-            <OpsCell label="Pro price" value="Sign in" />
+            <OpsCell
+              label="Retail from"
+              value={priceRange ? currency(priceRange.low) : "Quote"}
+            />
           </div>
         )}
 

@@ -1,8 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 104" role="img" aria-labelledby="title desc">
-  <title id="title">Summit HVAC Supply</title>
-  <desc id="desc">Summit HVAC Supply wordmark.</desc>
-  <text x="0" y="45" fill="#15394b" font-family="Inter, Arial, sans-serif" font-size="43" font-weight="800" letter-spacing="0">Summit</text>
-  <text x="0" y="84" fill="#0f5a5d" font-family="Inter, Arial, sans-serif" font-size="31" font-weight="700" letter-spacing="1.8">HVAC SUPPLY</text>
-  <path d="M274 35h116" stroke="#d7e2e5" stroke-width="3" stroke-linecap="round"/>
-  <path d="M274 60h82" stroke="#f4b24d" stroke-width="4" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 430 96" role="img" aria-labelledby="title desc">
+  <title id="title">Summit HVAC Supply wordmark</title>
+  <desc id="desc">A premium corporate wordmark for Summit HVAC Supply.</desc>
+  <text
+    x="0"
+    y="46"
+    fill="#15394b"
+    font-family="Arial, Helvetica, sans-serif"
+    font-size="42"
+    font-weight="800"
+    letter-spacing="-0.4"
+  >SUMMIT</text>
+  <text
+    x="2"
+    y="76"
+    fill="#0f5a5d"
+    font-family="Arial, Helvetica, sans-serif"
+    font-size="20"
+    font-weight="700"
+    letter-spacing="4.8"
+  >HVAC SUPPLY</text>
 </svg>

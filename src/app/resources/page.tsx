@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { FileText, BookOpen, Leaf, ArrowRight, ExternalLink } from "lucide-react";
 import { Container, Eyebrow, Chip } from "@/components/ui";
@@ -55,15 +56,27 @@ export default function ResourcesPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") }}
       />
       <section className="border-b border-line bg-surface-1">
-        <Container className="py-12 lg:py-14">
-          <Eyebrow>Resources</Eyebrow>
-          <h1 className="mt-3 max-w-2xl font-display text-3xl font-semibold tracking-tight text-ink-1 sm:text-4xl">
-            Everything you need to spec, install, and close the rebate.
-          </h1>
-          <p className="mt-3 max-w-2xl text-ink-2">
-            SKU-level spec sheets, install manuals, and current rebate guidance in one place,
-            so you spend less time hunting for documents and more time on the roof.
-          </p>
+        <Container className="grid gap-10 py-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:py-14">
+          <div>
+            <Eyebrow>Resources</Eyebrow>
+            <h1 className="mt-3 max-w-2xl font-display text-3xl font-semibold tracking-tight text-ink-1 sm:text-4xl">
+              Everything you need to spec, install, and close the rebate.
+            </h1>
+            <p className="mt-3 max-w-2xl text-ink-2">
+              SKU-level spec sheets, install manuals, and current rebate guidance in one place,
+              so you spend less time hunting for documents and more time on the roof.
+            </p>
+          </div>
+          <div className="relative min-h-[260px] overflow-hidden rounded-(--r-md) border border-line bg-surface-2 shadow-[var(--shadow-sm)]">
+            <Image
+              src="/site/generated/spec-workbench-documents.jpg"
+              alt="HVAC spec sheets, line set materials, and product documents on a contractor workbench"
+              fill
+              priority
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              className="object-cover"
+            />
+          </div>
         </Container>
       </section>
 
@@ -80,9 +93,9 @@ export default function ResourcesPage() {
         </p>
         <div className="mt-6 grid gap-5 md:grid-cols-2">
           {REBATES.map((r) => (
-            <div key={r.name} className="rounded-[--r-md] border border-line bg-surface-1 p-6 shadow-[var(--shadow-sm)]">
+            <div key={r.name} className="rounded-(--r-md) border border-line bg-surface-1 p-6 shadow-[var(--shadow-sm)]">
               <div className="flex items-start justify-between gap-3">
-                <span className="grid size-11 place-items-center rounded-[--r-md] bg-eco-tint text-eco-ink">
+                <span className="grid size-11 place-items-center rounded-(--r-md) bg-eco-tint text-eco-ink">
                   <Leaf size={20} strokeWidth={2.2} />
                 </span>
                 {r.confirm && <Chip tone="copper">Project guidance</Chip>}
@@ -110,7 +123,7 @@ export default function ResourcesPage() {
         <p className="mt-2 text-sm text-ink-3">
           Download exact support documents for the SKU you are quoting.
         </p>
-        <div className="mt-6 overflow-hidden rounded-[--r-md] border border-line">
+        <div className="mt-6 overflow-hidden rounded-(--r-md) border border-line">
           {getStorefrontSkus().map((sku, i) => (
             <div
               key={sku.id}
@@ -140,7 +153,7 @@ export default function ResourcesPage() {
         </div>
 
         {/* SEO/help cross-links */}
-        <div className="mt-10 rounded-[--r-md] border border-line bg-surface-2/50 p-6">
+        <div className="mt-10 rounded-(--r-md) border border-line bg-surface-2/50 p-6">
           <h3 className="font-display text-lg font-semibold text-ink-1">Need help choosing?</h3>
           <p className="mt-1.5 max-w-xl text-sm text-ink-2">
             Not sure which series fits a job? Filter the lineup by capacity and
@@ -162,7 +175,7 @@ export default function ResourcesPage() {
         <h2 className="font-display text-2xl font-semibold tracking-tight text-ink-1">
           Frequently asked questions
         </h2>
-        <div className="mt-6 overflow-hidden rounded-[--r-md] border border-line">
+        <div className="mt-6 overflow-hidden rounded-(--r-md) border border-line">
           {FAQS.map((item, i) => (
             <details
               key={item.q}
@@ -188,7 +201,7 @@ function DocChip({ href, icon, label }: { href: string; icon: React.ReactNode; l
   return (
     <a
       href={href}
-      className="inline-flex items-center gap-1.5 rounded-[--r-sm] border border-line bg-surface-1 px-3 py-1.5 text-sm font-medium text-ink-2 transition-colors hover:border-ink-4 hover:text-ink-1"
+      className="inline-flex items-center gap-1.5 rounded-(--r-sm) border border-line bg-surface-1 px-3 py-1.5 text-sm font-medium text-ink-2 transition-colors hover:border-ink-4 hover:text-ink-1"
     >
       {icon}
       {label}

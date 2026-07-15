@@ -44,10 +44,10 @@ export default function AboutPage() {
               </LinkButton>
             </div>
           </div>
-          <div className="relative aspect-[4/3] overflow-hidden rounded-[--r-lg] shadow-[var(--shadow-md)]">
+          <div className="relative aspect-[4/3] overflow-hidden rounded-(--r-lg) shadow-[var(--shadow-md)]">
             <Image
-              src="/site/warehouse-fulfillment.png"
-              alt="Organized HVAC warehouse fulfillment area with stocked equipment"
+              src="/site/generated/newark-warehouse-stock.jpg"
+              alt="Organized Newark HVAC warehouse with stocked heat pump equipment"
               fill
               priority
               sizes="(min-width: 1024px) 50vw, 100vw"
@@ -59,7 +59,7 @@ export default function AboutPage() {
 
       {/* Values */}
       <Container className="py-16">
-        <div className="grid gap-px overflow-hidden rounded-[--r-md] border border-line bg-line md:grid-cols-3">
+        <div className="grid gap-px overflow-hidden rounded-(--r-md) border border-line bg-line md:grid-cols-3">
           <Pillar
             icon={<Truck size={20} />}
             title="Stocked Locally"
@@ -110,14 +110,14 @@ export default function AboutPage() {
               </NapRow>
             </dl>
           </div>
-          <div className="relative min-h-[260px] overflow-hidden rounded-[--r-lg] border border-line bg-surface-2 p-6">
+          <div className="relative min-h-[260px] overflow-hidden rounded-(--r-lg) border border-line bg-surface-2 p-6">
             <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_24px,var(--line)_25px,transparent_26px),linear-gradient(0deg,transparent_24px,var(--line)_25px,transparent_26px)] bg-[length:52px_52px] opacity-45" />
             <div className="relative flex h-full min-h-[212px] flex-col justify-between">
               <span className="inline-flex w-fit items-center gap-2 rounded-full border border-line bg-surface-1 px-3 py-1.5 text-sm font-medium text-ink-1 shadow-[var(--shadow-sm)]">
                 <MapPin size={15} className="text-brand" />
                 Newark, CA warehouse
               </span>
-              <div className="w-fit rounded-[--r-md] border border-line bg-surface-1 p-4 shadow-[var(--shadow-md)]">
+              <div className="w-fit rounded-(--r-md) border border-line bg-surface-1 p-4 shadow-[var(--shadow-md)]">
                 <p className="font-display text-lg font-semibold text-ink-1">
                   {SITE.address.city}, {SITE.address.state}
                 </p>
@@ -151,7 +151,7 @@ function Pillar({
 }) {
   return (
     <div className="bg-surface-1 p-7">
-      <span className="grid size-11 place-items-center rounded-[--r-md] bg-copper-tint text-copper">
+      <span className="grid size-11 place-items-center rounded-(--r-md) bg-copper-tint text-copper">
         {icon}
       </span>
       <h3 className="mt-4 font-display text-lg font-semibold tracking-tight text-ink-1">
@@ -173,7 +173,7 @@ function NapRow({
 }) {
   return (
     <div className="flex items-start gap-3">
-      <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-[--r-sm] bg-surface-2 text-ink-3">
+      <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-(--r-sm) bg-surface-2 text-ink-3">
         {icon}
       </span>
       <div>

@@ -55,10 +55,10 @@ export default function PortalPage() {
             <Link
               key={portal.href}
               href={portal.href}
-              className="group rounded-[--r-md] border border-line bg-surface-1 p-6 shadow-[var(--shadow-sm)] transition-shadow hover:shadow-[var(--shadow-md)]"
+              className="group rounded-(--r-md) border border-line bg-surface-1 p-6 shadow-[var(--shadow-sm)] transition-shadow hover:shadow-[var(--shadow-md)]"
             >
               <div className="flex items-center justify-between gap-4">
-                <span className="grid size-11 place-items-center rounded-[--r-md] bg-brand-tint text-brand">
+                <span className="grid size-11 place-items-center rounded-(--r-md) bg-brand-tint text-brand">
                   <Icon size={20} />
                 </span>
                 <Chip tone="neutral">{portal.label}</Chip>

@@ -1,14 +1,13 @@
 import Link from "next/link";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import {
-  ChevronRight,
   FileText,
   BookOpen,
   Check,
   Leaf,
   ArrowRight,
+  Wrench,
 } from "lucide-react";
 import {
   SERIES,
@@ -21,11 +20,32 @@ import {
 import { Container, Chip, LinkButton } from "@/components/ui";
 import { SpecStockStrip } from "@/components/spec-stock-strip";
 import { AddToQuote } from "@/components/add-to-quote";
+import { Breadcrumbs } from "@/components/breadcrumbs";
+import { BuyBoxAssurance } from "@/components/buy-box-assurance";
 import { ProductCard } from "@/components/product-card";
-import { SITE } from "@/lib/site";
+import { ProductGallery } from "@/components/product-gallery";
+import { ProductReviews, ReviewStarsInline } from "@/components/product-reviews";
+import { DeliveryEstimate } from "@/components/delivery-estimate";
+import { StickyBuyBar } from "@/components/sticky-buy-bar";
+import { getReviews, reviewSummary } from "@/lib/reviews";
+import { accessoriesForCategory } from "@/lib/accessories";
+import { PURCHASE, REBATES, SITE, financingMonthly } from "@/lib/site";
 import { getSeriesBackendSummary } from "@/lib/backend/services";
 import { getSeededSeriesCardSummary } from "@/lib/backend/catalog";
-import { documentHref, getStorefrontSkus, productHref } from "@/lib/storefront/catalog";
+import {
+  documentHref,
+  getSeriesPriceRange,
+  getStorefrontSkus,
+  productHref,
+} from "@/lib/storefront/catalog";
+
+function currency(value: number) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  }).format(value);
+}
 
 export function generateStaticParams() {
   return SERIES.map((s) => ({ series: s.slug }));
@@ -55,6 +75,48 @@ export default async function SeriesPage({ params }: PageProps<"/products/[serie
   const backendSummary = await getSeriesBackendSummary(s.slug);
   const storefrontSkus = getStorefrontSkus().filter((sku) => sku.seriesSlug === s.slug);
   const representativeSku = storefrontSkus[0];
+  const priceRange = getSeriesPriceRange(s.slug);
+  const msrpBySkuId = new Map(storefrontSkus.map((sku) => [sku.id, sku.msrp]));
+  const reviews = getReviews(s.slug, s.slug);
+  const ratingSummary = reviewSummary(reviews);
+
+  const faqs = [
+    {
+      q: "Can I buy this without a contractor account?",
+      a: "Yes. Every system is sold at the listed retail price with no trade account required — check out online for Newark will-call pickup or Bay Area delivery. Contractors sign in for pro pricing and net terms.",
+    },
+    {
+      q: "What size system do I need?",
+      a: "Sizing depends on square footage, insulation, windows, and climate zone — a licensed installer confirms it with a load calculation before purchase. As a rough guide, 9–12k BTU covers a typical bedroom or office, 18–24k a large living area, and 36k+ whole-home or light-commercial zones. Start a homeowner request and we'll help you land on the right capacity.",
+    },
+    {
+      q: "Who installs the equipment?",
+      a: "Installation is handled by licensed HVAC contractors. If you don't have one, Summit can refer qualified Bay Area installers who work with TCL equipment — request installer help and we'll connect you.",
+    },
+    {
+      q: "What rebates or tax credits apply?",
+      a: REBATES.map((r) => `${r.name}: ${r.detail}`).join(" ") +
+        " Your installing contractor confirms final eligibility for each program.",
+    },
+    {
+      q: "What is the return policy?",
+      a: PURCHASE.returnsDetail,
+    },
+    {
+      q: "How fast can I get it?",
+      a: `${PURCHASE.delivery}. Freight to the broader West Coast is quoted before any charge.`,
+    },
+  ];
+
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  };
 
   // Product structured data (escaped per Next.js JSON-LD guidance).
   const jsonLd = {
@@ -64,14 +126,36 @@ export default async function SeriesPage({ params }: PageProps<"/products/[serie
     description: s.description,
     brand: { "@type": "Brand", name: "TCL" },
     category: CATEGORY_LABEL[s.category],
-    offers: {
-      "@type": "Offer",
-      availability:
-        s.stock === "ready"
-          ? "https://schema.org/InStock"
-          : "https://schema.org/PreOrder",
-      seller: { "@type": "Organization", name: SITE.name },
-    },
+    offers: priceRange
+      ? {
+          "@type": "AggregateOffer",
+          priceCurrency: "USD",
+          lowPrice: priceRange.low,
+          highPrice: priceRange.high,
+          offerCount: priceRange.count,
+          availability:
+            s.stock === "ready"
+              ? "https://schema.org/InStock"
+              : "https://schema.org/PreOrder",
+          seller: { "@type": "Organization", name: SITE.name },
+        }
+      : {
+          "@type": "Offer",
+          availability:
+            s.stock === "ready"
+              ? "https://schema.org/InStock"
+              : "https://schema.org/PreOrder",
+          seller: { "@type": "Organization", name: SITE.name },
+        },
+    ...(ratingSummary
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: ratingSummary.average,
+            reviewCount: ratingSummary.count,
+          },
+        }
+      : {}),
     additionalProperty: [
       { "@type": "PropertyValue", name: "SEER2", value: s.seer2 },
       ...(s.hspf2 ? [{ "@type": "PropertyValue", name: "HSPF2", value: s.hspf2 }] : []),
@@ -88,51 +172,39 @@ export default async function SeriesPage({ params }: PageProps<"/products/[serie
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
       />
 
-      {/* Breadcrumb */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") }}
+      />
+
+      {/* Breadcrumb (visible trail + BreadcrumbList JSON-LD) */}
       <div className="border-b border-line bg-surface-1">
-        <Container className="flex items-center gap-1.5 py-3 text-sm text-ink-3">
-          <Link href="/" className="hover:text-ink-1">Home</Link>
-          <ChevronRight size={14} />
-          <Link href="/products" className="hover:text-ink-1">Products</Link>
-          <ChevronRight size={14} />
-          <span className="font-medium text-ink-1">{s.name}</span>
+        <Container className="py-3">
+          <Breadcrumbs
+            items={[
+              { label: "Home", href: "/" },
+              { label: "Shop Systems", href: "/products" },
+              { label: s.name, href: `/products/${s.slug}` },
+            ]}
+          />
         </Container>
       </div>
 
       <Container className="py-10 lg:py-14">
         <div className="grid gap-10 lg:grid-cols-2 lg:gap-14">
-          {/* Gallery */}
+          {/* Gallery — same component as the SKU page: real zoom, keyboard nav,
+              and a spec frame as the honest second slide (no duplicate thumbs). */}
           <div>
-            <div className="relative flex aspect-[16/10] items-center justify-center overflow-hidden rounded-[--r-lg] bg-surface-2 shadow-[var(--shadow-md)]">
-              <Image
-                src={s.image}
-                alt={`${s.name} product image`}
-                fill
-                priority
-                sizes="(min-width: 1024px) 50vw, 100vw"
-                className="object-contain"
-              />
-              {energyStar === "ENERGY STAR Most Efficient 2025" && (
-                <span className="absolute left-4 top-4">
-                  <Chip tone="eco">
-                    <Leaf size={12} strokeWidth={2.5} /> Most Efficient 2025
-                  </Chip>
-                </span>
-              )}
-            </div>
-            <div className="mt-3 grid grid-cols-4 gap-3">
-              {s.highlights.slice(0, 4).map((highlight) => (
-                <div key={highlight} className="relative aspect-square overflow-hidden rounded-[--r-sm] bg-surface-2">
-                  <Image
-                    src={s.image}
-                    alt=""
-                    fill
-                    sizes="90px"
-                    className="object-contain"
-                  />
-                </div>
-              ))}
-            </div>
+            <ProductGallery
+              images={[s.image]}
+              title={s.name}
+              specs={[
+                { label: "SEER2", value: `${s.seer2}` },
+                { label: "HSPF2", value: s.hspf2 ? `${s.hspf2}` : "n/a" },
+                { label: "Capacity", value: `${btuLabel(s)} BTU` },
+                { label: "Min temp", value: s.minTemp },
+              ]}
+            />
           </div>
 
           {/* Buy box */}
@@ -145,15 +217,47 @@ export default async function SeriesPage({ params }: PageProps<"/products/[serie
               {s.name}
             </h1>
             <p className="mt-1 font-mono text-sm text-ink-3">{s.family}</p>
+            {ratingSummary && (
+              <a href="#reviews" className="mt-2 inline-block">
+                <ReviewStarsInline summary={ratingSummary} />
+              </a>
+            )}
             <p className="mt-2 font-mono text-xs uppercase tracking-[0.12em] text-ink-3">
               Type: {s.type}
             </p>
 
+            {/* Retail price up front — homeowners see a number before any CTA. */}
+            {priceRange && (
+              <div className="mt-5">
+                <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                  <span className="tnum font-display text-3xl font-semibold tracking-tight text-ink-1">
+                    From {currency(priceRange.low)}
+                  </span>
+                  <span className="text-sm text-ink-2">
+                    retail · {priceRange.count} sizes up to {currency(priceRange.high)}
+                  </span>
+                </div>
+                <p className="mt-1.5 text-sm text-ink-2">
+                  As low as{" "}
+                  <span className="tnum font-semibold text-ink-1">
+                    {currency(financingMonthly(priceRange.low))}/mo
+                  </span>{" "}
+                  — {PURCHASE.financingNote}.{" "}
+                  <Link href="/portal/login" className="font-medium text-brand hover:text-brand-hover">
+                    Contractor? Sign in for pro pricing
+                  </Link>
+                </p>
+              </div>
+            )}
+
             <SpecStockStrip series={s} className="mt-6" />
-            <div className="mt-4 grid grid-cols-3 gap-px overflow-hidden rounded-[--r-sm] border border-line bg-line text-center">
+            <div className="mt-4 grid grid-cols-3 gap-px overflow-hidden rounded-(--r-sm) border border-line bg-line text-center">
               <BackendCell label="SKUs" value={`${backendSummary.skus.length}`} />
               <BackendCell label="Available" value={`${backendSummary.availableUnits}`} />
-              <BackendCell label="Pro price" value="Sign in" />
+              <BackendCell
+                label="Retail from"
+                value={priceRange ? currency(priceRange.low) : "Quote"}
+              />
             </div>
 
             <ul className="mt-6 grid gap-2.5">
@@ -168,9 +272,16 @@ export default async function SeriesPage({ params }: PageProps<"/products/[serie
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               {representativeSku && <AddToQuote sku={representativeSku} full />}
               <LinkButton href="/quote" variant="secondary" size="md" className="sm:w-auto">
-                Get a Quote
+                Request a Quote
               </LinkButton>
             </div>
+            <p className="mt-3 text-sm text-ink-2">
+              No trade account required — buy retail online, pick up at Newark
+              will-call, or get Bay Area delivery.
+            </p>
+            <DeliveryEstimate inStock={s.stock === "ready"} />
+
+            <BuyBoxAssurance price={priceRange?.low} className="mt-5" />
 
             {/* Support requests */}
             <div className="mt-7 grid gap-3 sm:grid-cols-2">
@@ -195,7 +306,7 @@ export default async function SeriesPage({ params }: PageProps<"/products/[serie
           <h2 className="font-display text-2xl font-semibold tracking-tight text-ink-1">
             Full specifications
           </h2>
-          <div className="mt-5 overflow-hidden rounded-[--r-md] border border-line">
+          <div className="mt-5 overflow-hidden rounded-(--r-md) border border-line">
             <SpecTable series={s} />
           </div>
         </section>
@@ -207,13 +318,14 @@ export default async function SeriesPage({ params }: PageProps<"/products/[serie
           <p className="mt-1 text-sm text-ink-3">
             Newark warehouse stock, public documents, and contractor pricing after sign-in.
           </p>
-          <div className="mt-5 overflow-x-auto rounded-[--r-md] border border-line">
+          <div className="mt-5 overflow-x-auto rounded-(--r-md) border border-line">
             <table className="w-full min-w-[760px] text-left text-sm">
               <thead className="border-b border-line bg-surface-2/60 text-xs uppercase tracking-[0.12em] text-ink-3">
                 <tr>
                   <th className="px-4 py-3 font-medium">SKU</th>
                   <th className="px-4 py-3 font-medium">Model</th>
                   <th className="px-4 py-3 font-medium">BTU</th>
+                  <th className="px-4 py-3 font-medium">Retail</th>
                   <th className="px-4 py-3 font-medium">Pro price</th>
                   <th className="px-4 py-3 font-medium">Available</th>
                   <th className="px-4 py-3 font-medium">Documents</th>
@@ -227,7 +339,14 @@ export default async function SeriesPage({ params }: PageProps<"/products/[serie
                     </td>
                     <td className="px-4 py-3 text-ink-2">{sku.modelNumber}</td>
                     <td className="px-4 py-3 tnum font-mono">{sku.btu.toLocaleString()}</td>
-                    <td className="px-4 py-3 text-sm font-medium text-brand">Sign in</td>
+                    <td className="px-4 py-3 tnum font-mono font-semibold text-ink-1">
+                      {msrpBySkuId.has(sku.id) ? currency(msrpBySkuId.get(sku.id)!) : "—"}
+                    </td>
+                    <td className="px-4 py-3 text-sm font-medium">
+                      <Link href="/portal/login" className="text-brand hover:text-brand-hover">
+                        Sign in
+                      </Link>
+                    </td>
                     <td className="px-4 py-3">
                       <Chip tone={sku.status === "ready" ? "stock" : sku.status === "low" ? "copper" : "lead"}>
                         {sku.available} {sku.status}
@@ -249,7 +368,39 @@ export default async function SeriesPage({ params }: PageProps<"/products/[serie
           </div>
         </section>
 
-        {/* Related */}
+        {/* Cross-sell — the accessories a bare-condenser order is missing. */}
+        <section className="mt-16">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <h2 className="font-display text-2xl font-semibold tracking-tight text-ink-1">
+                Complete your install
+              </h2>
+              <p className="mt-1 text-sm text-ink-2">
+                Common companion items for this system — add them to your quote and we&apos;ll confirm exact parts.
+              </p>
+            </div>
+            <Link href="/quote" className="text-sm font-medium text-brand hover:text-brand-hover">
+              Add accessories to quote →
+            </Link>
+          </div>
+          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {accessoriesForCategory(s.category).map((item) => (
+              <div key={item.key} className="rounded-(--r-md) border border-line bg-surface-1 p-4">
+                <div className="flex items-start gap-3">
+                  <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-(--r-sm) bg-copper-tint text-copper">
+                    <Wrench size={16} />
+                  </span>
+                  <div>
+                    <h3 className="font-display text-sm font-semibold text-ink-1">{item.name}</h3>
+                    <p className="mt-1 text-xs leading-relaxed text-ink-2">{item.blurb}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Side-by-side comparison — real spec deltas, not just related cards. */}
         <section className="mt-16">
           <div className="flex items-end justify-between">
             <h2 className="font-display text-2xl font-semibold tracking-tight text-ink-1">
@@ -259,14 +410,96 @@ export default async function SeriesPage({ params }: PageProps<"/products/[serie
               All series <ArrowRight size={15} />
             </Link>
           </div>
-          <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-6 overflow-x-auto rounded-(--r-md) border border-line">
+            <ComparisonTable current={s} others={relatedList} />
+          </div>
+          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {relatedList.map((r) => (
               <ProductCard key={r.slug} series={r} ops={getSeededSeriesCardSummary(r.slug)} />
             ))}
           </div>
         </section>
+
+        <ProductReviews reviews={reviews} summary={ratingSummary} />
+
+        {/* FAQ — mirrors the FAQPage JSON-LD above (one content source). */}
+        <section className="mt-16" aria-labelledby="series-faq">
+          <h2 id="series-faq" className="font-display text-2xl font-semibold tracking-tight text-ink-1">
+            Common questions
+          </h2>
+          <div className="mt-5 grid gap-3">
+            {faqs.map((f) => (
+              <details
+                key={f.q}
+                className="group rounded-(--r-md) border border-line bg-surface-1 px-5 py-4 open:bg-surface-2/40"
+              >
+                <summary className="cursor-pointer list-none font-display text-[15px] font-semibold text-ink-1 marker:content-none">
+                  {f.q}
+                </summary>
+                <p className="mt-2 max-w-3xl text-sm leading-relaxed text-ink-2">{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </section>
       </Container>
+
+      {representativeSku && priceRange && (
+        <StickyBuyBar sku={representativeSku} priceLabel={`From ${currency(priceRange.low)}`} />
+      )}
     </>
+  );
+}
+
+function ComparisonTable({ current, others }: { current: Series; others: Series[] }) {
+  const columns = [current, ...others];
+  const rows: { label: string; value: (x: Series) => string }[] = [
+    { label: "Retail from", value: (x) => {
+      const range = getSeriesPriceRange(x.slug);
+      return range ? currency(range.low) : "Quote";
+    } },
+    { label: "SEER2", value: (x) => `${x.seer2}` },
+    { label: "HSPF2", value: (x) => (x.hspf2 ? `${x.hspf2}` : "n/a") },
+    { label: "Capacity", value: (x) => `${btuLabel(x)} BTU` },
+    { label: "Max zones", value: (x) => `${x.zones}` },
+    { label: "Min operating temp", value: (x) => x.minTemp },
+    { label: "Refrigerant", value: (x) => x.refrigerant },
+    { label: "Warranty", value: (x) => `${x.warrantyCompressor} / ${x.warrantyParts}` },
+  ];
+  return (
+    <table className="w-full min-w-[720px] text-left text-sm">
+      <thead className="border-b border-line bg-surface-2/60">
+        <tr>
+          <th className="px-4 py-3 text-xs font-medium uppercase tracking-[0.12em] text-ink-3">
+            Spec
+          </th>
+          {columns.map((x, i) => (
+            <th key={x.slug} className="px-4 py-3">
+              <Link
+                href={`/products/${x.slug}`}
+                className={`font-display text-sm font-semibold ${i === 0 ? "text-brand" : "text-ink-1 hover:text-brand"}`}
+              >
+                {x.name}
+                {i === 0 && <span className="ml-1.5 font-sans text-xs font-medium text-ink-3">(this page)</span>}
+              </Link>
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody className="divide-y divide-line">
+        {rows.map((row) => (
+          <tr key={row.label} className="bg-surface-1">
+            <th scope="row" className="px-4 py-3 font-medium text-ink-2">
+              {row.label}
+            </th>
+            {columns.map((x) => (
+              <td key={x.slug} className="tnum px-4 py-3 font-mono font-medium text-ink-1">
+                {row.value(x)}
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }
 
@@ -293,9 +526,9 @@ function RequestRow({
   return (
     <Link
       href={href}
-      className="group flex items-center gap-3 rounded-[--r-sm] border border-line bg-surface-1 p-3 text-left transition-colors hover:border-ink-4 hover:bg-surface-2"
+      className="group flex items-center gap-3 rounded-(--r-sm) border border-line bg-surface-1 p-3 text-left transition-colors hover:border-ink-4 hover:bg-surface-2"
     >
-      <span className="grid size-10 shrink-0 place-items-center rounded-[--r-sm] bg-brand-tint text-brand">
+      <span className="grid size-10 shrink-0 place-items-center rounded-(--r-sm) bg-brand-tint text-brand">
         {icon}
       </span>
       <span className="min-w-0 flex-1">

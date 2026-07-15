@@ -59,7 +59,7 @@ export function FulfillmentAdvance({
             key={s.status}
             disabled={busy}
             onClick={() => go(s.status)}
-            className="rounded-[--r-sm] border border-line-strong bg-surface-1 px-2.5 py-1 text-xs font-medium text-ink-1 hover:bg-surface-2 disabled:opacity-50"
+            className="rounded-(--r-sm) border border-line-strong bg-surface-1 px-2.5 py-1 text-xs font-medium text-ink-1 hover:bg-surface-2 disabled:opacity-50"
           >
             {s.label}
           </button>

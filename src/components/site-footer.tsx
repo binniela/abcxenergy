@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { MapPin, Phone, Mail, Clock } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, MessageSquare } from "lucide-react";
 import { SITE } from "@/lib/site";
 import { SERIES } from "@/lib/products";
 
@@ -31,6 +31,10 @@ export function SiteFooter() {
               <a href={SITE.phoneHref} className="flex items-center gap-2.5 text-white/70 hover:text-white">
                 <Phone size={16} className="shrink-0 text-white/40" />
                 {SITE.phone}
+              </a>
+              <a href={SITE.smsHref} className="flex items-center gap-2.5 text-white/70 hover:text-white">
+                <MessageSquare size={16} className="shrink-0 text-white/40" />
+                Text us — fastest during business hours
               </a>
               <a href={SITE.emailHref} className="flex items-center gap-2.5 text-white/70 hover:text-white">
                 <Mail size={16} className="shrink-0 text-white/40" />
@@ -67,13 +71,13 @@ export function SiteFooter() {
             <div className="mt-4 flex flex-col gap-2.5">
               <Link
                 href="/homeowners"
-                className="flex h-11 items-center justify-center rounded-[--r-sm] bg-white text-sm font-semibold text-[var(--ink-panel)] transition-opacity hover:opacity-90"
+                className="flex h-11 items-center justify-center rounded-(--r-sm) bg-white text-sm font-semibold text-[var(--ink-panel)] transition-opacity hover:opacity-90"
               >
                 Buying one for your home?
               </Link>
               <Link
                 href="/dealers"
-                className="flex h-11 items-center justify-center rounded-[--r-sm] border border-white/20 text-sm font-medium text-white transition-colors hover:bg-white/10"
+                className="flex h-11 items-center justify-center rounded-(--r-sm) border border-white/20 text-sm font-medium text-white transition-colors hover:bg-white/10"
               >
                 Open Contractor Account
               </Link>

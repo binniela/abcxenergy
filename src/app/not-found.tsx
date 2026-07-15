@@ -1,0 +1,55 @@
+import Link from "next/link";
+import { ArrowRight, Search } from "lucide-react";
+import { Container, LinkButton } from "@/components/ui";
+import { SERIES } from "@/lib/products";
+import { SITE } from "@/lib/site";
+
+export default function NotFound() {
+  return (
+    <Container className="py-20 lg:py-28">
+      <div className="mx-auto max-w-xl text-center">
+        <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-copper">
+          404 — page not found
+        </p>
+        <h1 className="mt-3 font-display text-3xl font-semibold tracking-tight text-ink-1 sm:text-4xl">
+          That page moved, or the model number changed.
+        </h1>
+        <p className="mt-3 text-ink-2">
+          Try a search by SKU or model number, browse the lineup, or call the
+          Newark counter at{" "}
+          <a href={SITE.phoneHref} className="font-medium text-brand hover:text-brand-hover">
+            {SITE.phone}
+          </a>{" "}
+          — we&apos;ll find the part.
+        </p>
+        <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
+          <LinkButton href="/products" size="lg">
+            <Search size={16} /> Search the catalog
+          </LinkButton>
+          <LinkButton href="/" variant="secondary" size="lg">
+            Back to home
+          </LinkButton>
+        </div>
+      </div>
+
+      <div className="mx-auto mt-14 max-w-2xl">
+        <h2 className="text-center font-mono text-xs font-semibold uppercase tracking-[0.14em] text-ink-3">
+          Popular series
+        </h2>
+        <ul className="mt-4 grid gap-2 sm:grid-cols-2">
+          {SERIES.slice(0, 6).map((s) => (
+            <li key={s.slug}>
+              <Link
+                href={`/products/${s.slug}`}
+                className="group flex items-center justify-between rounded-(--r-sm) border border-line bg-surface-1 px-4 py-3 text-sm font-medium text-ink-1 transition-colors hover:border-line-strong hover:bg-surface-2"
+              >
+                {s.name}
+                <ArrowRight size={15} className="text-ink-3 group-hover:text-brand" />
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </Container>
+  );
+}

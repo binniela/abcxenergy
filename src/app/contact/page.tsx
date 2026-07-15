@@ -37,8 +37,8 @@ export default function ContactPage() {
           </p>
 
           {/* Homeowner secondary path — capture & hand off, never dominate */}
-          <div className="mt-6 flex items-start gap-3 rounded-[--r-md] border border-line bg-surface-2/60 p-4">
-            <span className="grid size-9 shrink-0 place-items-center rounded-[--r-sm] bg-surface-3 text-ink-3">
+          <div className="mt-6 flex items-start gap-3 rounded-(--r-md) border border-line bg-surface-2/60 p-4">
+            <span className="grid size-9 shrink-0 place-items-center rounded-(--r-sm) bg-surface-3 text-ink-3">
               <Home size={17} />
             </span>
             <p className="text-sm text-ink-2">
@@ -49,7 +49,7 @@ export default function ContactPage() {
           </div>
 
           {sent ? (
-            <div className="mt-8 rounded-[--r-md] border border-eco/30 bg-eco-tint/50 p-6">
+            <div className="mt-8 rounded-(--r-md) border border-eco/30 bg-eco-tint/50 p-6">
               <CheckCircle2 className="text-eco" size={28} />
               <h2 className="mt-3 font-display text-xl font-semibold text-ink-1">
                 Message prepared.
@@ -155,7 +155,7 @@ export default function ContactPage() {
 
         {/* NAP aside */}
         <aside className="lg:sticky lg:top-24 lg:self-start">
-          <div className="rounded-[--r-md] border border-line bg-surface-1 p-6 shadow-[var(--shadow-sm)]">
+          <div className="rounded-(--r-md) border border-line bg-surface-1 p-6 shadow-[var(--shadow-sm)]">
             <dl className="space-y-4 text-[15px]">
               <Row icon={<MapPin size={18} />} label="Address">
                 {SITE.address.full}
@@ -183,7 +183,7 @@ export default function ContactPage() {
           </div>
           <Link
             href="/dealers"
-            className="mt-4 flex items-center justify-between gap-3 rounded-[--r-md] border border-line bg-brand-tint p-4 text-brand transition-colors hover:bg-brand/15"
+            className="mt-4 flex items-center justify-between gap-3 rounded-(--r-md) border border-line bg-brand-tint p-4 text-brand transition-colors hover:bg-brand/15"
           >
             <span className="text-sm font-semibold">
               Contractor? Open a pro account
@@ -207,7 +207,7 @@ function Row({
 }) {
   return (
     <div className="flex items-start gap-3">
-      <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-[--r-sm] bg-surface-2 text-ink-3">
+      <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-(--r-sm) bg-surface-2 text-ink-3">
         {icon}
       </span>
       <div>

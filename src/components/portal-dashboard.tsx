@@ -39,7 +39,7 @@ export function PortalDashboard({ overview }: { overview: PortalOverview }) {
         <Panel title="Recommended stock" action="Live SKU availability">
           <div className="grid gap-3">
             {overview.recommendedSkus.map((sku) => (
-              <div key={sku.id} className="flex items-center justify-between gap-4 rounded-[--r-sm] border border-line bg-surface-2/60 p-3">
+              <div key={sku.id} className="flex items-center justify-between gap-4 rounded-(--r-sm) border border-line bg-surface-2/60 p-3">
                 <div>
                   <p className="text-sm font-semibold text-ink-1">{sku.title}</p>
                   <p className="mt-0.5 font-mono text-xs text-ink-3">
@@ -58,7 +58,7 @@ export function PortalDashboard({ overview }: { overview: PortalOverview }) {
         <Panel title="Tasks & support" action="Next actions">
           <div className="space-y-3">
             {[...overview.tasks, ...overview.rmas, ...overview.warrantyClaims, ...overview.rebateCases].slice(0, 6).map((item) => (
-              <div key={item.id} className="rounded-[--r-sm] border border-line bg-surface-2/60 p-3">
+              <div key={item.id} className="rounded-(--r-sm) border border-line bg-surface-2/60 p-3">
                 <p className="text-sm font-semibold text-ink-1">{item.title}</p>
                 <p className="mt-1 text-xs text-ink-3">
                   {"dueAt" in item ? `Due ${new Date(item.dueAt).toLocaleDateString("en-US")}` : item.detail}
@@ -81,10 +81,10 @@ export function PortalDashboard({ overview }: { overview: PortalOverview }) {
         </Panel>
       </section>
 
-      <div className="mt-8 rounded-[--r-md] border border-line bg-surface-2/50 p-5">
+      <div className="mt-8 rounded-(--r-md) border border-line bg-surface-2/50 p-5">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-start gap-3">
-            <span className="grid size-10 place-items-center rounded-[--r-sm] bg-brand-tint text-brand">
+            <span className="grid size-10 place-items-center rounded-(--r-sm) bg-brand-tint text-brand">
               <FileText size={18} />
             </span>
             <div>
@@ -103,8 +103,8 @@ export function PortalDashboard({ overview }: { overview: PortalOverview }) {
 
 function Metric({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
-    <div className="rounded-[--r-md] border border-line bg-surface-1 p-5 shadow-[var(--shadow-sm)]">
-      <span className="grid size-10 place-items-center rounded-[--r-sm] bg-brand-tint text-brand">{icon}</span>
+    <div className="rounded-(--r-md) border border-line bg-surface-1 p-5 shadow-[var(--shadow-sm)]">
+      <span className="grid size-10 place-items-center rounded-(--r-sm) bg-brand-tint text-brand">{icon}</span>
       <p className="mt-4 text-sm text-ink-3">{label}</p>
       <p className="mt-1 font-display text-2xl font-semibold tracking-tight text-ink-1">{value}</p>
     </div>
@@ -113,7 +113,7 @@ function Metric({ icon, label, value }: { icon: React.ReactNode; label: string; 
 
 function Panel({ title, action, children }: { title: string; action: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-[--r-md] border border-line bg-surface-1 p-5 shadow-[var(--shadow-sm)]">
+    <section className="rounded-(--r-md) border border-line bg-surface-1 p-5 shadow-[var(--shadow-sm)]">
       <div className="mb-4 flex items-center justify-between gap-3">
         <h2 className="font-display text-lg font-semibold tracking-tight text-ink-1">{title}</h2>
         <span className="text-xs font-medium text-ink-3">{action}</span>

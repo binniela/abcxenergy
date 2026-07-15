@@ -59,7 +59,7 @@ export function HomeownerRequestForm() {
 
   if (sent) {
     return (
-      <div className="rounded-[--r-md] border border-eco/30 bg-eco-tint/50 p-6">
+      <div className="rounded-(--r-md) border border-eco/30 bg-eco-tint/50 p-6">
         <CheckCircle2 className="text-eco" size={28} />
         <h2 className="mt-3 font-display text-xl font-semibold text-ink-1">
           Homeowner request prepared.
@@ -83,7 +83,7 @@ export function HomeownerRequestForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="rounded-[--r-md] border border-line bg-surface-1 p-6 shadow-[var(--shadow-sm)]">
+    <form onSubmit={onSubmit} className="rounded-(--r-md) border border-line bg-surface-1 p-6 shadow-[var(--shadow-sm)]">
       <h2 className="font-display text-xl font-semibold tracking-tight text-ink-1">
         Ask about one system or installer help
       </h2>

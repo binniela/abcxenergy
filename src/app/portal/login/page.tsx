@@ -46,7 +46,7 @@ export default async function PortalLoginPage({
         {/* Sign-in card */}
         <div className="mx-auto w-full max-w-sm">
           <div className="inline-flex items-center gap-2">
-            <span className="grid size-10 place-items-center rounded-[--r-md] bg-brand-tint text-brand">
+            <span className="grid size-10 place-items-center rounded-(--r-md) bg-brand-tint text-brand">
               <Lock size={20} />
             </span>
             <Chip tone="copper">Wholesale portal</Chip>
@@ -69,7 +69,7 @@ export default async function PortalLoginPage({
         </div>
 
         {/* What's inside */}
-        <div className="rounded-[--r-lg] border border-line bg-surface-2/50 p-8">
+        <div className="rounded-(--r-lg) border border-line bg-surface-2/50 p-8">
           <h2 className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-ink-3">
             What dealers will get inside
           </h2>
@@ -79,9 +79,9 @@ export default async function PortalLoginPage({
               return (
                 <div
                   key={f.label}
-                  className="flex items-center gap-3 rounded-[--r-md] border border-line bg-surface-1 px-4 py-3.5"
+                  className="flex items-center gap-3 rounded-(--r-md) border border-line bg-surface-1 px-4 py-3.5"
                 >
-                  <span className="grid size-9 shrink-0 place-items-center rounded-[--r-sm] bg-brand-tint text-brand">
+                  <span className="grid size-9 shrink-0 place-items-center rounded-(--r-sm) bg-brand-tint text-brand">
                     <Icon size={17} />
                   </span>
                   <span className="text-sm font-medium text-ink-1">{f.label}</span>
@@ -110,7 +110,7 @@ function MiniPortal({ href, icon, label }: { href: string; icon: React.ReactNode
   return (
     <Link
       href={href}
-      className="inline-flex items-center justify-center gap-1.5 rounded-[--r-sm] border border-line bg-surface-1 px-3 py-2 text-xs font-medium text-ink-2 transition-colors hover:border-ink-4 hover:text-ink-1"
+      className="inline-flex items-center justify-center gap-1.5 rounded-(--r-sm) border border-line bg-surface-1 px-3 py-2 text-xs font-medium text-ink-2 transition-colors hover:border-ink-4 hover:text-ink-1"
     >
       {icon}
       {label}

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { Check, ArrowRight, ArrowLeft, CheckCircle2, Building2, FileBadge, TrendingUp } from "lucide-react";
 import * as React from "react";
@@ -77,23 +78,35 @@ export default function DealersPage() {
   return (
     <>
       <section className="border-b border-line bg-[var(--ink-panel)] py-14 text-white">
-        <Container>
-          <Eyebrow>Become a dealer</Eyebrow>
-          <h1 className="mt-3 max-w-2xl font-display text-3xl font-semibold tracking-tight sm:text-4xl">
-            Open a contractor account.
-          </h1>
-          <p className="mt-3 max-w-xl text-white/65">
-            Contractor pricing, Bay Area stock, spec &amp; rebate support,
-            and one-tap reorder. Takes about two minutes. Our team reviews and replies
-            within one business day.
-          </p>
+        <Container className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+          <div>
+            <Eyebrow>Become a dealer</Eyebrow>
+            <h1 className="mt-3 max-w-2xl font-display text-3xl font-semibold tracking-tight sm:text-4xl">
+              Open a contractor account.
+            </h1>
+            <p className="mt-3 max-w-xl text-white/65">
+              Contractor pricing, Bay Area stock, spec &amp; rebate support,
+              and one-tap reorder. Takes about two minutes. Our team reviews and replies
+              within one business day.
+            </p>
+          </div>
+          <div className="relative min-h-[250px] overflow-hidden rounded-(--r-md) border border-white/10 bg-white/5 shadow-[var(--shadow-lg)]">
+            <Image
+              src="/site/generated/contractor-will-call-counter.jpg"
+              alt="HVAC contractor reviewing a will-call pickup order at a supply counter"
+              fill
+              priority
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              className="object-cover"
+            />
+          </div>
         </Container>
       </section>
 
       <Container className="py-12 lg:py-16">
         <div className="mx-auto max-w-xl">
           {done ? (
-            <div className="rounded-[--r-md] border border-eco/30 bg-eco-tint/50 p-8 text-center">
+            <div className="rounded-(--r-md) border border-eco/30 bg-eco-tint/50 p-8 text-center">
               <CheckCircle2 className="mx-auto text-eco" size={36} />
               <h2 className="mt-4 font-display text-2xl font-semibold text-ink-1">
                 Contractor account request prepared.
@@ -150,7 +163,7 @@ export default function DealersPage() {
                 })}
               </ol>
 
-              <form onSubmit={submit} className="mt-8 rounded-[--r-md] border border-line bg-surface-1 p-6 shadow-[var(--shadow-sm)]">
+              <form onSubmit={submit} className="mt-8 rounded-(--r-md) border border-line bg-surface-1 p-6 shadow-[var(--shadow-sm)]">
                 {step === 1 && (
                   <div className="flex flex-col gap-5">
                     <Field label="Company name" required>

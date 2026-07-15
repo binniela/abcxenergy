@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
+import { Inter, Inter_Tight, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { QuoteProvider } from "@/components/quote-context";
 import { FulfillmentProvider } from "@/components/fulfillment-context";
@@ -10,9 +10,10 @@ import { SITE } from "@/lib/site";
 
 // Body: Inter — neutral, legible at small sizes for spec-dense pages.
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
-// Display: Space Grotesk — engineered weight & tight tracking, gives the
-// flagship a confident, instrument-panel presence without going cold.
-const grotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-grotesk", display: "swap" });
+// Display: Inter Tight — the weight and tight tracking of a distributor
+// catalog without the geometric SaaS-dashboard vocabulary. Shares rendering
+// DNA with Inter, so the two families never fight.
+const grotesk = Inter_Tight({ subsets: ["latin"], variable: "--font-grotesk", display: "swap" });
 // Data: JetBrains Mono — tabular figures so spec rails and tables align.
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono-jb", display: "swap" });
 
@@ -77,7 +78,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-[--r-sm] focus:bg-brand focus:px-4 focus:py-2 focus:text-sm focus:text-brand-ink"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-(--r-sm) focus:bg-brand focus:px-4 focus:py-2 focus:text-sm focus:text-brand-ink"
         >
           Skip to content
         </a>
