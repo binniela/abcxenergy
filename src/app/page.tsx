@@ -23,6 +23,7 @@ import { FeaturedSystems, startingPrice } from "@/components/featured-systems";
 import { SystemSizer, type SizerSku } from "@/components/system-sizer";
 import { getStorefrontSkus, productHref } from "@/lib/storefront/catalog";
 import { TrustBadges } from "@/components/trust-badges";
+import { Ridgeline } from "@/components/mountain";
 import { Container, Eyebrow, LinkButton } from "@/components/ui";
 import { REBATES, SITE } from "@/lib/site";
 
@@ -200,16 +201,18 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
 
-      {/* Hero — no decorative JPEG (Deloitte: +8.4% conversions per 0.1s of
-          mobile speed). Left: the pitch. Right: a working sizer that returns
-          in-stock SKUs — the #1 drop-off is buyers not knowing what to buy. */}
-      <section className="border-b border-line bg-[var(--ink-panel)]">
-        <Container className="grid gap-8 py-12 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-center lg:gap-10 lg:py-14">
+      {/* Hero — dawn-sand gradient, dark text, a distant ridgeline on the
+          horizon. No decorative JPEG (Deloitte: +8.4% conversions per 0.1s of
+          mobile speed). Right: a working sizer that returns in-stock SKUs. */}
+      <section className="relative isolate overflow-hidden border-b border-line bg-hero-dawn">
+        <Container className="relative z-10 grid gap-8 py-12 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-center lg:gap-10 lg:py-14">
           <div className="rise">
-            <h1 className="font-display text-[2.4rem] font-bold leading-[1.04] tracking-tight text-white sm:text-5xl lg:text-[3.2rem]">
-              Heat pumps and mini splits at contractor pricing.
+            <Eyebrow>In stock in Newark</Eyebrow>
+            <h1 className="mt-3 font-display text-[2.4rem] font-bold leading-[1.04] tracking-tight text-ink-1 sm:text-5xl lg:text-[3.2rem]">
+              Heat pumps and mini splits at{" "}
+              <span className="u-golden">contractor pricing</span>.
             </h1>
-            <p className="mt-5 max-w-2xl text-base leading-relaxed text-white/80 sm:text-lg">
+            <p className="mt-5 max-w-2xl text-base leading-relaxed text-ink-2 sm:text-lg">
               TCL systems from ${fromPrice.toLocaleString()}, on the shelf in Newark.
               Buy it this morning, pick it up this afternoon, and have it installed
               by a C-20 licensed contractor we know — permit pulled, warranty intact.
@@ -228,7 +231,7 @@ export default function HomePage() {
                 Find an installer
               </LinkButton>
             </div>
-            <div className="mt-7 hidden max-w-2xl gap-3 text-sm text-white/82 md:grid md:grid-cols-3">
+            <div className="mt-7 hidden max-w-2xl gap-3 text-sm text-ink-2 md:grid md:grid-cols-3">
               <HeroProof text="Buy one system — no trade account." />
               <HeroProof text="C-20 licensed install, permit included." />
               <HeroProof text="Warranty stays intact — in writing." />
@@ -236,16 +239,24 @@ export default function HomePage() {
           </div>
           <SystemSizer skus={sizerSkus} />
         </Container>
+        {/* distant horizon ridge — the logo's peaks on the skyline */}
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-24">
+          <svg viewBox="0 0 1200 96" preserveAspectRatio="none" className="h-full w-full">
+            <path d="M0 96 L0 66 L150 56 L280 64 L410 40 L520 58 L620 30 L720 56 L840 46 L980 62 L1090 50 L1200 58 L1200 96 Z" fill="var(--ink-panel)" opacity="0.08" />
+            <path d="M0 96 L0 78 L170 70 L320 78 L470 58 L600 76 L740 60 L900 78 L1050 66 L1200 74 L1200 96 Z" fill="var(--ink-panel)" opacity="0.13" />
+          </svg>
+        </div>
       </section>
 
       {/* Products before anything else — nobody scrolls a homepage to fill in a ZIP. */}
       <FeaturedSystems />
 
-      <section className="border-b border-line bg-[var(--ink-panel)] text-white">
-        <Container className="grid gap-px bg-white/10 p-0 sm:grid-cols-3">
+      <Ridgeline above="var(--canvas)" fill="var(--surface-2)" />
+      <section className="border-b border-line bg-surface-2">
+        <Container className="grid gap-px bg-line p-0 sm:grid-cols-3">
           {trustItems.map((item) => (
-            <div key={item.label} className="flex items-center gap-2.5 bg-[var(--ink-panel)] px-5 py-4 text-sm text-white/82">
-              <span className="text-[oklch(0.78_0.08_55)]">{item.icon}</span>
+            <div key={item.label} className="flex items-center gap-2.5 bg-surface-2 px-5 py-4 text-sm text-ink-2">
+              <span className="text-brand">{item.icon}</span>
               <span>{item.label}</span>
             </div>
           ))}
@@ -459,26 +470,25 @@ export default function HomePage() {
         </Container>
       </section>
 
-      <section className="border-b border-line bg-[var(--ink-panel)] py-14 text-white lg:py-16">
+      <Ridgeline above="var(--surface-1)" fill="var(--surface-2)" />
+      <section className="border-b border-line bg-surface-2 py-14 lg:py-16">
         <Container className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
           <div>
-            <span className="text-sm font-semibold tracking-tight text-[oklch(0.78_0.08_55)]">
-              Homeowner path
-            </span>
-            <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
+            <Eyebrow>Homeowner path</Eyebrow>
+            <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-ink-1 sm:text-4xl">
               What happens after you ask for help?
             </h2>
-            <p className="mt-4 max-w-xl text-white/68">
+            <p className="mt-4 max-w-xl text-ink-2">
               Summit does not install equipment. We help you understand the equipment
               lane and keep installation scope with qualified local contractors.
             </p>
             <div className="mt-7 grid gap-3">
               {howItWorks.map((step, index) => (
-                <div key={step} className="flex gap-3 rounded-(--r-sm) border border-white/10 bg-white/[0.04] p-4">
-                  <span className="grid size-8 shrink-0 place-items-center rounded-full bg-white text-sm font-semibold text-ink-1">
+                <div key={step} className="flex gap-3 rounded-(--r-sm) border border-line bg-surface-1 p-4">
+                  <span className="grid size-8 shrink-0 place-items-center rounded-full bg-brand text-sm font-semibold text-white">
                     {index + 1}
                   </span>
-                  <p className="pt-1 text-sm leading-relaxed text-white/78">{step}</p>
+                  <p className="pt-1 text-sm leading-relaxed text-ink-2">{step}</p>
                 </div>
               ))}
             </div>
@@ -567,7 +577,7 @@ export default function HomePage() {
       </section>
 
       <section className="border-t border-line py-14">
-        <Container className="grid gap-6 rounded-(--r-lg) bg-[var(--ink-panel)] p-7 text-white md:grid-cols-[1fr_auto] md:items-center lg:p-9">
+        <Container className="grid gap-6 overflow-hidden rounded-(--r-lg) bg-granite p-7 text-white md:grid-cols-[1fr_auto] md:items-center lg:p-9">
           <div>
             <h2 className="font-display text-3xl font-semibold tracking-tight">
               Buying one system or quoting a job?
@@ -625,9 +635,9 @@ function CostRow({ label, value }: { label: string; value: string }) {
 
 function HeroProof({ text }: { text: string }) {
   return (
-    <div className="flex gap-2 rounded-(--r-sm) border border-white/15 bg-white/10 px-3 py-2 backdrop-blur">
-      <span className="mt-1 size-2 shrink-0 rounded-full bg-stock-ready" />
-      <span className="leading-snug">{text}</span>
+    <div className="flex gap-2 rounded-(--r-sm) border border-line bg-surface-1/70 px-3 py-2">
+      <span className="mt-1 size-2 shrink-0 rounded-full bg-golden" />
+      <span className="leading-snug text-ink-2">{text}</span>
     </div>
   );
 }

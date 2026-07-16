@@ -1,5 +1,6 @@
 import Link from "next/link";
 import * as React from "react";
+import { SnowCap } from "./mountain";
 
 /* Shared primitives. One button system, one chip system — reused everywhere
    so the surface treatment stays consistent (skill: same border weight, radius,
@@ -135,11 +136,12 @@ export function Container({
   );
 }
 
-/* Plain semibold label — the old all-caps letterspaced mono eyebrow read as
-   SaaS-dashboard chrome; a supply house says it straight. */
+/* Semibold pine label with the logo's snow-cap marker — ties every section
+   heading back to the mark. */
 export function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
-    <span className="text-sm font-semibold tracking-tight text-copper">
+    <span className="inline-flex items-center gap-2 text-sm font-semibold tracking-tight text-brand">
+      <SnowCap size={14} />
       {children}
     </span>
   );
