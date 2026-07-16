@@ -85,7 +85,7 @@ export function SystemSizer({ skus }: { skus: SizerSku[] }) {
   const matches = recommend(skus, scope, area, ducts);
 
   return (
-    <div className="rounded-(--r-lg) border border-line bg-surface-1 p-5 shadow-[var(--shadow-lg)] sm:p-6">
+    <div className="min-w-0 rounded-(--r-lg) border border-line bg-surface-1 p-5 shadow-[var(--shadow-lg)] sm:p-6">
       <div className="flex items-center gap-2.5">
         <span className="grid size-9 place-items-center rounded-(--r-sm) bg-brand-tint text-brand">
           <Ruler size={17} />

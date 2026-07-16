@@ -205,8 +205,8 @@ export default function HomePage() {
           horizon. No decorative JPEG (Deloitte: +8.4% conversions per 0.1s of
           mobile speed). Right: a working sizer that returns in-stock SKUs. */}
       <section className="relative isolate overflow-hidden border-b border-line bg-hero-dawn">
-        <Container className="relative z-10 grid gap-8 py-12 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-center lg:gap-10 lg:py-14">
-          <div className="rise">
+        <Container className="relative z-10 grid grid-cols-1 gap-8 py-12 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-center lg:gap-10 lg:py-14">
+          <div className="rise min-w-0">
             <Eyebrow>In stock in Newark</Eyebrow>
             <h1 className="mt-3 font-display text-[2.4rem] font-bold leading-[1.04] tracking-tight text-ink-1 sm:text-5xl lg:text-[3.2rem]">
               Heat pumps and mini splits at{" "}
